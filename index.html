@@ -176,11 +176,11 @@
         w = innerWidth; h = innerHeight;
         canvas.width = w * dpr; canvas.height = h * dpr;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        points = Array.from({ length: Math.min(1600, Math.round((w * h) / 1500)) }, () => { const p = {}; spawn(p); p.age = Math.random() * 320; return p; });
+        points = Array.from({ length: Math.min(2200, Math.round((w * h) / 900)) }, () => { const p = {}; spawn(p); p.age = Math.random() * 320; return p; });
         ctx.fillStyle = "#0b0b0d"; ctx.fillRect(0, 0, w, h);
       };
       const flow = (x, y, t) =>
-        Math.sin(x * 0.0036 + t * 0.00011) * 1.6 + Math.cos(y * 0.0044 - t * 0.00009) * 1.4 + Math.sin((x + y) * 0.0015) * 0.8;
+        Math.sin(x * 0.0036 + t * 0.00018) * 1.6 + Math.cos(y * 0.0044 - t * 0.00015) * 1.4 + Math.sin((x + y) * 0.0015) * 0.8;
 
       addEventListener("pointermove", (e) => {
         if (e.pointerType === "touch") return;
@@ -193,8 +193,8 @@
         ctx.fillStyle = "rgba(11, 11, 13, 0.075)";
         ctx.fillRect(0, 0, w, h);
         well.x += (well.tx - well.x) * 0.2; well.y += (well.ty - well.y) * 0.2;
-        well.mass += (well.target - well.mass) * 0.05;
-        const G = 420 * well.mass, horizon = 5 + 3 * well.mass;
+        well.mass += (well.target - well.mass) * 0.11;
+        const G = 2000 * well.mass, horizon = 5 + 3 * well.mass;
         const btn = button.getBoundingClientRect(), bx = btn.left + btn.width / 2, by = btn.top + btn.height / 2;
 
         ctx.lineWidth = 0.8;
@@ -204,17 +204,17 @@
           const a = flow(p.x, p.y, t);
           let ax = 0, ay = 0;
           const dx = well.x - p.x, dy = well.y - p.y, r2 = dx * dx + dy * dy, r = Math.sqrt(r2) + 0.001;
-          if (G > 1 && r < 260) {
+          if (G > 1 && r < 420) {
             const pull = G / (r2 + 900);
-            ax += (dx / r) * pull - (dy / r) * pull * 0.35; // inward, and slowly around
-            ay += (dy / r) * pull + (dx / r) * pull * 0.35;
+            ax += (dx / r) * pull - (dy / r) * pull * 0.18;
+            ay += (dy / r) * pull + (dx / r) * pull * 0.18;
           }
           const ex = bx - p.x, ey = by - p.y, e2 = ex * ex + ey * ey, er = Math.sqrt(e2) + 0.001;
           if (er < 380) { const pull = 360 / (e2 + 2500); ax += (ex / er) * pull; ay += (ey / er) * pull; }
           p.vx = (p.vx + ax) * 0.9; p.vy = (p.vy + ay) * 0.9;
           const sp = Math.hypot(p.vx, p.vy);
-          if (sp > 1.6) { p.vx *= 1.6 / sp; p.vy *= 1.6 / sp; }
-          const nx = p.x + p.vx + Math.cos(a) * 0.55, ny = p.y + p.vy + Math.sin(a) * 0.55;
+          if (sp > 2.4) { p.vx *= 2.4 / sp; p.vy *= 2.4 / sp; }
+          const nx = p.x + p.vx + Math.cos(a) * 0.75, ny = p.y + p.vy + Math.sin(a) * 0.75;
           ctx.moveTo(p.x, p.y); ctx.lineTo(nx, ny);
           p.x = nx; p.y = ny;
           if (++p.age > 320 || nx < -20 || nx > w + 20 || ny < -20 || ny > h + 20 || (G > 1 && r < horizon) || (Math.abs(ex) < btn.width / 2 - 6 && Math.abs(ey) < btn.height / 2 - 6)) spawn(p);
