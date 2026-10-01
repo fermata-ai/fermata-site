@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fermata — a copilot for research, not an autopilot</title>
+  <meta name="description" content="Fermata works beside you on hard research questions. It asks what you mean, shows where every number comes from, tests its own claims and waits until you understand. For macOS.">
+  <meta name="theme-color" content="#0b0b0d">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/favicon-32.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="assets/app-icon-180.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #0b0b0d;
+      --glass: rgba(16, 16, 20, 0.74);
+      --paper: #f2efea;
+      --paper-2: #bdb9b1;
+      --paper-3: #7d7a74;
+      --rule: #25252a;
+      --rule-2: #34343b;
+      --violet: #a8a3e8;
+      --violet-dim: #6f69c9;
+      --indigo: #4b45b2;
+      --amber: #e0b34a;
+      --green: #5cc48a;
+      --serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+      --sans: -apple-system, BlinkMacSystemFont, "Helvetica Neue", system-ui, sans-serif;
+      --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--ink); }
+    body {
+      margin: 0; min-height: 100vh;
+      font-family: var(--sans); font-size: 16px; line-height: 1.6;
+      color: var(--paper); background: transparent;
+      -webkit-font-smoothing: antialiased;
+    }
+    /* the field: fixed behind every section, and the cursor pulls on it */
+    #field { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; display: block; }
+    .glow {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(60rem 36rem at 50% -8rem, rgba(75, 69, 178, 0.24), transparent 70%);
+    }
+    body > header, body > main, body > footer { position: relative; z-index: 1; }
+    a { color: inherit; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding-inline: 32px; }
+    .caps {
+      font-family: var(--sans); font-size: 11px; font-weight: 500;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--paper-3);
+    }
+    em { font-style: italic; color: var(--violet); }
+
+    /* masthead */
+    header { border-bottom: 1px solid var(--rule); }
+    header .wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; font-family: var(--serif); font-size: 21px; }
+    .brand svg { color: var(--violet); }
+    .header-cta { font-size: 13px; text-decoration: none; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--rule-2); color: var(--paper-2); background: rgba(11, 11, 13, 0.6); transition: border-color 0.2s, color 0.2s; }
+    .header-cta:hover { border-color: var(--violet-dim); color: var(--paper); }
+
+    /* hero: the field shows through, so only the controls take the pointer */
+    /* sized by the window's height too, so the button is on screen however short the window is */
+    .hero { min-height: calc(100svh - 73px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding-block: clamp(16px, 4vh, 72px); text-align: center; pointer-events: none; }
+    .hero a { pointer-events: auto; }
+    .mark { color: var(--violet); margin: 0 auto clamp(10px, 3.2vh, 40px); display: block; width: clamp(32px, 6.4vh, 64px); height: clamp(32px, 6.4vh, 64px); }
+    h1 {
+      font-family: var(--serif); font-weight: 300;
+      font-size: min(clamp(40px, 8vw, 96px), 9.4vh); line-height: 1.02; letter-spacing: -0.02em;
+      margin: clamp(8px, 2vh, 22px) auto clamp(12px, 2.8vh, 30px); max-width: 13ch;
+    }
+    .lede { font-family: var(--serif); font-size: clamp(15px, 2.4vh, 21px); font-weight: 300; line-height: 1.5; color: var(--paper-2); max-width: 620px; margin: 0 auto clamp(16px, 4.6vh, 52px); }
+    .hero > * { opacity: 0; animation: rise 1.2s ease-out forwards; }
+    .hero > :nth-child(2) { animation-delay: 0.25s; }
+    .hero > :nth-child(3) { animation-delay: 0.4s; }
+    .hero > :nth-child(4) { animation-delay: 0.6s; }
+    .hero > :nth-child(5) { animation-delay: 0.8s; }
+    @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+    .cta {
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 17px 34px; border-radius: 999px;
+      background: var(--paper); color: var(--ink);
+      font-size: 15px; font-weight: 600; letter-spacing: 0.01em; text-decoration: none;
+      box-shadow: 0 0 0 1px rgba(242, 239, 234, 0.2), 0 14px 50px -12px rgba(168, 163, 232, 0.45);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cta:hover { transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(242, 239, 234, 0.3), 0 18px 60px -10px rgba(168, 163, 232, 0.65); }
+    .cta:focus-visible { outline: 1px solid var(--violet); outline-offset: 5px; }
+    .cta svg { width: 17px; height: 17px; margin-top: -2px; }
+    .meta { margin-top: clamp(10px, 2.2vh, 22px); font-family: var(--mono); font-size: 12px; color: var(--paper-3); letter-spacing: 0.02em; }
+    .meta a { text-decoration: none; border-bottom: 1px solid var(--rule-2); }
+
+    @media (max-width: 640px) {
+      .wrap { padding-inline: 20px; }
+      .header-cta { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero > * { animation: none; opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="apple" viewBox="0 0 24 24"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.97-3.46-1.07-1.57-2.74-1.78-3.33-1.8-1.42-.15-2.77.83-3.49.83-.72 0-1.83-.81-3.01-.79-1.55.02-2.98.9-3.78 2.29-1.61 2.8-.41 6.94 1.16 9.21.77 1.11 1.68 2.36 2.88 2.31 1.16-.05 1.59-.75 2.99-.75 1.4 0 1.79.75 3.01.72 1.24-.02 2.03-1.13 2.79-2.25.88-1.29 1.24-2.54 1.26-2.6-.03-.01-2.42-.93-2.45-3.71zM14.08 5.84c.64-.77 1.07-1.85.95-2.92-.92.04-2.03.61-2.69 1.38-.59.68-1.1 1.78-.97 2.83 1.03.08 2.07-.52 2.71-1.29z"/></symbol>
+  </svg>
+  <canvas id="field" aria-hidden="true"></canvas>
+  <div class="glow" aria-hidden="true"></div>
+
+  <header>
+    <div class="wrap">
+      <a class="brand" href="/" aria-label="Fermata">
+        <svg viewBox="0 0 48 48" width="28" height="28" aria-hidden="true">
+          <path d="M6 28 A18 18 0 0 1 42 28" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+          <circle cx="13" cy="28" r="3.4" fill="currentColor"/><circle cx="24" cy="28" r="3.4" fill="currentColor"/><circle cx="35" cy="28" r="3.4" fill="currentColor"/>
+        </svg>
+        Fermata
+      </a>
+      <a class="header-cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest">Download for Mac</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero wrap">
+      <svg class="mark" viewBox="0 0 48 48" width="64" height="64" aria-hidden="true">
+        <path d="M6 28 A18 18 0 0 1 42 28" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="13" cy="28" r="2.8" fill="currentColor"/><circle cx="24" cy="28" r="2.8" fill="currentColor"/><circle cx="35" cy="28" r="2.8" fill="currentColor"/>
+      </svg>
+      <span class="caps">A copilot for research, not an autopilot</span>
+      <h1>Do research you <em>fully</em> understand.</h1>
+      <p class="lede">
+        Fermata works beside you on hard questions. It asks what you mean before it starts, shows
+        where every number comes from, tests its own claims, and waits until you follow the reasoning.
+        You finish with a result and the understanding to defend it.
+      </p>
+      <div>
+        <a class="cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest">
+          <svg aria-hidden="true"><use href="#apple"/></svg>
+          Download for Mac
+        </a>
+        <p class="meta"><span class="version">Latest release</span> · macOS · Apple Silicon · runs on your <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a></p>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // ---- Download: release assets carry the version in their name, so ask GitHub for the newest DMG.
+    // Without JavaScript, or if the call fails, the buttons open the latest release page.
+    fetch("https://api.github.com/repos/fermata-ai/fermata-releases/releases/latest")
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((release) => {
+        const dmg = release.assets.find((a) => a.name.endsWith(".dmg"));
+        if (!dmg) return;
+        document.querySelectorAll(".download").forEach((a) => (a.href = dmg.browser_download_url));
+        document.querySelectorAll(".version").forEach((s) => (s.textContent = "v" + release.tag_name.replace(/^v/, "")));
+      })
+      .catch(() => {});
+
+    // ---- The field. Streamlines drift through a slow flow; the cursor gently draws them in and
+    // swallows what reaches it. The download button has a fainter pull of its own that never lets go.
+    (() => {
+      const canvas = document.getElementById("field");
+      const button = document.querySelector(".hero .cta");
+      const ctx = canvas.getContext("2d");
+      let w, h, points;
+      const well = { x: -1e4, y: -1e4, tx: -1e4, ty: -1e4, mass: 0, target: 0 };
+      const spawn = (p) => { p.x = Math.random() * w; p.y = Math.random() * h; p.vx = 0; p.vy = 0; p.age = 0; };
+      const resize = () => {
+        const dpr = Math.min(devicePixelRatio || 1, 2);
+        w = innerWidth; h = innerHeight;
+        canvas.width = w * dpr; canvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        points = Array.from({ length: Math.min(1600, Math.round((w * h) / 1500)) }, () => { const p = {}; spawn(p); p.age = Math.random() * 320; return p; });
+        ctx.fillStyle = "#0b0b0d"; ctx.fillRect(0, 0, w, h);
+      };
+      const flow = (x, y, t) =>
+        Math.sin(x * 0.0036 + t * 0.00011) * 1.6 + Math.cos(y * 0.0044 - t * 0.00009) * 1.4 + Math.sin((x + y) * 0.0015) * 0.8;
+
+      addEventListener("pointermove", (e) => {
+        if (e.pointerType === "touch") return;
+        if (well.mass < 0.05) { well.x = e.clientX; well.y = e.clientY; }
+        well.tx = e.clientX; well.ty = e.clientY; well.target = 1;
+      });
+      document.addEventListener("mouseout", (e) => { if (!e.relatedTarget) well.target = 0; });
+
+      const frame = (t) => {
+        ctx.fillStyle = "rgba(11, 11, 13, 0.075)";
+        ctx.fillRect(0, 0, w, h);
+        well.x += (well.tx - well.x) * 0.2; well.y += (well.ty - well.y) * 0.2;
+        well.mass += (well.target - well.mass) * 0.05;
+        const G = 420 * well.mass, horizon = 5 + 3 * well.mass;
+        const btn = button.getBoundingClientRect(), bx = btn.left + btn.width / 2, by = btn.top + btn.height / 2;
+
+        ctx.lineWidth = 0.8;
+        ctx.strokeStyle = "rgba(168, 163, 232, 0.34)";
+        ctx.beginPath();
+        for (const p of points) {
+          const a = flow(p.x, p.y, t);
+          let ax = 0, ay = 0;
+          const dx = well.x - p.x, dy = well.y - p.y, r2 = dx * dx + dy * dy, r = Math.sqrt(r2) + 0.001;
+          if (G > 1 && r < 260) {
+            const pull = G / (r2 + 900);
+            ax += (dx / r) * pull - (dy / r) * pull * 0.35; // inward, and slowly around
+            ay += (dy / r) * pull + (dx / r) * pull * 0.35;
+          }
+          const ex = bx - p.x, ey = by - p.y, e2 = ex * ex + ey * ey, er = Math.sqrt(e2) + 0.001;
+          if (er < 380) { const pull = 360 / (e2 + 2500); ax += (ex / er) * pull; ay += (ey / er) * pull; }
+          p.vx = (p.vx + ax) * 0.9; p.vy = (p.vy + ay) * 0.9;
+          const sp = Math.hypot(p.vx, p.vy);
+          if (sp > 1.6) { p.vx *= 1.6 / sp; p.vy *= 1.6 / sp; }
+          const nx = p.x + p.vx + Math.cos(a) * 0.55, ny = p.y + p.vy + Math.sin(a) * 0.55;
+          ctx.moveTo(p.x, p.y); ctx.lineTo(nx, ny);
+          p.x = nx; p.y = ny;
+          if (++p.age > 320 || nx < -20 || nx > w + 20 || ny < -20 || ny > h + 20 || (G > 1 && r < horizon) || (Math.abs(ex) < btn.width / 2 - 6 && Math.abs(ey) < btn.height / 2 - 6)) spawn(p);
+        }
+        ctx.stroke();
+        if (!still) requestAnimationFrame(frame);
+      };
+      resize();
+      addEventListener("resize", resize);
+      if (still) { for (let i = 0; i < 260; i++) frame(i * 16); } else requestAnimationFrame(frame);
+    })();
+
+  </script>
+</body>
+</html>
