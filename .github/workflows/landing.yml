@@ -1,0 +1,13 @@
+name: Landing page
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  headline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check selected heading and bundled fonts
+        run: python3 -m unittest discover -s tests -v
