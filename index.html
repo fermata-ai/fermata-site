@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" href="assets/app-icon-180.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,500;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet">
   <style>
     :root {
       color-scheme: dark;
@@ -68,10 +68,11 @@
     .hero a { pointer-events: auto; }
     .mark { color: var(--violet); margin: 0 auto clamp(10px, 3.2vh, 40px); display: block; width: clamp(32px, 6.4vh, 64px); height: clamp(32px, 6.4vh, 64px); }
     h1 {
-      font-family: var(--serif); font-weight: 300;
-      font-size: min(clamp(40px, 8vw, 96px), 9.4vh); line-height: 1.02; letter-spacing: -0.02em;
+      font-family: "IBM Plex Serif", var(--serif); font-weight: 500;
+      font-size: min(clamp(42px, 7.6vw, 94px), 9.2vh); line-height: 1.05; letter-spacing: -0.05em;
       margin: clamp(8px, 2vh, 22px) auto clamp(12px, 2.8vh, 30px); max-width: 13ch;
     }
+    h1 em { display: block; font-size: 1.13em; line-height: 1.05; }
     .lede { font-family: var(--serif); font-size: clamp(15px, 2.4vh, 21px); font-weight: 300; line-height: 1.5; color: var(--paper-2); max-width: 620px; margin: 0 auto clamp(16px, 4.6vh, 52px); }
     .hero > * { opacity: 0; animation: rise 1.2s ease-out forwards; }
     .hero > :nth-child(2) { animation-delay: 0.25s; }
@@ -130,7 +131,7 @@
         <circle cx="13" cy="28" r="2.8" fill="currentColor"/><circle cx="24" cy="28" r="2.8" fill="currentColor"/><circle cx="35" cy="28" r="2.8" fill="currentColor"/>
       </svg>
       <span class="caps">A copilot for research, not an autopilot</span>
-      <h1>Do research you <em>fully</em> understand.</h1>
+      <h1>Do research you <em>fully</em> understand</h1>
       <p class="lede">
         Fermata works beside you on hard questions. It asks what you mean before it starts, shows
         where every number comes from, tests its own claims, and waits until you follow the reasoning.
