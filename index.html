@@ -32,7 +32,7 @@
       --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
     }
     * { box-sizing: border-box; }
-    html { background: var(--ink); }
+    html { background: var(--ink); scroll-behavior: smooth; }
     body {
       margin: 0; min-height: 100vh;
       font-family: var(--sans); font-size: 16px; line-height: 1.6;
@@ -92,14 +92,53 @@
     .cta:hover { transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(242, 239, 234, 0.3), 0 18px 60px -10px rgba(168, 163, 232, 0.65); }
     .cta:focus-visible { outline: 1px solid var(--violet); outline-offset: 5px; }
     .cta svg { width: 17px; height: 17px; margin-top: -2px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+    .cta-ghost {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 17px 30px; border-radius: 999px;
+      color: var(--paper); text-decoration: none; font-size: 15px; font-weight: 500; letter-spacing: 0.01em;
+      border: 1px solid var(--rule-2); background: rgba(11, 11, 13, 0.55);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .cta-ghost:hover { border-color: var(--violet-dim); background: rgba(75, 69, 178, 0.14); }
+    .cta-ghost:focus-visible { outline: 1px solid var(--violet); outline-offset: 5px; }
+    .cta-ghost svg { width: 14px; height: 14px; color: var(--violet); }
     .meta { margin-top: clamp(10px, 2.2vh, 22px); font-family: var(--mono); font-size: 12px; color: var(--paper-3); letter-spacing: 0.02em; }
     .meta a { text-decoration: none; border-bottom: 1px solid var(--rule-2); }
+
+    /* the film: below the fold, so the first screen keeps its one action */
+    .film { padding-block: clamp(32px, 8vh, 96px) clamp(64px, 14vh, 160px); text-align: center; }
+    .film .caps { display: block; margin-bottom: 22px; }
+    .film h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(28px, 4vw, 44px); line-height: 1.15; letter-spacing: -0.015em; margin: 0 auto 36px; }
+    .player {
+      position: relative; max-width: 1040px; margin: 0 auto; aspect-ratio: 16 / 9;
+      border-radius: 16px; overflow: hidden; background: var(--ink);
+      border: 1px solid var(--rule-2);
+      box-shadow: 0 40px 120px -30px rgba(0, 0, 0, 0.8), 0 0 80px -20px rgba(75, 69, 178, 0.35);
+    }
+    .player video { display: block; width: 100%; height: 100%; }
+    .play {
+      position: absolute; inset: 0; display: grid; place-items: center; border: 0; padding: 0; cursor: pointer;
+      background: linear-gradient(to top, rgba(11, 11, 13, 0.35), rgba(11, 11, 13, 0.05));
+      transition: background 0.2s;
+    }
+    .play span {
+      width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center;
+      background: var(--paper); color: var(--ink);
+      box-shadow: 0 0 0 1px rgba(242, 239, 234, 0.2), 0 14px 50px -10px rgba(168, 163, 232, 0.6);
+      transition: transform 0.2s;
+    }
+    .play svg { width: 28px; height: 28px; margin-left: 4px; }
+    .play:hover span { transform: scale(1.05); }
+    .play:focus-visible { outline: 1px solid var(--violet); outline-offset: -6px; }
+    .player.playing .play { display: none; }
 
     @media (max-width: 640px) {
       .wrap { padding-inline: 20px; }
       .header-cta { display: none; }
     }
     @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
       .hero > * { animation: none; opacity: 1; transform: none; }
     }
   </style>
@@ -155,11 +194,29 @@
         You finish with a result and the understanding to defend it.
       </p>
       <div>
-        <a class="cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest">
-          <svg aria-hidden="true"><use href="#apple"/></svg>
-          Download for Mac
-        </a>
+        <div class="actions">
+          <a class="cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest">
+            <svg aria-hidden="true"><use href="#apple"/></svg>
+            Download for Mac
+          </a>
+          <a class="cta-ghost watch" href="#film">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>
+            How it works
+          </a>
+        </div>
         <p class="meta"><span class="version">Latest release</span> · macOS · Apple Silicon · runs on your <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a></p>
+      </div>
+    </section>
+
+    <section class="film wrap" id="film">
+      <span class="caps">See it work</span>
+      <h2>One question, <em>every</em> direction, all at once.</h2>
+      <div class="player">
+        <video src="assets/fermata-film.mp4" poster="assets/fermata-film-poster.jpg" preload="none" playsinline
+               aria-label="Fermata in under a minute: ask a question, branch into directions, read the papers, challenge the findings, and go again."></video>
+        <button class="play" type="button" aria-label="Play the film">
+          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg></span>
+        </button>
       </div>
     </section>
 
@@ -195,6 +252,32 @@
         ),
       ),
     );
+
+    // ---- The film: plays with sound on the first click, then hands over to the native controls.
+    (() => {
+      const player = document.querySelector(".player");
+      const video = player.querySelector("video");
+      let from = "player", reported = false;
+      const start = () => {
+        player.classList.add("playing");
+        video.controls = true;
+        video.play();
+      };
+      player.querySelector(".play").addEventListener("click", start);
+      // How it works: glide down to the film and start it (the click lets it play with sound)
+      document.querySelector(".watch").addEventListener("click", (e) => {
+        e.preventDefault();
+        from = "how_it_works";
+        document.getElementById("film").scrollIntoView({ behavior: still ? "auto" : "smooth", block: "center" });
+        start();
+      });
+      video.addEventListener("play", () => {
+        if (reported) return;
+        reported = true;
+        window.posthog?.capture("film_played", { from });
+      });
+      video.addEventListener("ended", () => window.posthog?.capture("film_finished"));
+    })();
 
     // ---- The field. Streamlines drift through a slow flow; the cursor gently draws them in and
     // swallows what reaches it. The download button has a fainter pull of its own that never lets go.
