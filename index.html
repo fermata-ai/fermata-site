@@ -61,6 +61,9 @@
     .brand svg { color: var(--violet); }
     .header-cta { font-size: 13px; text-decoration: none; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--rule-2); color: var(--paper-2); background: rgba(11, 11, 13, 0.6); transition: border-color 0.2s, color 0.2s; }
     .header-cta:hover { border-color: var(--violet-dim); color: var(--paper); }
+    .header-nav { display: flex; align-items: center; gap: 20px; }
+    .header-link { font-size: 13px; text-decoration: none; color: var(--paper-2); transition: color 0.2s; }
+    .header-link:hover { color: var(--paper); }
 
     /* hero: the field shows through, so only the controls take the pointer */
     /* sized by the window's height too, so the button is on screen however short the window is */
@@ -176,7 +179,10 @@
         </svg>
         Fermata
       </a>
-      <a class="header-cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest">Download for Mac</a>
+      <nav class="header-nav">
+        <a class="header-link" href="/guide/">User guide</a>
+        <a class="header-cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest">Download for Mac</a>
+      </nav>
     </div>
   </header>
 
