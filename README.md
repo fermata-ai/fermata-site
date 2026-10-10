@@ -12,7 +12,7 @@ The landing page for Fermata: one static page whose call to action is **Download
 - `guide/index.html` is the user guide, served at `getfermata.xyz/guide/` and linked from the header. It is
   one self-contained page (light and dark, no build step) that takes a new user from installing Claude Code
   to a first run. It carries the same PostHog snippet, so the deploy and the preview fill in its key too.
-- Below the first screen, the film (`assets/fermata-film.mp4`, 56 s, with `assets/fermata-film-poster.jpg`)
+- Below the first screen, the film (`assets/fermata-film-2.mp4`, 56 s, with `assets/fermata-film-2-poster.jpg`)
   plays with sound on its first click, or from the hero's **How it works** button, which scrolls to it and
   starts it. It loads nothing until then (`preload="none"`).
 - PostHog records page views, time on page and clicks, plus a `download_clicked` event that says which
