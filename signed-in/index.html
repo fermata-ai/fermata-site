@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Signed in to Fermata</title>
+  <!-- The last stop of a sign-in that started in the Fermata app. The address this page is opened with
+       holds that sign-in's one-time details, so the page loads nothing from anywhere else, sends no
+       analytics and no referrer, and takes the details out of the address bar as soon as it has read them. -->
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f4f4f1; --fg: #1a1a1f; --muted: #5f5f68; --line: #c3c2b7; --accent: #4b45b2; --accent-fg: #ffffff;
+      --serif: "Source Serif 4", Charter, "Iowan Old Style", Georgia, serif;
+      --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #131315; --fg: #ededea; --muted: #a3a3ab; --line: #383835; --accent: #a8a3e8; --accent-fg: #14122b; }
+    }
+    html, body { height: 100%; margin: 0; }
+    body {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+      padding: 24px; box-sizing: border-box; text-align: center;
+      background: var(--bg); color: var(--fg); font: 16px/1.5 var(--sans);
+    }
+    svg { color: var(--accent); }
+    h1 { margin: 0; font: 400 30px/1.15 var(--serif); letter-spacing: -0.01em; }
+    p { margin: 0; max-width: 40ch; color: var(--muted); }
+    a.open {
+      margin-top: 10px; padding: 8px 16px; border-radius: 6px; border: 1px solid var(--line);
+      color: var(--fg); text-decoration: none; font-size: 15px;
+    }
+    a.open:hover { border-color: var(--accent); }
+    [hidden] { display: none; }
+  </style>
+</head>
+<body>
+  <svg width="72" height="72" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+    <path d="M6 28 A18 18 0 0 1 42 28" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+    <circle cx="13" cy="28" r="3.4" fill="currentColor"/>
+    <circle cx="24" cy="28" r="3.4" fill="currentColor"/>
+    <circle cx="35" cy="28" r="3.4" fill="currentColor"/>
+  </svg>
+  <h1 id="title">You're signed in</h1>
+  <p id="words">Fermata is opening. You can close this tab.</p>
+  <a id="open" class="open" href="#" hidden>Open Fermata</a>
+  <script>
+    (function () {
+      var query = new URLSearchParams(location.search);
+      // Which app started this sign-in: the installed Fermata, or a development run.
+      var scheme = query.get("app") === "fermata-dev" ? "fermata-dev" : "fermata";
+      query.delete("app");
+      var details = query.toString();
+      var title = document.getElementById("title");
+      var words = document.getElementById("words");
+      if (!details) {
+        title.textContent = "Nothing to finish here";
+        words.textContent = "This page is where a sign-in from the Fermata app ends. Start one from the app.";
+        return;
+      }
+      if (query.get("__clerk_status") === "failed") {
+        title.textContent = "The sign-in did not finish";
+        words.textContent = "Go back to Fermata and try again. You can close this tab.";
+      }
+      var link = scheme + "://renderer/?" + details;
+      var open = document.getElementById("open");
+      open.href = link;
+      open.hidden = false;
+      history.replaceState(null, "", location.pathname);
+      location.href = link;
+    })();
+  </script>
+</body>
+</html>
