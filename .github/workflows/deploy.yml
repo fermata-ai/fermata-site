@@ -30,7 +30,7 @@ jobs:
           POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
         run: |
           mkdir _site
-          cp -R index.html guide assets CNAME .nojekyll _site/
+          cp -R index.html guide signed-in assets CNAME .nojekyll _site/
           if [ -n "$POSTHOG_KEY" ]; then
             sed -i "s/__POSTHOG_KEY__/${POSTHOG_KEY}/" _site/index.html _site/guide/index.html
           else
