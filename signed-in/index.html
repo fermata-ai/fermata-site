@@ -51,12 +51,15 @@
     (function () {
       var query = new URLSearchParams(location.search);
       // Which app started this sign-in: the installed Fermata, or a development run.
-      var scheme = query.get("app") === "fermata-dev" ? "fermata-dev" : "fermata";
+      var app = query.get("app");
+      var scheme = app === "fermata-dev" ? "fermata-dev" : "fermata";
       query.delete("app");
       var details = query.toString();
       var title = document.getElementById("title");
       var words = document.getElementById("words");
-      if (!details) {
+      // A first sign-in with a new account comes back from Clerk with the app's name and no details:
+      // the app finishes it once it hears from this page, so the link goes out all the same.
+      if (!app && !details) {
         title.textContent = "Nothing to finish here";
         words.textContent = "This page is where a sign-in from the Fermata app ends. Start one from the app.";
         return;
@@ -65,7 +68,7 @@
         title.textContent = "The sign-in did not finish";
         words.textContent = "Go back to Fermata and try again. You can close this tab.";
       }
-      var link = scheme + "://renderer/?" + details;
+      var link = scheme + "://renderer/" + (details ? "?" + details : "");
       var open = document.getElementById("open");
       open.href = link;
       open.hidden = false;
