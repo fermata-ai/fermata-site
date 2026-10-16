@@ -12,6 +12,10 @@ The landing page for Fermata: one static page whose call to action is **Download
 - `guide/index.html` is the user guide, served at `getfermata.xyz/guide/` and linked from the header. It is
   one self-contained page (light and dark, no build step) that takes a new user from installing Claude Code
   to a first run. It carries the same PostHog snippet, so the deploy and the preview fill in its key too.
+  Its **Copy for agent** button (top right) copies the whole guide as Markdown, to paste into Claude Code or
+  Codex; its menu also shows that Markdown in a tab and opens ChatGPT or Claude on the guide. The Markdown is
+  read off the page when clicked (`guideMarkdown()`), so it never drifts from the page; a sketch or control
+  that should stay out of it goes in the script's `SKIP` list.
 - Below the first screen, the film (`assets/fermata-film-2.mp4`, 56 s, with `assets/fermata-film-2-poster.jpg`)
   plays with sound on its first click, or from the hero's **How it works** button, which scrolls to it and
   starts it. It loads nothing until then (`preload="none"`).

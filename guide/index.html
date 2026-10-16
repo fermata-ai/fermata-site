@@ -227,6 +227,20 @@ kbd,.k{font:500 12px var(--mono);background:var(--accent-soft);color:var(--accen
 .opts{display:flex;flex-direction:column;gap:14px}
 .opt{border-top:2px solid var(--fg);padding-top:10px;display:flex;flex-direction:column;gap:5px}
 .opt p{font-size:14px;color:var(--muted)}
+/* copy for agent: the whole guide as markdown, top right of the page (a split button and its menu, as docs sites do) */
+.wrap{position:relative}
+.agent{position:absolute;top:0;right:0;z-index:2}
+.agent-btns{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.agent-btns button{display:inline-flex;align-items:center;gap:7px;font:500 13px var(--font);color:var(--fg);background:none;border:0;padding:7px 12px;cursor:pointer}
+.agent-btns button:hover{background:var(--accent-soft);color:var(--accent)}
+.agent-btns button + button{border-left:1px solid var(--line);padding:7px 9px}
+.agent svg{width:15px;height:15px;flex:none}
+.agent-menu{position:absolute;right:0;top:calc(100% + 6px);width:270px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 10px 30px rgba(0,0,0,.12);display:flex;flex-direction:column}
+.agent-menu a,.agent-menu button{display:grid;grid-template-columns:18px 1fr;gap:2px 10px;align-items:start;text-align:left;font:500 13.5px var(--font);color:var(--fg);background:none;border:0;border-radius:8px;padding:8px 10px;cursor:pointer;text-decoration:none}
+.agent-menu a:hover,.agent-menu button:hover,.agent-menu :focus-visible{background:var(--accent-soft)}
+.agent-menu svg{margin-top:2px;color:var(--muted)}
+.agent-menu small{grid-column:2;font:400 12px var(--font);color:var(--muted)}
+@media(min-width:781px){.toc{margin-top:52px}}
 [hidden]{display:none!important}
 img{max-width:100%}
 </style>
@@ -250,6 +264,18 @@ img{max-width:100%}
 </head>
 <body>
 <div class="wrap">
+<div class="agent" id="agent">
+  <div class="agent-btns">
+    <button type="button" id="agent-copy" data-ph="copy-for-agent" title="Copy this guide as Markdown, to paste into Claude Code or Codex"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 3.5v-.4A1.6 1.6 0 0 0 8.9 1.5H3.1a1.6 1.6 0 0 0-1.6 1.6v5.8a1.6 1.6 0 0 0 1.6 1.6h.4"/></svg><span>Copy for agent</span></button>
+    <button type="button" id="agent-more" data-ph="copy-for-agent-menu" aria-haspopup="menu" aria-expanded="false" aria-controls="agent-menu" aria-label="More ways to use this guide with an agent"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button>
+  </div>
+  <div class="agent-menu" id="agent-menu" role="menu" hidden>
+    <button type="button" role="menuitem" data-ph="copy-for-agent-md" data-act="copy"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 3.5v-.4A1.6 1.6 0 0 0 8.9 1.5H3.1a1.6 1.6 0 0 0-1.6 1.6v5.8a1.6 1.6 0 0 0 1.6 1.6h.4"/></svg><span>Copy for agent</span><small>The guide as Markdown, to paste into Claude Code or Codex</small></button>
+    <button type="button" role="menuitem" data-ph="view-markdown" data-act="view"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M4 1.5h5.5l3 3v10H4z"/><path d="M9.5 1.5v3h3M6.5 8.5h4M6.5 11h4"/></svg><span>View as Markdown</span><small>The same text, in a new tab</small></button>
+    <a role="menuitem" data-ph="open-chatgpt" target="_blank" rel="noopener" data-ask="https://chatgpt.com/?q="><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h4v4M13.5 2.5 7.5 8.5M12 9.5v3.5H3V4h3.5"/></svg><span>Open in ChatGPT</span><small>Ask questions about this guide</small></a>
+    <a role="menuitem" data-ph="open-claude" target="_blank" rel="noopener" data-ask="https://claude.ai/new?q="><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h4v4M13.5 2.5 7.5 8.5M12 9.5v3.5H3V4h3.5"/></svg><span>Open in Claude</span><small>Ask questions about this guide</small></a>
+  </div>
+</div>
 
 <!-- HERO -->
 <header class="hero">
@@ -607,6 +633,94 @@ document.querySelectorAll(".copy").forEach(function(btn){
     try { navigator.clipboard.writeText(text).then(done, fallback); } catch (e) { fallback(); }
   });
 });
+// Copy for agent: the guide as plain markdown, read off the page itself so it never drifts from what is shown.
+// Sketches and controls are left out (SKIP); the Codex tab is hidden on screen but goes in under its own heading.
+var GUIDE_URL = "https://getfermata.xyz/guide/";
+var SKIP = 'script,style,svg,button,[aria-hidden="true"],.brand,.site,.toc,.pick,.divider,.legend,.rail,.reader,.shot,.states,.num,.co > b,.agent';
+var BLOCK = /^(DIV|SECTION|HEADER|FOOTER|NAV|P|H1|H2|H3|H4|UL|OL|LI|DL|DT|DD|DETAILS|SUMMARY)$/;
+function mdInline(node){
+  if (node.nodeType === 3) return node.textContent.replace(/\s+/g, " ");
+  if (node.nodeType !== 1 || node.matches(SKIP)) return "";
+  var inner = Array.prototype.map.call(node.childNodes, mdInline).join("");
+  var t = inner.trim();
+  if (!t) return inner;
+  var pad = function(x){ return (/^\s/.test(inner) ? " " : "") + x + (/\s$/.test(inner) ? " " : ""); };
+  if (node.matches("code,kbd,.k")) return pad("`" + t + "`");
+  if (node.matches("strong,b")) return pad("**" + t + "**");
+  if (node.matches("em,i")) return pad("*" + t + "*");
+  if (node.tagName === "A" && !/^#/.test(node.getAttribute("href") || "")) return pad("[" + t + "](" + new URL(node.getAttribute("href"), GUIDE_URL).href + ")");
+  return inner;
+}
+function line(el){ return mdInline(el).replace(/\s+/g, " ").trim(); }
+function mdBlocks(el, shift){
+  var out = [], run = [], label = "";
+  var flush = function(){ var t = run.map(mdInline).join("").replace(/\s+/g, " ").trim(); if (t) out.push(t); run = []; };
+  var hashes = function(n){ return "######".slice(0, Math.min(6, n + shift)) + " "; };
+  Array.prototype.forEach.call(el.childNodes, function(c){
+    if (c.nodeType !== 1) { run.push(c); return; }
+    if (c.matches(SKIP)) return;
+    if (c.matches(".tag,.where")) { flush(); label = line(c); return; }
+    if (c.matches(".eyebrow")) { flush(); out.push("**" + line(c) + "**"); return; }
+    if (!BLOCK.test(c.tagName)) { run.push(c); return; }
+    flush();
+    var m = /^H([1-4])$/.exec(c.tagName);
+    if (m) { out.push(hashes(+m[1]) + line(c) + (label ? " (" + label + ")" : "")); label = ""; return; }
+    if (c.matches(".sechead")) {
+      out.push(hashes(2) + line(c.querySelector(".eyebrow")) + ": " + line(c.querySelector("h2")));
+      c.querySelectorAll(":scope > p").forEach(function(p){ out.push(line(p)); });
+      return;
+    }
+    if (c.matches(".cols[id^=agent-]")) {
+      out.push(hashes(3) + "If you use " + document.getElementById(c.getAttribute("aria-labelledby")).textContent.trim());
+      out.push.apply(out, mdBlocks(c, shift + 1));
+      return;
+    }
+    if (c.matches(".callout")) { out.push("> " + Array.prototype.map.call(c.children, line).join(" ")); return; }
+    if (c.matches(".cmd")) { out.push("```bash\n" + c.querySelector("code").textContent.trim() + "\n```"); return; }
+    if (c.matches(".bub")) { out.push((c.matches(".me") ? "You: " : "Fermata: ") + line(c)); return; }
+    if (c.matches(".chips,.tabsrow")) { out.push((c.matches(".chips") ? "Choices: " : "Tabs: ") + Array.prototype.map.call(c.children, line).join(" · ")); return; }
+    if (c.tagName === "SUMMARY") { out.push(hashes(3) + line(c)); return; }
+    if (c.tagName === "UL" || c.matches(".foot")) { out.push(Array.prototype.map.call(c.children, function(li){ return "- " + line(li); }).join("\n")); return; }
+    if (c.tagName === "DL") { out.push(Array.prototype.map.call(c.querySelectorAll("dt"), function(dt){ return "- **" + line(dt) + "**: " + line(dt.nextElementSibling); }).join("\n")); return; }
+    out.push.apply(out, mdBlocks(c, shift));
+  });
+  flush();
+  return out;
+}
+function guideMarkdown(){
+  return ["Source: " + GUIDE_URL].concat(mdBlocks(document.querySelector(".wrap"), 0)).join("\n\n") + "\n";
+}
+(function(){
+  var main = document.getElementById("agent-copy"), more = document.getElementById("agent-more"), menu = document.getElementById("agent-menu");
+  var label = main.querySelector("span"), timer;
+  var say = function(t){ label.textContent = t; clearTimeout(timer); timer = setTimeout(function(){ label.textContent = "Copy for agent"; }, 1800); };
+  var fallback = function(text){
+    var ta = document.createElement("textarea");
+    ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+    ta.remove();
+    say(ok ? "Copied" : "Couldn't copy");
+  };
+  var copy = function(){
+    var text = guideMarkdown();
+    try { navigator.clipboard.writeText(text).then(function(){ say("Copied"); }, function(){ fallback(text); }); } catch (e) { fallback(text); }
+  };
+  var open = function(on){ menu.hidden = !on; more.setAttribute("aria-expanded", on ? "true" : "false"); };
+  var ask = "Read " + GUIDE_URL + " (the Fermata user guide) so I can ask questions about it.";
+  menu.querySelectorAll("[data-ask]").forEach(function(a){ a.href = a.getAttribute("data-ask") + encodeURIComponent(ask); });
+  main.addEventListener("click", copy);
+  more.addEventListener("click", function(){ open(menu.hidden); });
+  menu.addEventListener("click", function(e){
+    var item = e.target.closest("[role=menuitem]");
+    if (!item) return;
+    if (item.getAttribute("data-act") === "copy") copy();
+    if (item.getAttribute("data-act") === "view") window.open(URL.createObjectURL(new Blob([guideMarkdown()], { type: "text/plain;charset=utf-8" })), "_blank", "noopener");
+    open(false);
+  });
+  document.addEventListener("click", function(e){ if (!e.target.closest("#agent")) open(false); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape" && !menu.hidden) { open(false); more.focus(); } });
+})();
 </script>
 </body>
 </html>
