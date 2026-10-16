@@ -113,6 +113,11 @@ kbd,.k{font:500 12px var(--mono);background:var(--accent-soft);color:var(--accen
 .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
 
 /* first run walkthrough */
+.cols[hidden]{display:none}
+.pick{display:inline-flex;align-self:flex-start;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:4px}
+.pick button{font:500 13px var(--font);color:var(--muted);background:none;border:0;border-radius:99px;padding:6px 14px;cursor:pointer}
+.pick button:hover{color:var(--fg)}
+.pick button[aria-selected="true"]{background:var(--accent);color:var(--accent-fg)}
 .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
 @media(max-width:780px){.cols{grid-template-columns:1fr}}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
@@ -276,15 +281,20 @@ img{max-width:100%}
   <div class="sechead">
     <span class="eyebrow">1 · Before you start</span>
     <h2>You need three things</h2>
-    <p>Fermata does its thinking through Claude Code, which runs on your Mac under your own Claude account. Set that up first and everything else is a double-click.</p>
+    <p>Fermata does its thinking through an agent that runs on your Mac under your own account: Claude Code with a Claude account, or OpenAI's Codex with a ChatGPT account. Set one up first and everything else is a double-click.</p>
   </div>
   <div class="needs">
     <div class="need"><span class="box" aria-hidden="true"></span><div><h3>A Mac with Apple silicon</h3><p class="small muted">M1 or later. Check under Apple menu › About This Mac › Chip.</p></div></div>
-    <div class="need"><span class="box" aria-hidden="true"></span><div><h3>A Claude account</h3><p class="small muted">A Claude Pro or Max plan, or an Anthropic Console account. Fermata's runs count against this account.</p></div></div>
-    <div class="need"><span class="box" aria-hidden="true"></span><div><h3>Claude Code, signed in</h3><p class="small muted">The command-line tool <span class="k">claude</span>. Install it with the steps below if <span class="k">claude --version</span> doesn't work in Terminal.</p></div></div>
+    <div class="need"><span class="box" aria-hidden="true"></span><div><h3>A Claude or ChatGPT account</h3><p class="small muted">For Claude Code, a Claude Pro or Max plan or an Anthropic Console account. For Codex, a ChatGPT plan that includes Codex. Fermata's runs count against this account.</p></div></div>
+    <div class="need"><span class="box" aria-hidden="true"></span><div><h3>Claude Code or Codex, signed in</h3><p class="small muted">The command-line tool <span class="k">claude</span> or <span class="k">codex</span>. Install one with the steps below if its <span class="k">--version</span> doesn't work in Terminal.</p></div></div>
   </div>
 
-  <div class="cols">
+  <div class="pick" role="tablist" aria-label="Agent">
+    <button type="button" role="tab" id="pick-claude" aria-selected="true" aria-controls="agent-claude" data-ph="agent-claude">Claude Code</button>
+    <button type="button" role="tab" id="pick-codex" aria-selected="false" aria-controls="agent-codex" data-ph="agent-codex">Codex</button>
+  </div>
+
+  <div class="cols" id="agent-claude" role="tabpanel" aria-labelledby="pick-claude">
     <div class="panel">
       <h3>Install Claude Code</h3>
       <p class="small muted">Open Terminal (press <kbd>⌘ Space</kbd>, type Terminal, press Return) and paste:</p>
@@ -298,6 +308,24 @@ img{max-width:100%}
       <div class="cmd"><code id="c3">claude update</code><button class="copy" type="button" data-ph="copy-cmd" data-for="c3">Copy</button></div>
       <div class="cmd"><code id="c4">claude --version</code><button class="copy" type="button" data-ph="copy-cmd" data-for="c4">Copy</button></div>
       <p class="small muted">The version should print as 2.1.250 or newer.</p>
+    </div>
+  </div>
+
+  <div class="cols" id="agent-codex" role="tabpanel" aria-labelledby="pick-codex" hidden>
+    <div class="panel">
+      <h3>Install Codex</h3>
+      <p class="small muted">Open Terminal (press <kbd>⌘ Space</kbd>, type Terminal, press Return) and paste:</p>
+      <div class="cmd"><code id="c5">curl -fsSL https://chatgpt.com/codex/install.sh | sh</code><button class="copy" type="button" data-ph="copy-cmd" data-for="c5">Copy</button></div>
+      <p class="small muted">Then start it once and choose Sign in with ChatGPT. Follow the browser prompt, then type <span class="k">/exit</span>.</p>
+      <div class="cmd"><code id="c6">codex</code><button class="copy" type="button" data-ph="copy-cmd" data-for="c6">Copy</button></div>
+      <p class="small muted">Fermata uses Claude Code until you switch. Click your initials, top right, to open Settings, and under Models set Agent to Codex.</p>
+    </div>
+    <div class="panel">
+      <h3>Already have it? Make sure it's current</h3>
+      <p class="small muted">Fermata is tested against recent versions of Codex. An old one still works, but each run shows a warning. Run the install command again to update.</p>
+      <div class="cmd"><code id="c7">curl -fsSL https://chatgpt.com/codex/install.sh | sh</code><button class="copy" type="button" data-ph="copy-cmd" data-for="c7">Copy</button></div>
+      <div class="cmd"><code id="c8">codex --version</code><button class="copy" type="button" data-ph="copy-cmd" data-for="c8">Copy</button></div>
+      <p class="small muted">The version should print as 0.162.0 or newer.</p>
     </div>
   </div>
 </section>
@@ -531,10 +559,10 @@ img{max-width:100%}
     <h2>Quick fixes</h2>
   </div>
   <div class="faq">
-    <details data-ph-pass><summary data-ph="faq">A run never starts, or says it can't find Claude Code</summary>
-      <div class="ans"><p>Fermata looks for <span class="k">claude</span> on your PATH and in <span class="k">~/.local/bin</span>. Check in Terminal that <span class="k">claude --version</span> prints a version and that <span class="k">claude</span> opens without asking you to sign in. Then quit Fermata with <kbd>⌘ Q</kbd> and open it again.</p></div></details>
+    <details data-ph-pass><summary data-ph="faq">A run never starts, or says it can't find Claude Code or Codex</summary>
+      <div class="ans"><p>Fermata looks for <span class="k">claude</span> on your PATH and in <span class="k">~/.local/bin</span>, and for <span class="k">codex</span> on your PATH and inside the ChatGPT app. Check in Terminal that <span class="k">claude --version</span> (or <span class="k">codex --version</span>) prints a version and that the tool opens without asking you to sign in. Check too that Settings › Models › Agent names the one you set up. Then quit Fermata with <kbd>⌘ Q</kbd> and open it again.</p></div></details>
     <details data-ph-pass><summary data-ph="faq">The run shows a version warning</summary>
-      <div class="ans"><p>Your Claude Code is outside the range Fermata was tested with. The run still works. Run <span class="k">claude update</span> to clear the warning.</p></div></details>
+      <div class="ans"><p>Your Claude Code or Codex is outside the range Fermata was tested with. The run still works. Run <span class="k">claude update</span>, or the Codex install command again, to clear the warning.</p></div></details>
     <details data-ph-pass><summary data-ph="faq">An update fails</summary>
       <div class="ans"><p>Fermata can only update itself from the Applications folder. Accept its offer to move there, or drag it there yourself and open it again.</p></div></details>
     <details data-ph-pass><summary data-ph="faq">I quit the app in the middle of a run</summary>
@@ -546,14 +574,14 @@ img{max-width:100%}
   </div>
 
   <div class="trust">
-    <div><h3>What it can do on your Mac</h3><p>Fermata's agent runs through your Claude Code. It uses Claude Code's settings and permissions, and it can run commands on your computer the way Claude Code does. Experiments that go on the record run in a separate sandbox.</p></div>
-    <div><h3>What it sends, and where</h3><p>Your questions and files go to Claude under your account, like any Claude Code session. Runs and findings are stored on your Mac. Usage data counts clicks and screens, never what you type, and you can turn it off in Settings › Usage data.</p></div>
+    <div><h3>What it can do on your Mac</h3><p>Fermata's agent runs through your Claude Code or Codex. It uses that tool's settings and permissions, and it can run commands on your computer the way the tool does. Experiments that go on the record run in a separate sandbox.</p></div>
+    <div><h3>What it sends, and where</h3><p>Your questions and files go to Claude or OpenAI under your account, like any Claude Code or Codex session. Runs and findings are stored on your Mac. Usage data counts clicks and screens, never what you type, and you can turn it off in Settings › Usage data.</p></div>
   </div>
 </section>
 
 <footer class="foot">
-  <span><strong>Requires</strong> macOS on Apple silicon and Claude Code, signed in.</span>
-  <span><strong>Cost</strong> is billed to your Claude account, like any Claude Code session.</span>
+  <span><strong>Requires</strong> macOS on Apple silicon and Claude Code or Codex, signed in.</span>
+  <span><strong>Cost</strong> is billed to your Claude or ChatGPT account, like any Claude Code or Codex session.</span>
   <span><strong>Download</strong> <a href="https://getfermata.xyz" target="_blank" rel="noopener" data-ph="site-link">getfermata.xyz</a></span>
   <span><strong>Questions?</strong> Ask the person who sent you this guide.</span>
 </footer>
@@ -561,6 +589,15 @@ img{max-width:100%}
 </div>
 
 <script>
+document.querySelectorAll(".pick button").forEach(function(tab, i, tabs){
+  tab.addEventListener("click", function(){
+    tabs.forEach(function(t){
+      var on = t === tab;
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+    });
+  });
+});
 document.querySelectorAll(".copy").forEach(function(btn){
   btn.addEventListener("click", function(){
     var el = document.getElementById(btn.getAttribute("data-for"));
