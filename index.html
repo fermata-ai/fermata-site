@@ -136,6 +136,12 @@
     .play:focus-visible { outline: 1px solid var(--violet); outline-offset: -6px; }
     .player.playing .play { display: none; }
 
+    /* contact */
+    .contact { padding-block: 0 clamp(64px, 14vh, 160px); text-align: center; }
+    .contact .caps { display: block; margin-bottom: 22px; }
+    .contact h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(28px, 4vw, 44px); line-height: 1.15; letter-spacing: -0.015em; margin: 0 auto 18px; }
+    .contact p { font-family: var(--serif); font-size: clamp(15px, 2.4vh, 19px); font-weight: 300; color: var(--paper-2); max-width: 520px; margin: 0 auto 32px; }
+
     @media (max-width: 640px) {
       .wrap { padding-inline: 20px; }
       .header-cta { display: none; }
@@ -226,6 +232,16 @@
       </div>
     </section>
 
+    <section class="contact wrap" id="contact">
+      <span class="caps">Contact</span>
+      <h2>Questions, ideas, <em>or</em> a bug?</h2>
+      <p>We would love to hear from you.</p>
+      <a class="cta-ghost mail" href="mailto:hi@getfermata.xyz">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3.5 6.5h17v11h-17zM4 7l8 6 8-6"/></svg>
+        hi@getfermata.xyz
+      </a>
+    </section>
+
   </main>
 
   <script>
@@ -257,6 +273,11 @@
           { transport: "sendBeacon" },
         ),
       ),
+    );
+
+    // ---- Contact clicks. The mail link leaves the page, so the event goes out as a beacon.
+    document.querySelector(".mail").addEventListener("click", () =>
+      window.posthog?.capture("contact_clicked", {}, { transport: "sendBeacon" }),
     );
 
     // ---- The film: plays with sound on the first click, then hands over to the native controls.
