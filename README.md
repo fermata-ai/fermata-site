@@ -16,9 +16,11 @@ The landing page for Fermata: one static page whose call to action is **Download
   Codex; its menu also shows that Markdown in a tab and opens ChatGPT or Claude on the guide. The Markdown is
   read off the page when clicked (`guideMarkdown()`), so it never drifts from the page; a sketch or control
   that should stay out of it goes in the script's `SKIP` list.
-- Below the first screen, the film (`assets/fermata-film-2.mp4`, 56 s, with `assets/fermata-film-2-poster.jpg`)
+- Below the first screen, the film (`assets/fermata-film-3.mp4`, 86 s, with `assets/fermata-film-3-poster.jpg`)
   plays with sound on its first click, or from the hero's **How it works** button, which scrolls to it and
   starts it. It loads nothing until then (`preload="none"`).
+- `archive/films/` keeps films the page no longer plays (`fermata-film-2.mp4`, the 56 s film it showed until
+  2026-10-26). The deploy does not publish `archive/`.
 - PostHog records page views, time on page and clicks, plus a `download_clicked` event that says which
   button was used (`header` or `hero`), whether it pointed at the `.dmg` or the release page, and the
   version, and `film_played` (with `from`: `how_it_works` or `player`) / `film_finished` for the film below the fold. Every event carries `surface: site`, to tell it apart from the desktop app in the same project.
