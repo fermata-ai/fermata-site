@@ -211,7 +211,7 @@
             <svg aria-hidden="true"><use href="#apple"/></svg>
             Download for Mac
           </a>
-          <a class="cta-ghost watch" href="#film">
+          <a class="cta-ghost watch" href="#how-it-works">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>
             How it works
           </a>
@@ -223,7 +223,7 @@
     <section class="film wrap" id="film">
       <span class="caps">See it work</span>
       <h2>Research you can <em>follow</em>, step by step.</h2>
-      <div class="player">
+      <div class="player" id="how-it-works">
         <video src="assets/fermata-film-3.mp4" poster="assets/fermata-film-3-poster.jpg" preload="none" playsinline
                aria-label="Fermata in a minute and a half: Claude and Codex answer without showing what they assumed; Fermata shows its assumptions, cites the paper, challenges every finding and says what is settled."></video>
         <button class="play" type="button" aria-label="Play the film">
@@ -304,6 +304,15 @@
         window.posthog?.capture("film_played", { from });
       });
       video.addEventListener("ended", () => window.posthog?.capture("film_finished"));
+      // A link to the film (getfermata.app/#how-it-works, or the older #film) opens the page on it, centred and
+      // ready to play; a browser plays nothing with sound until it is clicked. Again once the page has loaded,
+      // in case the fonts moved it.
+      if (location.hash === "#how-it-works" || location.hash === "#film") {
+        from = "link";
+        const centre = () => player.scrollIntoView({ behavior: "auto", block: "center" });
+        requestAnimationFrame(centre);
+        window.addEventListener("load", centre, { once: true });
+      }
     })();
 
     // ---- The field. Streamlines drift through a slow flow; the cursor gently draws them in and
