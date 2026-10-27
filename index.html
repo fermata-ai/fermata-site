@@ -66,6 +66,7 @@
     .header-nav { display: flex; align-items: center; gap: 20px; }
     .header-link { font-size: 13px; text-decoration: none; color: var(--paper-2); transition: color 0.2s; }
     .header-link:hover { color: var(--paper); }
+    .demo-link { color: var(--violet); }
 
     /* hero: the field shows through, so only the controls take the pointer */
     /* sized by the window's height too, so the button, and the top of the film under it, are on screen however short the window is */
@@ -148,7 +149,7 @@
       .wrap { padding-inline: 20px; }
       .header-cta { display: none; }
       .header-nav { gap: 16px; }
-      .contact-link { display: none; }
+      .contact-link, .demo-link { display: none; }
     }
     /* the narrowest phones: the mark alone, so the two links fit beside it */
     @media (max-width: 360px) { .brand { font-size: 0; } }
@@ -195,6 +196,7 @@
         <a class="header-link watch" href="#how-it-works">How it works</a>
         <a class="header-link" href="/guide/">User guide</a>
         <a class="header-link contact-link" href="#contact">Contact</a>
+        <a class="header-link demo-link" href="https://web.getfermata.app">Try demo</a>
         <a class="header-cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest">Download for Mac</a>
       </nav>
     </div>
