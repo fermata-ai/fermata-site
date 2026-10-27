@@ -145,7 +145,11 @@
     @media (max-width: 640px) {
       .wrap { padding-inline: 20px; }
       .header-cta { display: none; }
+      .header-nav { gap: 16px; }
+      .contact-link { display: none; }
     }
+    /* the narrowest phones: the mark alone, so the two links fit beside it */
+    @media (max-width: 360px) { .brand { font-size: 0; } }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       .hero > * { animation: none; opacity: 1; transform: none; }
@@ -186,7 +190,9 @@
         Fermata
       </a>
       <nav class="header-nav">
+        <a class="header-link watch" href="#how-it-works">How it works</a>
         <a class="header-link" href="/guide/">User guide</a>
+        <a class="header-link contact-link" href="#contact">Contact</a>
         <a class="header-cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest">Download for Mac</a>
       </nav>
     </div>
@@ -291,6 +297,13 @@
         video.play();
       };
       player.querySelector(".play").addEventListener("click", start);
+      // How it works, in the header: glide down to the film and start it (the click lets it play with sound)
+      document.querySelector(".watch").addEventListener("click", (e) => {
+        e.preventDefault();
+        from = "header";
+        player.scrollIntoView({ behavior: still ? "auto" : "smooth", block: "center" });
+        start();
+      });
       video.addEventListener("play", () => {
         if (reported) return;
         reported = true;
