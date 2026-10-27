@@ -211,9 +211,9 @@
             <svg aria-hidden="true"><use href="#apple"/></svg>
             Download for Mac
           </a>
-          <a class="cta-ghost watch" href="#how-it-works">
+          <a class="cta-ghost demo" href="https://web.getfermata.app">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>
-            How it works
+            Try demo
           </a>
         </div>
         <p class="meta"><span class="version">Latest release</span> · macOS · Apple Silicon · runs on your <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a> or <a href="https://learn.chatgpt.com/docs/codex/cli">Codex</a></p>
@@ -291,13 +291,6 @@
         video.play();
       };
       player.querySelector(".play").addEventListener("click", start);
-      // How it works: glide down to the film and start it (the click lets it play with sound)
-      document.querySelector(".watch").addEventListener("click", (e) => {
-        e.preventDefault();
-        from = "how_it_works";
-        document.getElementById("film").scrollIntoView({ behavior: still ? "auto" : "smooth", block: "center" });
-        start();
-      });
       video.addEventListener("play", () => {
         if (reported) return;
         reported = true;
