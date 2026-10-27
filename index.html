@@ -15,6 +15,8 @@
   <style>
     :root {
       color-scheme: dark;
+      /* how much of the next section the first screen shows */
+      --peek: clamp(120px, 22vh, 240px);
       --ink: #0b0b0d;
       --glass: rgba(16, 16, 20, 0.74);
       --paper: #f2efea;
@@ -66,17 +68,17 @@
     .header-link:hover { color: var(--paper); }
 
     /* hero: the field shows through, so only the controls take the pointer */
-    /* sized by the window's height too, so the button is on screen however short the window is */
-    .hero { min-height: calc(100svh - 73px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding-block: clamp(16px, 4vh, 72px); text-align: center; pointer-events: none; }
+    /* sized by the window's height too, so the button, and the top of the film under it, are on screen however short the window is */
+    .hero { min-height: calc(100svh - 73px - var(--peek)); display: flex; flex-direction: column; justify-content: center; align-items: center; padding-block: clamp(12px, 3vh, 56px); text-align: center; pointer-events: none; }
     .hero a { pointer-events: auto; }
-    .mark { color: var(--violet); margin: 0 auto clamp(10px, 3.2vh, 40px); display: block; width: clamp(32px, 6.4vh, 64px); height: clamp(32px, 6.4vh, 64px); }
+    .mark { color: var(--violet); margin: 0 auto clamp(8px, 2.4vh, 32px); display: block; width: clamp(28px, 5vh, 56px); height: clamp(28px, 5vh, 56px); }
     h1 {
       font-family: "IBM Plex Serif", var(--serif); font-weight: 500;
-      font-size: min(clamp(42px, 7.6vw, 94px), 9.2vh); line-height: 1.05; letter-spacing: -0.05em;
-      margin: clamp(8px, 2vh, 22px) auto clamp(12px, 2.8vh, 30px); max-width: 13ch;
+      font-size: min(clamp(42px, 7.6vw, 94px), 7.4vh); line-height: 1.05; letter-spacing: -0.05em;
+      margin: clamp(8px, 1.6vh, 20px) auto clamp(12px, 2.4vh, 26px); max-width: 13ch;
     }
     h1 em { display: block; font-size: 1.13em; line-height: 1.05; }
-    .lede { font-family: var(--serif); font-size: clamp(15px, 2.4vh, 21px); font-weight: 300; line-height: 1.5; color: var(--paper-2); max-width: 620px; margin: 0 auto clamp(16px, 4.6vh, 52px); }
+    .lede { font-family: var(--serif); font-size: clamp(15px, 2.1vh, 20px); font-weight: 300; line-height: 1.5; color: var(--paper-2); max-width: 620px; margin: 0 auto clamp(14px, 3.4vh, 40px); }
     .hero > * { opacity: 0; animation: rise 1.2s ease-out forwards; }
     .hero > :nth-child(2) { animation-delay: 0.25s; }
     .hero > :nth-child(3) { animation-delay: 0.4s; }
@@ -109,8 +111,8 @@
     .meta { margin-top: clamp(10px, 2.2vh, 22px); font-family: var(--mono); font-size: 12px; color: var(--paper-3); letter-spacing: 0.02em; }
     .meta a { text-decoration: none; border-bottom: 1px solid var(--rule-2); }
 
-    /* the film: below the fold, so the first screen keeps its one action */
-    .film { padding-block: clamp(32px, 8vh, 96px) clamp(64px, 14vh, 160px); text-align: center; }
+    /* the film: its top shows under the first screen, so the page reads as going on */
+    .film { padding-block: clamp(12px, 2.4vh, 32px) clamp(64px, 14vh, 160px); text-align: center; }
     .film .caps { display: block; margin-bottom: 22px; }
     .film h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(28px, 4vw, 44px); line-height: 1.15; letter-spacing: -0.015em; margin: 0 auto 36px; }
     .player {
