@@ -25,9 +25,12 @@ The landing page for Fermata: one static page whose call to action is **Download
 - PostHog records page views, time on page and clicks, plus a `download_clicked` event that says which
   button was used (`header` or `hero`), whether it pointed at the `.dmg` or the release page, and the
   version, and `film_played` (with `from`: `how_it_works`, `link` or `player`) / `film_finished` for the film below the fold. Every event carries `surface: site`, to tell it apart from the desktop app in the same project.
-- The PostHog key is never in this repo. `index.html` says `__POSTHOG_KEY__`, and
-  `.github/workflows/deploy.yml` puts the `POSTHOG_KEY` Actions secret in its place in the copy it
-  publishes to GitHub Pages (Settings › Pages › Source: GitHub Actions).
+- The PostHog key is never in this repo. `index.html` says `__POSTHOG_KEY__`, and `build.sh` puts the
+  `POSTHOG_KEY` Actions secret in its place in the copy it publishes.
+- Each push to `main` builds an image (`Dockerfile`, `Caddyfile`) and runs it on the web machine on AWS,
+  beside the web app (`.github/workflows/deploy.yml`; the machine is `docs/WEB.md` in `fermata-ai/fermata`).
+  The job also publishes to GitHub Pages until DNS has moved to the machine. A rollback is a re-run of an
+  earlier run of the workflow.
 
 Preview it locally:
 
