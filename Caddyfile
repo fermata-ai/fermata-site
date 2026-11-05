@@ -1,0 +1,11 @@
+# Plain HTTP inside the machine: the Caddy in front of this container holds the certificates.
+:80 {
+	root * /srv/site
+	encode zstd gzip
+	# no file name here carries its content's hash, so a browser asks again after ten minutes
+	header Cache-Control "public, max-age=600"
+	file_server
+	handle_errors {
+		respond "{err.status_code} {err.status_text}"
+	}
+}

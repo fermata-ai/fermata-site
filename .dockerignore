@@ -1,0 +1,5 @@
+*
+!Caddyfile
+!_site
+_site/CNAME
+_site/.nojekyll
