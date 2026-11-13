@@ -16,7 +16,7 @@
     :root {
       color-scheme: dark;
       /* how much of the next section the first screen shows */
-      --peek: clamp(120px, 22vh, 240px);
+      --peek: clamp(160px, 50vh, 760px);
       --ink: #0b0b0d;
       --glass: rgba(16, 16, 20, 0.74);
       --paper: #f2efea;
@@ -70,15 +70,14 @@
 
     /* hero: the field shows through, so only the controls take the pointer */
     /* sized by the window's height too, so the button, and the top of the film under it, are on screen however short the window is */
-    .hero { min-height: calc(100svh - 73px - var(--peek)); display: flex; flex-direction: column; justify-content: center; align-items: center; padding-block: clamp(12px, 3vh, 56px); text-align: center; pointer-events: none; }
+    .hero { min-height: calc(100svh - 73px - var(--peek)); display: flex; flex-direction: column; justify-content: center; align-items: center; padding-block: clamp(20px, 4.6vh, 72px) clamp(16px, 3vh, 40px); text-align: center; pointer-events: none; }
     .hero a { pointer-events: auto; }
-    .mark { color: var(--violet); margin: 0 auto clamp(8px, 2.4vh, 32px); display: block; width: clamp(28px, 5vh, 56px); height: clamp(28px, 5vh, 56px); }
     h1 {
       font-family: "IBM Plex Serif", var(--serif); font-weight: 500;
-      font-size: min(clamp(42px, 7.6vw, 94px), 7.4vh); line-height: 1.05; letter-spacing: -0.05em;
-      margin: clamp(8px, 1.6vh, 20px) auto clamp(12px, 2.4vh, 26px); max-width: 13ch;
+      font-size: min(clamp(38px, 5vw, 72px), 9vh); line-height: 1.05; letter-spacing: -0.045em;
+      margin: clamp(8px, 1.6vh, 20px) auto clamp(14px, 2.8vh, 30px); text-wrap: balance;
     }
-    h1 em { display: block; font-size: 1.13em; line-height: 1.05; }
+    /* one line wherever it fits; a narrow window breaks it into balanced lines */
     .lede { font-family: var(--serif); font-size: clamp(15px, 2.1vh, 20px); font-weight: 300; line-height: 1.5; color: var(--paper-2); max-width: 620px; margin: 0 auto clamp(14px, 3.4vh, 40px); }
     .hero > * { opacity: 0; animation: rise 1.2s ease-out forwards; }
     .hero > :nth-child(2) { animation-delay: 0.25s; }
@@ -109,13 +108,11 @@
     .cta-ghost:hover { border-color: var(--violet-dim); background: rgba(75, 69, 178, 0.14); }
     .cta-ghost:focus-visible { outline: 1px solid var(--violet); outline-offset: 5px; }
     .cta-ghost svg { width: 14px; height: 14px; color: var(--violet); }
-    .meta { margin-top: clamp(10px, 2.2vh, 22px); font-family: var(--mono); font-size: 12px; color: var(--paper-3); letter-spacing: 0.02em; }
-    .meta a { text-decoration: none; border-bottom: 1px solid var(--rule-2); }
 
     /* the film: its top shows under the first screen, so the page reads as going on */
     .film { padding-block: clamp(12px, 2.4vh, 32px) clamp(64px, 14vh, 160px); text-align: center; }
-    .film .caps { display: block; margin-bottom: 22px; }
-    .film h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(28px, 4vw, 44px); line-height: 1.15; letter-spacing: -0.015em; margin: 0 auto 36px; }
+    .film .caps { display: block; margin-bottom: clamp(12px, 1.8vh, 22px); }
+    .film h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(28px, 4vw, 44px); line-height: 1.15; letter-spacing: -0.015em; margin: 0 auto clamp(20px, 3vh, 36px); }
     .player {
       position: relative; max-width: 1040px; margin: 0 auto; aspect-ratio: 16 / 9;
       border-radius: 16px; overflow: hidden; background: var(--ink);
@@ -150,6 +147,17 @@
       .header-cta { display: none; }
       .header-nav { gap: 16px; }
       .contact-link, .demo-link { display: none; }
+    }
+    /* phones: the hero is taller than its share of the screen, so tighten it and let the film's top show */
+    @media (max-width: 640px) {
+      .hero { min-height: 0; padding-block: 10px 0; }
+      h1 { margin-bottom: 14px; }
+      .lede { font-size: clamp(15px, 2.1vh, 16px); line-height: 1.45; margin-bottom: 20px; }
+      .actions { gap: 10px; }
+      .cta, .cta-ghost { padding-block: 15px; }
+      .film { padding-top: 22px; }
+      .film .caps { margin-bottom: 12px; }
+      .film h2 { font-size: 26px; margin-bottom: 20px; }
     }
     /* the narrowest phones: the mark alone, so the two links fit beside it */
     @media (max-width: 360px) { .brand { font-size: 0; } }
@@ -204,16 +212,11 @@
 
   <main>
     <section class="hero wrap">
-      <svg class="mark" viewBox="0 0 48 48" width="64" height="64" aria-hidden="true">
-        <path d="M6 28 A18 18 0 0 1 42 28" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
-        <circle cx="13" cy="28" r="2.8" fill="currentColor"/><circle cx="24" cy="28" r="2.8" fill="currentColor"/><circle cx="35" cy="28" r="2.8" fill="currentColor"/>
-      </svg>
-      <span class="caps">Don't autopilot your research</span>
       <h1>Do research you <em>fully</em> understand</h1>
       <p class="lede">
-        Fermata works beside you on hard questions. It asks what you mean before it starts, shows
-        where every number comes from, tests its own claims, and waits until you follow the reasoning.
-        You finish with a result and the understanding to defend it.
+        Fermata is a proactive scientific reasoning tool that shows you what it’s assuming and which questions
+        are still open. When it spots an unexpected result, it pulls together evidence from earlier experiments
+        and lab notes so you can decide whether to keep going or change course.
       </p>
       <div>
         <div class="actions">
@@ -226,7 +229,6 @@
             Try demo
           </a>
         </div>
-        <p class="meta"><span class="version">Latest release</span> · macOS · Apple Silicon · runs on your <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a> or <a href="https://learn.chatgpt.com/docs/codex/cli">Codex</a></p>
       </div>
     </section>
 
@@ -265,7 +267,6 @@
         const dmg = release.assets.find((a) => a.name.endsWith(".dmg"));
         if (!dmg) return;
         document.querySelectorAll(".download").forEach((a) => (a.href = dmg.browser_download_url));
-        document.querySelectorAll(".version").forEach((s) => (s.textContent = "v" + release.tag_name.replace(/^v/, "")));
         document.querySelectorAll(".download").forEach((a) => (a.dataset.version = release.tag_name.replace(/^v/, "")));
       })
       .catch(() => {});
