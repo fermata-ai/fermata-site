@@ -70,7 +70,7 @@
 
     /* hero: the field shows through, so only the controls take the pointer */
     /* sized by the window's height too, so the button, and the top of the film under it, are on screen however short the window is */
-    .hero { min-height: calc(100svh - 73px - var(--peek)); display: flex; flex-direction: column; justify-content: center; align-items: center; padding-block: clamp(20px, 4.6vh, 72px) clamp(16px, 3vh, 40px); text-align: center; pointer-events: none; }
+    .hero { min-height: calc(100svh - 73px - var(--peek)); display: flex; flex-direction: column; justify-content: center; align-items: center; padding-block: clamp(20px, 4.6vh, 72px) clamp(32px, 5vh, 60px); text-align: center; pointer-events: none; }
     .hero a { pointer-events: auto; }
     h1 {
       font-family: "IBM Plex Serif", var(--serif); font-weight: 500;
@@ -155,7 +155,7 @@
       .lede { font-size: clamp(15px, 2.1vh, 16px); line-height: 1.45; margin-bottom: 20px; }
       .actions { gap: 10px; }
       .cta, .cta-ghost { padding-block: 15px; }
-      .film { padding-top: 22px; }
+      .film { padding-top: 34px; }
       .film .caps { margin-bottom: 12px; }
       .film h2 { font-size: 26px; margin-bottom: 20px; }
     }
@@ -236,8 +236,8 @@
       <span class="caps">See it work</span>
       <h2>Research you can <em>follow</em>, step by step.</h2>
       <div class="player" id="how-it-works">
-        <video src="assets/fermata-film-3.mp4" poster="assets/fermata-film-3-poster.jpg" preload="none" playsinline
-               aria-label="Fermata in a minute and a half: Claude and Codex answer without showing what they assumed; Fermata shows its assumptions, cites the paper, challenges every finding and says what is settled."></video>
+        <video src="assets/fermata-film-4.mp4" poster="assets/fermata-film-4-poster.jpg" preload="none" playsinline
+               aria-label="Fermata in two minutes: a lab's context is scattered from the bench to the plant; Fermata gathers the evidence from every project, challenges each finding and ties every decision to its evidence."></video>
         <button class="play" type="button" aria-label="Play the film">
           <span><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg></span>
         </button>
