@@ -111,8 +111,7 @@
 
     /* the film: its top shows under the first screen, so the page reads as going on */
     .film { padding-block: clamp(12px, 2.4vh, 32px) clamp(64px, 14vh, 160px); text-align: center; }
-    .film .caps { display: block; margin-bottom: clamp(12px, 1.8vh, 22px); }
-    .film h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(28px, 4vw, 44px); line-height: 1.15; letter-spacing: -0.015em; margin: 0 auto clamp(20px, 3vh, 36px); }
+    .film .caps { display: block; margin-bottom: clamp(16px, 2.4vh, 26px); }
     .player {
       position: relative; max-width: 1040px; margin: 0 auto; aspect-ratio: 16 / 9;
       border-radius: 16px; overflow: hidden; background: var(--ink);
@@ -156,8 +155,7 @@
       .actions { gap: 10px; }
       .cta, .cta-ghost { padding-block: 15px; }
       .film { padding-top: 34px; }
-      .film .caps { margin-bottom: 12px; }
-      .film h2 { font-size: 26px; margin-bottom: 20px; }
+      .film .caps { margin-bottom: 16px; }
     }
     /* the narrowest phones: the mark alone, so the two links fit beside it */
     @media (max-width: 360px) { .brand { font-size: 0; } }
@@ -234,7 +232,6 @@
 
     <section class="film wrap" id="film">
       <span class="caps">See it work</span>
-      <h2>Research you can <em>follow</em>, step by step.</h2>
       <div class="player" id="how-it-works">
         <video src="assets/fermata-film-4.mp4" poster="assets/fermata-film-4-poster.jpg" preload="none" playsinline
                aria-label="Fermata in two minutes: a lab's context is scattered from the bench to the plant; Fermata gathers the evidence from every project, challenges each finding and ties every decision to its evidence."></video>
