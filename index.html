@@ -243,7 +243,7 @@
     .chapter { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-block: 12vh; }
     /* wide screens: a stage holds still while the scroll plays its steps, then lets go */
     @media (min-width: 900px) {
-      .chapters .chapter { display: block; min-height: 0; padding: 0; height: calc(100svh + var(--n) * 20svh); }
+      .chapters .chapter { display: block; min-height: 0; padding: 0; height: calc(100svh + var(--n) * 27svh); }
       .chapters .pin { position: sticky; top: var(--bar); min-height: calc(100svh - var(--bar)); display: flex; flex-direction: column; justify-content: center; padding-block: 16px; }
     }
     .chapter h2 { font-size: clamp(30px, 3.4vw, 46px); line-height: 1.08; margin-bottom: 14px; }
@@ -292,7 +292,19 @@
     .dir { border: 1px solid var(--line); border-radius: 11px; padding: 10px 12px; transition: opacity 0.5s, background 0.5s; }
     .dir-row { display: flex; align-items: center; gap: 9px; }
     .lt { width: 20px; height: 20px; border-radius: 5px; display: inline-grid; place-items: center; background: var(--sunk); color: var(--ink-2); font-size: 11px; font-weight: 700; flex: none; }
-    .dir-row .chip { margin-left: auto; }
+    .dir-row .st { margin-left: auto; display: inline-grid; align-items: center; justify-items: end; min-width: 22px; min-height: 22px; }
+    .dir-row .st .spin { margin-right: 3px; }
+    .dir-row .st > * { grid-area: 1 / 1; transition: opacity 0.35s var(--ease), scale 0.45s var(--ease); }
+    /* a direction at work: a small ring that turns. When it is settled the ring gives way to its result. */
+    .spin { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--violet-line); border-top-color: var(--violet); animation: turn 0.9s linear infinite; }
+    @keyframes turn { to { rotate: 1turn; } }
+    .st .ck { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--green); color: var(--white); }
+    .st .ck svg { width: 13px; height: 13px; }
+    .st .ck, .st .chip { opacity: 0; scale: 0.6; }
+    .st.done .spin { opacity: 0; scale: 0.4; }
+    .st.done .ck, .st.done .chip { opacity: 1; scale: 1; }
+    html:not(.js) .st .spin { display: none; } html:not(.js) .st .ck, html:not(.js) .st .chip { opacity: 1; scale: 1; }
+    @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
     .dir.aside { background: var(--surface); }
     .dir.aside .dir-name { text-decoration: line-through; text-decoration-color: var(--ink-3); color: var(--ink-3); }
     .recall { display: flex; gap: 9px; margin-top: 9px; padding: 9px 11px; border-radius: 9px; background: var(--violet-soft); border: 1px solid var(--violet-line); font-size: 13px; }
@@ -608,7 +620,7 @@
       </article>
 
       <div class="chapters">
-        <article class="chapter" id="lab" data-step="lab" style="--n:6">
+        <article class="chapter" id="lab" data-step="lab" style="--n:7">
           <div class="pin">
           <p class="eyebrow"><span class="n">02</span>R&amp;D</p>
           <h2>In the lab, Maya starts where the last team stopped.</h2>
@@ -619,14 +631,14 @@
               <p class="k">Directions</p>
               <div class="dirs">
                 <div class="dir" data-dir="a">
-                  <div class="dir-row"><span class="lt">A</span><span class="dir-name">Dry for 8 hours instead of 12</span><span class="chip" data-final="ok" data-final-text="Better on the bench">Open</span></div>
+                  <div class="dir-row"><span class="lt">A</span><span class="dir-name">Dry for 8 hours instead of 12</span><span class="st"><i class="spin" aria-hidden="true"></i><span class="ck"><svg aria-hidden="true"><use href="#tick"/></svg><span class="visually-hidden">Better on the bench</span></span></span></div>
                 </div>
                 <div class="dir" data-dir="b">
-                  <div class="dir-row"><span class="lt">B</span><span class="dir-name">Dry hotter, at 140 °C</span><span class="chip" data-final="" data-final-text="Set aside">Open</span></div>
+                  <div class="dir-row"><span class="lt">B</span><span class="dir-name">Dry hotter, at 140 °C</span><span class="st"><i class="spin" aria-hidden="true"></i><span class="chip">Set aside</span></span></div>
                   <div class="recall" data-stage="recall" data-thread="report"><div><small>From memory · Plant report, Oct 2025</small>At 140 °C, 4 of 6 samples cracked.</div></div>
                 </div>
-                <div class="dir" data-stage="dir-c">
-                  <div class="dir-row"><span class="lt">C</span><span class="dir-name">Try 125 °C. Never tested.</span><span class="chip vi">New</span></div>
+                <div class="dir" data-dir="c">
+                  <div class="dir-row"><span class="lt">C</span><span class="dir-name">Try 125 °C. Never tested.</span><span class="st"><i class="spin" aria-hidden="true"></i><span class="visually-hidden">Running</span></span></div>
                 </div>
               </div>
               <div class="finding" data-stage="finding">
@@ -638,7 +650,7 @@
           </div>
         </article>
 
-        <article class="chapter" id="pilot" data-step="pilot" style="--n:6">
+        <article class="chapter" id="pilot" data-step="pilot" style="--n:7">
           <div class="pin">
           <p class="eyebrow"><span class="n">03</span>Pilot</p>
           <h2>On the pilot line, the result arrives with its history.</h2>
@@ -1484,11 +1496,6 @@
         btn.textContent = on ? text : btn.dataset.idle;
         if (on && !still) { btn.classList.add("press"); setTimeout(() => btn.classList.remove("press"), 160); }
       };
-      const chipTo = (chip, on) => {
-        chip.dataset.idle ??= chip.textContent;
-        chip.textContent = on ? chip.dataset.finalText : chip.dataset.idle;
-        if (chip.dataset.final) chip.classList.toggle(chip.dataset.final, on);
-      };
       // a share: the button is pressed, a dot flies to memory, and a node is born there. Back, and it is undone.
       const inFlight = {};
       // A press is shown being made: a pointer glides to the button inside the window and clicks it. The promise
@@ -1544,15 +1551,23 @@
         },
       });
       const shown = (name) => ({ on: (r) => stageTo(r, name, true), off: (r) => stageTo(r, name, false) });
+      const settled = (dir) => ({ on: (r) => q(r, `[data-dir="${dir}"] .st`).classList.add("done"), off: (r) => q(r, `[data-dir="${dir}"] .st`).classList.remove("done") });
+      const rest = { on() {}, off() {} }; // a stretch of scroll where nothing new happens, so the next thing is seen to start
       const STEPS = {
         lab: [
+          // the window opens on three directions, all at work
           { focus: [], ...shown("win") },
+          // A is done: its ring becomes a check
+          { ...settled("a") },
+          // B: memory brings up last year's trial
           { focus: ["report"], ...shown("recall") },
-          { on: (r) => { q(r, '[data-dir="b"]').classList.add("aside"); chipTo(q(r, '[data-dir="b"] .chip'), true); },
-            off: (r) => { q(r, '[data-dir="b"]').classList.remove("aside"); chipTo(q(r, '[data-dir="b"] .chip'), false); } },
-          { ...shown("dir-c") },
-          { on: (r) => { chipTo(q(r, '[data-dir="a"] .chip'), true); stageTo(r, "finding", true); },
-            off: (r) => { chipTo(q(r, '[data-dir="a"] .chip'), false); stageTo(r, "finding", false); } },
+          // so B is set aside. C goes on working.
+          { on: (r) => { q(r, '[data-dir="b"]').classList.add("aside"); q(r, '[data-dir="b"] .st').classList.add("done"); },
+            off: (r) => { q(r, '[data-dir="b"]').classList.remove("aside"); q(r, '[data-dir="b"] .st').classList.remove("done"); } },
+          // the finding is written
+          { ...shown("finding") },
+          rest,
+          // and only then is it shared
           { focus: ["mayaF", "report"], threads: ["report"], ...share("[data-share]", "mayaF", "", "Shared with project", "findings") },
         ],
         pilot: [
@@ -1563,6 +1578,7 @@
             off: (r) => { stageTo(r, "answer", false); q(r, ".chart").classList.remove("drawn"); } },
           { ...shown("check") },
           { ...shown("finding") },
+          rest,
           { focus: ["tomF", "mayaF", "report", "maint"], threads: ["mayaF", "report", "maint"], ...share("[data-share]", "tomF", "", "Shared with team", "findings") },
         ],
         team: [
