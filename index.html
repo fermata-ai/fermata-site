@@ -439,7 +439,10 @@
         body { timeline-scope: --intro; }
         .hero { view-timeline: --hero block; overflow-x: clip; overflow-y: visible; }
         .hero-copy { animation: leave linear both; animation-timeline: --hero; animation-range: exit 0% exit 18%; }
-        /* 1. GATHER: each record in front of the hero leaves its place and flies to its own place in the map */
+        /* 1. GATHER: the records in front of the hero do not leave with the page; they sink a little as you scroll down,
+           and each flies to its own place in the map */
+        .papers { animation: sink linear both; animation-timeline: --hero; animation-range: exit 0% exit 100%; }
+        @keyframes sink { to { translate: 0 108vh; } }
         .paper {
           --cx: calc(var(--x) * var(--hw, 1440px) / 100 + 75px);
           --cy: calc(var(--y) * var(--hh, 828px) / 100 + 36px);
@@ -968,7 +971,7 @@
 
       // the hundreds behind them are drawn: small cards at different depths, each on its way to one record or one point
       const BADGE = ["#f3c0b7", "#aedbc9", "#f0d792", "#b3cff0", "#c9c1ee", "#d5d4cb"];
-      const CARDN = small ? 120 : 340;
+      const CARDN = small ? 84 : 238;
       const CARDS = [];
       {
         const free = ids.filter((id) => formed(id) && !(id in paperD));
@@ -1013,9 +1016,10 @@
         return place3(x, y, n.f[2] * S.zs, n.f[0], n.f[1], n.f[2]);
       };
       const dustTarget = (d) => place3(d.u * 188 * S.sx, d.v * 140 * S.sy, d.zn * 110 * S.zs, 200 + d.u * 188, 170 + d.v * 140, d.zn * 100);
+      // a document does not leave with the page: as you scroll down it sinks a little, nearer ones faster, toward the map
       const homeOf = (c) => [
         S.hr.left + c.hx * S.hr.width + Math.sin(timeS * c.o1 + c.p1) * c.ax * (0.5 + c.zc),
-        S.hr.top + c.hy * S.hr.height + Math.cos(timeS * c.o2 + c.p2) * c.ay * (0.5 + c.zc) + (1 - c.zc) * 0.2 * scrollY,
+        S.hr.top + c.hy * S.hr.height + Math.cos(timeS * c.o2 + c.p2) * c.ay * (0.5 + c.zc) + (still ? 0 : scrollY * (1.08 + 0.22 * c.zc)),
       ];
       const tOf = (c) => clamp((e - (0.06 + 0.44 * c.d)) / 0.45);
       const dotA = (t) => clamp((t - 0.45) / 0.45);
@@ -1132,7 +1136,7 @@
         L = clamp((e - 0.8) / 0.19);
         w = dock ? ease(clamp((dp - 0.46) / 0.18)) : 1;
         const sx = (VW * 0.47) / 188, sy = (H * 0.44) / 140;
-        S = { VW, H, hr, wr, dock, dp, sx, sy, zs: Math.min(sx, sy), bs: wr.width / 400, wcx: VW / 2, wcy: Math.max(0, story.getBoundingClientRect().top) + H / 2,
+        S = { VW, H, hr, wr, dock, dp, sx, sy, zs: Math.min(sx, sy), bs: wr.width / 400, wcx: VW / 2, wcy: H / 2,
           bcx: wr.left + wr.width / 2, bcy: wr.top + wr.height / 2, pa: Math.min(VW * 0.27, 400), pb: copy.offsetHeight / 2 + 64 };
         view.hy += (view.ty - view.hy) * 0.09; view.hp += (view.tp - view.hp) * 0.09;
         const leaning = Math.abs(view.ty - view.hy) > 0.002 || Math.abs(view.tp - view.hp) > 0.002;
@@ -1567,7 +1571,7 @@
         const introBottomAtRest = H - DOCK_END * (intro.offsetHeight + H) + intro.offsetHeight;
         root.setProperty("--pull", (nt + h / 2 - copyLen / 2 - off - introBottomAtRest - naturalGap).toFixed(1) + "px");
         // each record in front of the hero flies to its own place in the wide map
-        const hr = hero.getBoundingClientRect(), base = story.getBoundingClientRect().top - hr.top + H / 2;
+        const hr = hero.getBoundingClientRect();
         const sx = (VW * 0.47) / 188, sy = (H * 0.44) / 140, zs = Math.min(sx, sy), pa = Math.min(VW * 0.27, 400), pb = copy.offsetHeight / 2 + 64;
         const y0 = view.yaw + 0.1, c1 = Math.cos(y0), s1 = Math.sin(y0), c2 = Math.cos(view.pitch), s2 = Math.sin(view.pitch);
         papers.style.setProperty("--hw", hero.offsetWidth + "px"); papers.style.setProperty("--hh", hero.offsetHeight + "px");
@@ -1576,6 +1580,8 @@
           if (!id) return;
           const f = N[id].f, [x, y] = pushed((f[0] - 200) * sx, (f[1] - 170) * sy, pa, pb), z = f[2] * zs;
           const x1 = x * c1 + z * s1, z1 = -x * s1 + z * c1, y1 = y * c2 - z1 * s2, k = FW / (FW - (y * s2 + z1 * c2));
+          // where the map's record is on the page when this one arrives (the map stays put on screen), less how far the records have sunk by then
+          const end = 0.6 + 0.32 * (paperD[id] || 0), base = hr.height - H + end * H * (1 - 1.08) + H / 2;
           p.style.setProperty("--mx", (VW / 2 + x1 * k - hr.left).toFixed(1) + "px"); p.style.setProperty("--my", (base + y1 * k).toFixed(1) + "px");
         });
         requestRender();
