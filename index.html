@@ -3,171 +3,384 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fermata: Do research you fully understand</title>
-  <meta name="description" content="Fermata works beside you on hard research questions. It asks what you mean, shows where every number comes from, tests its own claims and waits until you understand. For macOS.">
-  <meta name="theme-color" content="#0b0b0d">
+  <title>Fermata: the integrated research environment</title>
+  <meta name="description" content="Fermata connects today's result to everything your company already knows, from the lab bench to the pilot line to the plant. For R&D, pilot and production teams. For macOS.">
+  <meta name="theme-color" content="#f4f4f1">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="assets/favicon-32.png" sizes="32x32">
   <link rel="apple-touch-icon" href="assets/app-icon-180.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,500;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet">
   <style>
     :root {
-      color-scheme: dark;
-      /* how much of the next section the first screen shows */
-      --peek: clamp(160px, 50vh, 760px);
-      --ink: #0b0b0d;
-      --glass: rgba(16, 16, 20, 0.74);
-      --paper: #f2efea;
-      --paper-2: #bdb9b1;
-      --paper-3: #7d7a74;
-      --rule: #25252a;
-      --rule-2: #34343b;
-      --violet: #a8a3e8;
-      --violet-dim: #6f69c9;
-      --indigo: #4b45b2;
-      --amber: #e0b34a;
-      --green: #5cc48a;
+      color-scheme: light;
+      --bg: #f4f4f1;
+      --surface: #fcfcfb;
+      --white: #ffffff;
+      --sunk: #ecece8;
+      --line: #e1e0d9;
+      --line-2: #c3c2b7;
+      --ink: #1a1a1f;
+      --ink-2: #55555d;
+      --ink-3: #7a7a82;
+      --violet: #4a3aa7;
+      --violet-2: #6a5cc4;
+      --violet-soft: #ece8f9;
+      --violet-line: #d6cff2;
+      --green: #0f6e56;
+      --green-2: #1d9e75;
+      --green-soft: #e3f1ec;
+      --green-line: #c7e3d8;
+      --amber: #7a5200;
+      --amber-soft: #fdf0d2;
+      --red: #a52a2a;
+      --red-soft: #f9e1e1;
       --serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
-      --sans: -apple-system, BlinkMacSystemFont, "Helvetica Neue", system-ui, sans-serif;
+      --sans: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
       --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+      --shadow: 0 1px 0 rgba(26, 26, 31, 0.03), 0 18px 48px -22px rgba(26, 26, 31, 0.22);
+      --ease: cubic-bezier(0.22, 0.7, 0.2, 1);
     }
     * { box-sizing: border-box; }
-    html { background: var(--ink); scroll-behavior: smooth; }
+    html { background: var(--bg); scroll-behavior: smooth; }
     body {
-      margin: 0; min-height: 100vh;
-      font-family: var(--sans); font-size: 16px; line-height: 1.6;
-      color: var(--paper); background: transparent;
+      margin: 0; background: var(--bg); color: var(--ink);
+      font-family: var(--sans); font-size: 16px; line-height: 1.55;
       -webkit-font-smoothing: antialiased;
+      /* a faint notebook grid behind everything */
+      background-image: radial-gradient(circle at 1px 1px, rgba(26, 26, 31, 0.07) 1px, transparent 0);
+      background-size: 28px 28px;
     }
-    /* the field: fixed behind every section, and the cursor pulls on it */
-    #field { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; display: block; }
-    .glow {
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background: radial-gradient(60rem 36rem at 50% -8rem, rgba(75, 69, 178, 0.24), transparent 70%);
-    }
-    body > header, body > main, body > footer { position: relative; z-index: 1; }
     a { color: inherit; }
-    .wrap { max-width: 1120px; margin: 0 auto; padding-inline: 32px; }
-    .caps {
-      font-family: var(--sans); font-size: 11px; font-weight: 500;
-      letter-spacing: 0.22em; text-transform: uppercase; color: var(--paper-3);
+    .wrap { max-width: 1180px; margin: 0 auto; padding-inline: 32px; }
+    .eyebrow {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--violet);
+      margin: 0 0 16px;
     }
+    h1, h2, h3 { font-family: var(--serif); font-weight: 400; letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
     em { font-style: italic; color: var(--violet); }
+    :focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; border-radius: 6px; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-    /* masthead */
-    header { border-bottom: 1px solid var(--rule); }
-    header .wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; }
-    .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; font-family: var(--serif); font-size: 21px; }
+    /* ---------- masthead ---------- */
+    .top { position: relative; z-index: 3; }
+    .top .wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--serif); font-size: 21px; }
     .brand svg { color: var(--violet); }
-    .header-cta { font-size: 13px; text-decoration: none; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--rule-2); color: var(--paper-2); background: rgba(11, 11, 13, 0.6); transition: border-color 0.2s, color 0.2s; }
-    .header-cta:hover { border-color: var(--violet-dim); color: var(--paper); }
-    .header-nav { display: flex; align-items: center; gap: 20px; }
-    .header-link { font-size: 13px; text-decoration: none; color: var(--paper-2); transition: color 0.2s; }
-    .header-link:hover { color: var(--paper); }
-    .demo-link { color: var(--violet); }
+    .nav { display: flex; align-items: center; gap: 22px; }
+    .nav a { font-size: 14px; text-decoration: none; color: var(--ink-2); transition: color 0.2s; }
+    .nav a:hover { color: var(--ink); }
+    .header-cta { padding: 8px 16px; border-radius: 999px; background: var(--ink); color: var(--white) !important; font-weight: 500; }
+    .header-cta:hover { background: #2c2c33; }
 
-    /* hero: the field shows through, so only the controls take the pointer */
-    /* sized by the window's height too, so the button, and the top of the film under it, are on screen however short the window is */
-    .hero { min-height: calc(100svh - 73px - var(--peek)); display: flex; flex-direction: column; justify-content: center; align-items: center; padding-block: clamp(20px, 4.6vh, 72px) clamp(32px, 5vh, 60px); text-align: center; pointer-events: none; }
-    .hero a { pointer-events: auto; }
-    h1 {
-      font-family: "IBM Plex Serif", var(--serif); font-weight: 500;
-      font-size: min(clamp(38px, 5vw, 72px), 9vh); line-height: 1.05; letter-spacing: -0.045em;
-      margin: clamp(8px, 1.6vh, 20px) auto clamp(14px, 2.8vh, 30px); text-wrap: balance;
-    }
-    /* one line wherever it fits; a narrow window breaks it into balanced lines */
-    .lede { font-family: var(--serif); font-size: clamp(15px, 2.1vh, 20px); font-weight: 300; line-height: 1.5; color: var(--paper-2); max-width: 620px; margin: 0 auto clamp(14px, 3.4vh, 40px); }
-    .hero > * { opacity: 0; animation: rise 1.2s ease-out forwards; }
-    .hero > :nth-child(2) { animation-delay: 0.25s; }
-    .hero > :nth-child(3) { animation-delay: 0.4s; }
-    .hero > :nth-child(4) { animation-delay: 0.6s; }
-    .hero > :nth-child(5) { animation-delay: 0.8s; }
-    @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-
+    /* ---------- buttons ---------- */
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
     .cta {
-      display: inline-flex; align-items: center; gap: 12px;
-      padding: 17px 34px; border-radius: 999px;
-      background: var(--paper); color: var(--ink);
-      font-size: 15px; font-weight: 600; letter-spacing: 0.01em; text-decoration: none;
-      box-shadow: 0 0 0 1px rgba(242, 239, 234, 0.2), 0 14px 50px -12px rgba(168, 163, 232, 0.45);
-      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex; align-items: center; gap: 10px; padding: 15px 28px; border-radius: 999px;
+      background: var(--ink); color: var(--white); font-size: 15px; font-weight: 600; text-decoration: none;
+      box-shadow: 0 12px 30px -14px rgba(26, 26, 31, 0.55); transition: transform 0.2s, background 0.2s;
     }
-    .cta:hover { transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(242, 239, 234, 0.3), 0 18px 60px -10px rgba(168, 163, 232, 0.65); }
-    .cta:focus-visible { outline: 1px solid var(--violet); outline-offset: 5px; }
-    .cta svg { width: 17px; height: 17px; margin-top: -2px; }
-    .actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+    .cta:hover { transform: translateY(-1px); background: #2c2c33; }
+    .cta svg { width: 16px; height: 16px; margin-top: -2px; }
     .cta-ghost {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 17px 30px; border-radius: 999px;
-      color: var(--paper); text-decoration: none; font-size: 15px; font-weight: 500; letter-spacing: 0.01em;
-      border: 1px solid var(--rule-2); background: rgba(11, 11, 13, 0.55);
-      transition: border-color 0.2s, background 0.2s;
+      display: inline-flex; align-items: center; gap: 9px; padding: 15px 26px; border-radius: 999px;
+      border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); font-size: 15px; font-weight: 500;
+      text-decoration: none; transition: border-color 0.2s, background 0.2s;
     }
-    .cta-ghost:hover { border-color: var(--violet-dim); background: rgba(75, 69, 178, 0.14); }
-    .cta-ghost:focus-visible { outline: 1px solid var(--violet); outline-offset: 5px; }
-    .cta-ghost svg { width: 14px; height: 14px; color: var(--violet); }
+    .cta-ghost:hover { border-color: var(--violet-2); background: var(--white); }
+    .cta-ghost svg { width: 13px; height: 13px; color: var(--violet); }
 
-    /* the film: its top shows under the first screen, so the page reads as going on */
-    .film { padding-block: clamp(12px, 2.4vh, 32px) clamp(64px, 14vh, 160px); text-align: center; }
-    .film .caps { display: block; margin-bottom: clamp(16px, 2.4vh, 26px); }
-    .player {
-      position: relative; max-width: 1040px; margin: 0 auto; aspect-ratio: 16 / 9;
-      border-radius: 16px; overflow: hidden; background: var(--ink);
-      border: 1px solid var(--rule-2);
-      box-shadow: 0 40px 120px -30px rgba(0, 0, 0, 0.8), 0 0 80px -20px rgba(75, 69, 178, 0.35);
+    /* ---------- hero: scattered records drift around the promise ---------- */
+    .hero { position: relative; min-height: calc(100svh - 72px); display: grid; align-content: center; padding-block: 24px 40px; overflow: clip; }
+    .hero-copy { position: relative; z-index: 2; text-align: center; max-width: 860px; margin: 0 auto; padding-inline: 24px; }
+    h1 { font-size: clamp(40px, 6.2vw, 80px); line-height: 1.02; letter-spacing: -0.035em; margin-bottom: 22px; }
+    .lede { font-family: var(--serif); font-weight: 300; font-size: clamp(18px, 2vw, 22px); line-height: 1.45; color: var(--ink-2); max-width: 640px; margin: 0 auto 32px; }
+    .hero-copy > * { opacity: 0; animation: rise 0.9s var(--ease) forwards; }
+    .hero-copy > :nth-child(2) { animation-delay: 0.12s; }
+    .hero-copy > :nth-child(3) { animation-delay: 0.24s; }
+    .hero-copy > :nth-child(4) { animation-delay: 0.36s; }
+    @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+    /* the three steps, each a way into its chapter */
+    .strip {
+      position: relative; z-index: 2; list-style: none; margin: clamp(36px, 7vh, 72px) auto 0; padding: 0 24px;
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; max-width: 980px;
+      opacity: 0; animation: rise 0.9s 0.5s var(--ease) forwards;
     }
+    .strip a {
+      display: block; height: 100%; text-decoration: none; padding: 16px 18px; border-radius: 14px;
+      background: rgba(252, 252, 251, 0.82); border: 1px solid var(--line); backdrop-filter: blur(6px);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .strip a:hover { border-color: var(--violet-line); transform: translateY(-2px); }
+    .strip .n { font-family: var(--mono); font-size: 12px; color: var(--violet); }
+    .strip b { display: block; font-family: var(--serif); font-weight: 500; font-size: 19px; margin: 2px 0 4px; }
+    .strip span { font-size: 14px; color: var(--ink-2); line-height: 1.45; }
+
+    .papers { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+    .paper {
+      position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%);
+      width: 150px; padding: 10px 11px 12px; border-radius: 9px; background: var(--white); border: 1px solid var(--line);
+      box-shadow: 0 10px 26px -18px rgba(26, 26, 31, 0.35); rotate: var(--r);
+      opacity: 0; animation: settle 1.4s var(--ease) forwards; animation-delay: calc(var(--d) * 1s);
+    }
+    .paper .t { display: inline-block; font-family: var(--mono); font-size: 9.5px; font-weight: 600; letter-spacing: 0.04em; padding: 1px 5px; border-radius: 4px; }
+    .paper .nm { display: block; font-size: 11.5px; font-weight: 600; margin: 6px 0 6px; line-height: 1.25; }
+    .paper i { display: block; height: 5px; border-radius: 3px; background: var(--sunk); margin-top: 5px; }
+    .paper i + i { width: 72%; }
+    .paper.far { scale: 0.82; filter: blur(0.6px); }
+    .paper.near { scale: 1.08; }
+    .t.pdf { background: #fbe4e1; color: #a23b2c; } .t.csv { background: var(--green-soft); color: var(--green); }
+    .t.ppt { background: var(--amber-soft); color: var(--amber); } .t.doc { background: #e1edfa; color: #1f5fa8; }
+    .t.nb { background: var(--violet-soft); color: var(--violet); } .t.log { background: var(--sunk); color: var(--ink-2); }
+    @keyframes settle { from { opacity: 0; translate: 0 18px; } to { opacity: var(--o, 0.92); translate: 0 0; } }
+    /* as the hero leaves, the records fall toward the memory on the left, nearer ones faster */
+    @supports ((animation-timeline: view()) and (animation-range: entry)) {
+      @media (prefers-reduced-motion: no-preference) {
+        .hero { view-timeline: --hero block; }
+        .paper {
+          animation: settle 1.4s var(--ease) forwards, gather linear both;
+          animation-delay: calc(var(--d) * 1s), 0s;
+          animation-timeline: auto, --hero;
+          animation-range: normal, exit 0% exit var(--end, 90%);
+        }
+        .paper.far { --end: 100%; }
+        .paper.near { --end: 70%; }
+        @keyframes gather {
+          to { translate: calc((18 - var(--x)) * 1vw) calc((130 - var(--y)) * 1svh); opacity: 0; rotate: 0deg; scale: 0.35; }
+        }
+      }
+    }
+
+    /* ---------- the story: memory stays on the left, one stage at a time on the right ---------- */
+    .story { position: relative; display: grid; grid-template-columns: minmax(300px, 5fr) 7fr; gap: clamp(24px, 4vw, 64px); max-width: 1280px; margin: 0 auto; padding-inline: 32px; }
+    .rail { position: sticky; top: 0; height: 100svh; display: grid; place-items: center; z-index: 4; }
+    .memory {
+      width: min(100%, 440px); background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+      box-shadow: var(--shadow); padding: 18px 18px 14px; transition: scale 0.9s var(--ease); transform-origin: left center;
+    }
+    .rail[data-step="memory"] .memory { scale: 1.04; }
+    .memory-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+    .memory-head b { font-family: var(--serif); font-weight: 500; font-size: 18px; }
+    .memory-head span { font-size: 12px; color: var(--ink-3); }
+    .web { display: block; width: 100%; height: auto; margin: 6px 0 4px; overflow: visible; }
+    .web .cl { font-size: 9px; letter-spacing: 0.16em; fill: var(--ink-3); font-family: var(--sans); font-weight: 600; }
+    .web .edge { stroke: var(--line-2); stroke-width: 1; opacity: 0; transition: opacity 0.8s, stroke 0.5s; }
+    .web .edge.dash { stroke-dasharray: 3 3; }
+    .web .edge.on { opacity: 0.9; }
+    .web .edge.lit { stroke: var(--violet-2); opacity: 1; }
+    .web .node circle { fill: var(--line-2); transition: fill 0.5s, r 0.5s; }
+    .web .node { transform-box: fill-box; transform-origin: center; opacity: 0; scale: 0.2; transition: opacity 0.6s var(--ease), scale 0.7s var(--ease); }
+    .web .node.on { opacity: 1; scale: 1; }
+    .web .node.doc circle { fill: #9b95c9; }
+    .web .node.finding circle { fill: var(--violet); }
+    .web .node.decision circle { fill: var(--green-2); }
+    .web .node .halo { fill: none !important; stroke: var(--violet); stroke-width: 1.5; opacity: 0; transition: opacity 0.5s; }
+    .web .node.decision .halo { stroke: var(--green-2); }
+    .web .node.lit .halo { opacity: 0.45; }
+    .web .node.lit circle:not(.halo) { fill: var(--violet); }
+    .web .node.decision.lit circle:not(.halo) { fill: var(--green-2); }
+    .web .lbl { font-size: 10.5px; font-family: var(--sans); font-weight: 600; fill: var(--ink); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; opacity: 0; transition: opacity 0.5s; pointer-events: none; }
+    .web .lbl.lit { opacity: 1; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); padding-top: 10px; }
+    .stats div { font-size: 11.5px; color: var(--ink-3); }
+    .stats b { display: block; font-family: var(--serif); font-weight: 500; font-size: 20px; color: var(--ink); font-variant-numeric: tabular-nums; transition: color 0.4s; }
+    .stats b.bump { color: var(--violet); }
+    .stats .dec b.bump { color: var(--green); }
+
+    .chapter { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-block: 12vh; }
+    .chapter h2 { font-size: clamp(30px, 3.4vw, 46px); line-height: 1.08; margin-bottom: 14px; }
+    .chapter > p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: clamp(17px, 1.5vw, 19px); color: var(--ink-2); max-width: 560px; margin: 0 0 28px; }
+    .chapter .eyebrow .n { font-family: var(--mono); letter-spacing: 0; margin-right: 6px; }
+    .note-fiction { font-size: 12.5px; color: var(--ink-3); margin: 0 0 18vh; }
+
+    /* ---------- app windows: the product, drawn ---------- */
+    .win { background: var(--white); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; max-width: 640px; }
+    .win-bar { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-bottom: 1px solid var(--line); background: var(--surface); font-size: 13px; }
+    .dots { display: flex; gap: 6px; } .dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+    .win-bar .title { font-weight: 600; }
+    .win-bar .who { margin-left: auto; display: flex; align-items: center; gap: 7px; color: var(--ink-3); font-size: 12.5px; }
+    .av { width: 22px; height: 22px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 10.5px; font-weight: 700; background: var(--violet-soft); color: var(--violet); flex: none; }
+    .av.t { background: #e1edfa; color: #1f5fa8; } .av.d { background: var(--amber-soft); color: var(--amber); }
+    .win-body { padding: 16px 18px 18px; font-size: 14px; }
+    .k { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; margin: 0 0 8px; }
+    .chip { display: inline-flex; align-items: center; gap: 5px; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 500; white-space: nowrap; background: var(--sunk); color: var(--ink-2); transition: background 0.4s, color 0.4s; }
+    .chip.ok { background: var(--green-soft); color: var(--green); } .chip.vi { background: var(--violet-soft); color: var(--violet); }
+    .chip.am { background: var(--amber-soft); color: var(--amber); } .chip.no { background: var(--red-soft); color: var(--red); }
+    .btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line-2); background: var(--white); border-radius: 8px; padding: 6px 11px; font: 500 13px var(--sans); color: var(--ink); transition: background 0.3s, color 0.3s, border-color 0.3s, scale 0.15s; }
+    .btn.done { background: var(--violet); border-color: var(--violet); color: var(--white); }
+    .btn.green.done { background: var(--green); border-color: var(--green); }
+    .btn.press { scale: 0.96; }
+
+    /* reading */
+    .files { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+    .files li { display: grid; grid-template-columns: 78px 1fr auto; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+    .files .t { justify-self: start; font-family: var(--mono); font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; }
+    .files .nm { font-size: 13.5px; font-weight: 500; }
+    .files .meta { display: block; font-size: 12px; color: var(--ink-3); font-weight: 400; }
+    .files .st { font-size: 12px; color: var(--ink-3); }
+    .files .st .yes { display: none; color: var(--violet); font-weight: 600; }
+    .files li.read .st .wait { display: none; } .files li.read .st .yes { display: inline; }
+
+    /* directions */
+    .dirs { display: grid; gap: 8px; }
+    .dir { border: 1px solid var(--line); border-radius: 11px; padding: 10px 12px; transition: opacity 0.5s, background 0.5s; }
+    .dir-row { display: flex; align-items: center; gap: 9px; }
+    .lt { width: 20px; height: 20px; border-radius: 5px; display: inline-grid; place-items: center; background: var(--sunk); color: var(--ink-2); font-size: 11px; font-weight: 700; flex: none; }
+    .dir-row .chip { margin-left: auto; }
+    .dir.aside { background: var(--surface); }
+    .dir.aside .dir-name { text-decoration: line-through; text-decoration-color: var(--ink-3); color: var(--ink-3); }
+    .recall { display: flex; gap: 9px; margin-top: 9px; padding: 9px 11px; border-radius: 9px; background: var(--violet-soft); border: 1px solid var(--violet-line); font-size: 13px; }
+    .recall::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--violet); margin-top: 5px; flex: none; }
+    .recall small { display: block; font-size: 11.5px; color: var(--violet); font-weight: 600; }
+    .finding { margin-top: 12px; display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 11px; border: 1px dashed var(--line-2); }
+    .finding p { margin: 0; font-size: 13.5px; }
+    .finding p small { display: block; font-size: 11.5px; color: var(--ink-3); font-weight: 600; letter-spacing: 0.04em; }
+    .finding .btn { margin-left: auto; flex: none; }
+
+    /* conversation */
+    .msg { border-radius: 12px; padding: 10px 12px; font-size: 13.5px; }
+    .msg.you { background: var(--sunk); margin-left: 15%; }
+    .msg.you .att { display: inline-flex; gap: 6px; align-items: center; margin-top: 7px; font-size: 12px; color: var(--ink-2); background: var(--white); border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; }
+    .msg.fermata { margin-top: 10px; padding: 0; }
+    .msg.fermata > p { margin: 0 0 8px; }
+    .msg.fermata .from { font-size: 11.5px; font-weight: 600; color: var(--violet); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .chart { display: block; width: 100%; max-width: 440px; height: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+    .chart .ln { fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .chart .axis { stroke: var(--line); stroke-width: 1; }
+    .chart text { font-size: 10px; fill: var(--ink-3); font-family: var(--sans); }
+    .chart .tag { font-weight: 700; font-size: 10.5px; }
+    .sources { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 10px; font-size: 12px; color: var(--ink-3); }
+    .check { margin-top: 10px; display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 8px 11px; border-radius: 9px; background: var(--green-soft); color: var(--green); border: 1px solid var(--green-line); }
+    .check svg { width: 15px; height: 15px; flex: none; }
+
+    /* team */
+    .notice { display: flex; gap: 11px; align-items: flex-start; padding: 12px; border-radius: 12px; border: 1px solid var(--violet-line); background: linear-gradient(var(--violet-soft), var(--white)); }
+    .notice p { margin: 0 0 8px; font-size: 13.5px; }
+    .notice small { display: block; font-size: 11.5px; font-weight: 600; color: var(--violet); }
+    .board { margin-top: 14px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+    .board-head { display: flex; justify-content: space-between; padding: 9px 12px; background: var(--surface); border-bottom: 1px solid var(--line); font-size: 12.5px; font-weight: 600; }
+    .board-head span { color: var(--ink-3); font-weight: 400; }
+    .board table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .board th { text-align: left; font-size: 11px; font-weight: 600; color: var(--ink-3); padding: 8px 12px 4px; letter-spacing: 0.04em; }
+    .board td { padding: 8px 12px; border-top: 1px solid var(--sunk); vertical-align: middle; }
+    .board td:last-child, .board th:last-child { text-align: right; }
+    .sig { font-weight: 700; font-size: 12px; padding: 3px 10px; border-radius: 999px; display: inline-block; min-width: 54px; text-align: center; }
+    .sig.push { background: var(--green); color: var(--white); } .sig.stop { background: var(--red-soft); color: var(--red); } .sig.wait { background: var(--amber-soft); color: var(--amber); }
+    .saved { display: flex; align-items: center; gap: 9px; margin-top: 12px; font-size: 13px; color: var(--green); }
+    .saved .loop { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--green-soft); flex: none; }
+    .after { font-family: var(--serif); font-size: 19px; font-style: italic; color: var(--ink-2); margin: 26px 0 0; }
+
+    /* staged parts wait for their moment once the script is running; without it, everything shows */
+    .js [data-stage] { opacity: 0; translate: 0 8px; transition: opacity 0.6s var(--ease), translate 0.6s var(--ease); }
+    .js [data-stage].shown { opacity: 1; translate: 0 0; }
+    .js .chart .ln { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.6s var(--ease); }
+    .js .chart.drawn .ln { stroke-dashoffset: 0; }
+    .js .chart .ln.late { transition-delay: 0.25s; }
+
+    /* threads from memory to the moment it is used */
+    .threads { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 5; overflow: visible; }
+    .threads path { fill: none; stroke: var(--violet-2); stroke-width: 1.3; opacity: 0.55; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.9s var(--ease), opacity 0.4s; }
+    .threads path.in { stroke-dashoffset: 0; }
+    .threads path.green { stroke: var(--green-2); }
+    .threads circle { fill: var(--violet-2); }
+    .flyer { position: fixed; z-index: 6; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--violet); box-shadow: 0 0 0 5px rgba(74, 58, 167, 0.16); pointer-events: none; }
+    .flyer.green { background: var(--green-2); box-shadow: 0 0 0 5px rgba(29, 158, 117, 0.18); }
+    .flyer.doc { background: #9b95c9; box-shadow: 0 0 0 4px rgba(74, 58, 167, 0.1); }
+
+    /* ---------- sections after the story ---------- */
+    section.block { padding-block: clamp(80px, 14vh, 150px) 0; }
+    .block-head { max-width: 720px; margin-bottom: 40px; }
+    .block-head h2 { font-size: clamp(32px, 3.8vw, 50px); line-height: 1.06; margin-bottom: 14px; }
+    .block-head p { font-family: var(--serif); font-weight: 300; font-size: 19px; color: var(--ink-2); margin: 0; }
+
+    .inds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .ind { background: var(--white); border: 1px solid var(--line); border-radius: 18px; padding: 22px; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+    .ind svg.art { width: 64px; height: 64px; color: var(--violet); margin-bottom: 18px; }
+    .ind h3 { font-size: 24px; line-height: 1.15; margin-bottom: 6px; }
+    .ind > p { margin: 0 0 18px; color: var(--ink-2); font-size: 15px; }
+    .flow { list-style: none; margin: auto 0 0; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--line); }
+    .flow li { display: grid; grid-template-columns: 64px 1fr; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--sunk); font-size: 13.5px; }
+    .flow li:last-child { border-bottom: 0; padding-bottom: 0; }
+    .flow b { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); padding-top: 2px; }
+
+    .film-block { text-align: center; }
+    .film-block .block-head { margin-inline: auto; }
+    .player { position: relative; max-width: 1040px; margin: 0 auto; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #0b0b0d; border: 1px solid var(--line); box-shadow: 0 40px 90px -40px rgba(26, 26, 31, 0.55); }
     .player video { display: block; width: 100%; height: 100%; }
-    .play {
-      position: absolute; inset: 0; display: grid; place-items: center; border: 0; padding: 0; cursor: pointer;
-      background: linear-gradient(to top, rgba(11, 11, 13, 0.35), rgba(11, 11, 13, 0.05));
-      transition: background 0.2s;
-    }
-    .play span {
-      width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center;
-      background: var(--paper); color: var(--ink);
-      box-shadow: 0 0 0 1px rgba(242, 239, 234, 0.2), 0 14px 50px -10px rgba(168, 163, 232, 0.6);
-      transition: transform 0.2s;
-    }
+    .play { position: absolute; inset: 0; display: grid; place-items: center; border: 0; padding: 0; cursor: pointer; background: linear-gradient(to top, rgba(11, 11, 13, 0.3), rgba(11, 11, 13, 0.02)); }
+    .play span { width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center; background: var(--white); color: var(--ink); box-shadow: 0 14px 40px -10px rgba(0, 0, 0, 0.5); transition: transform 0.2s; }
     .play svg { width: 28px; height: 28px; margin-left: 4px; }
     .play:hover span { transform: scale(1.05); }
-    .play:focus-visible { outline: 1px solid var(--violet); outline-offset: -6px; }
     .player.playing .play { display: none; }
 
-    /* contact */
-    .contact { padding-block: 0 clamp(64px, 14vh, 160px); text-align: center; }
-    .contact .caps { display: block; margin-bottom: 22px; }
-    .contact h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(28px, 4vw, 44px); line-height: 1.15; letter-spacing: -0.015em; margin: 0 auto 18px; }
-    .contact p { font-family: var(--serif); font-size: clamp(15px, 2.4vh, 19px); font-weight: 300; color: var(--paper-2); max-width: 520px; margin: 0 auto 32px; }
+    .faq { max-width: 820px; }
+    .faq details { border-bottom: 1px solid var(--line); }
+    .faq summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; padding: 20px 0; font-family: var(--serif); font-size: 21px; }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after { content: "+"; font-family: var(--sans); font-size: 22px; color: var(--violet); transition: rotate 0.25s; }
+    .faq details[open] summary::after { rotate: 45deg; }
+    .faq details p { margin: 0 0 22px; color: var(--ink-2); max-width: 680px; }
 
-    @media (max-width: 640px) {
-      .wrap { padding-inline: 20px; }
-      .header-cta { display: none; }
-      .header-nav { gap: 16px; }
-      .contact-link, .demo-link { display: none; }
+    .close { text-align: center; padding-block: clamp(90px, 16vh, 170px); }
+    .close h2 { font-size: clamp(34px, 4.6vw, 60px); line-height: 1.05; max-width: 900px; margin: 0 auto 18px; }
+    .close p { font-family: var(--serif); font-weight: 300; font-size: 20px; color: var(--ink-2); margin: 0 auto 34px; }
+
+    footer { border-top: 1px solid var(--line); }
+    footer .wrap { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; justify-content: space-between; padding-block: 28px; font-size: 14px; color: var(--ink-3); }
+    footer nav { display: flex; gap: 22px; flex-wrap: wrap; }
+    footer a { text-decoration: none; color: var(--ink-2); }
+    footer a:hover { color: var(--ink); }
+
+    /* ---------- smaller screens: memory becomes a strip above the stages ---------- */
+    @media (max-width: 899px) {
+      .nav .hide-s { display: none; }
+      .strip { grid-template-columns: 1fr; max-width: 480px; }
+      .papers { position: relative; inset: auto; display: flex; justify-content: center; gap: 8px; height: 92px; margin-bottom: 18px; }
+      .paper { position: relative; left: auto; top: auto; width: 112px; flex: none; --x: 30; --y: 10; }
+      .paper.far, .paper.near { scale: 0.92; filter: none; }
+      .papers .paper:not(:nth-child(1), :nth-child(2), :nth-child(6)) { display: none; }
+      .hero { align-content: start; padding-top: 28px; }
+      .stats div { display: flex; justify-content: space-between; gap: 8px; }
+      .story { display: block; padding-inline: 16px; }
+      .rail { height: auto; top: 0; padding: 8px 0; place-items: stretch; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(8px); }
+      .memory { width: 100%; padding: 10px 12px 8px; display: grid; grid-template-columns: 1fr 120px; grid-template-areas: "head head" "web stats"; gap: 2px 12px; }
+      .rail[data-step="memory"] .memory { scale: 1; }
+      .memory-head { grid-area: head; } .memory-head b { font-size: 15px; }
+      .web { grid-area: web; height: 104px; width: auto; justify-self: start; margin: 0; }
+      .web .lbl, .web .cl { display: none; }
+      .stats { grid-area: stats; grid-template-columns: 1fr; border-top: 0; padding-top: 0; align-content: center; gap: 2px; }
+      .stats b { display: inline; font-size: 15px; margin-right: 4px; }
+      .chapter { min-height: 0; padding-block: 56px; }
+      .note-fiction { margin-bottom: 0; }
+      .inds { grid-template-columns: 1fr; }
     }
-    /* phones: the hero is taller than its share of the screen, so tighten it and let the film's top show */
-    @media (max-width: 640px) {
-      .hero { min-height: 0; padding-block: 10px 0; }
-      h1 { margin-bottom: 14px; }
-      .lede { font-size: clamp(15px, 2.1vh, 16px); line-height: 1.45; margin-bottom: 20px; }
-      .actions { gap: 10px; }
-      .cta, .cta-ghost { padding-block: 15px; }
-      .film { padding-top: 34px; }
-      .film .caps { margin-bottom: 16px; }
+    @media (max-width: 560px) {
+      .wrap { padding-inline: 16px; }
+      .nav { gap: 14px; }
+      .nav .hide-xs { display: none; }
+      .win-body { padding: 12px; }
+      .msg.you { margin-left: 0; }
+      .finding { flex-wrap: wrap; } .finding .btn { margin-left: 0; }
+      .board th:nth-child(2), .board td:nth-child(2) { display: none; }
+      .faq summary { font-size: 18px; }
     }
-    /* the narrowest phones: the mark alone, so the two links fit beside it */
-    @media (max-width: 360px) { .brand { font-size: 0; } }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      .hero > * { animation: none; opacity: 1; transform: none; }
+      .hero-copy > *, .strip, .paper { animation: none; opacity: var(--o, 0.92); }
+      .hero-copy > *, .strip { opacity: 1; }
+      .memory, .web .node, .web .edge { transition: none; }
+      .js [data-stage] { translate: 0 0; transition: opacity 0.2s; }
+      .js .chart .ln { transition: none; }
+      .threads path { transition: none; }
     }
   </style>
   <!-- PostHog: page views, time on page, clicks (autocapture) and download clicks. The key is not in this
        repo: the deploy workflow puts it in place of __POSTHOG_KEY__ from the POSTHOG_KEY secret. A page
        that still says __POSTHOG_KEY__ (a plain local preview) loads nothing and sends nothing. -->
   <script>
+    document.documentElement.classList.add("js");
     const POSTHOG_KEY = "__POSTHOG_KEY__";
     if (!POSTHOG_KEY.startsWith("__")) {
       !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
@@ -185,73 +398,289 @@
 <body>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="apple" viewBox="0 0 24 24"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.97-3.46-1.07-1.57-2.74-1.78-3.33-1.8-1.42-.15-2.77.83-3.49.83-.72 0-1.83-.81-3.01-.79-1.55.02-2.98.9-3.78 2.29-1.61 2.8-.41 6.94 1.16 9.21.77 1.11 1.68 2.36 2.88 2.31 1.16-.05 1.59-.75 2.99-.75 1.4 0 1.79.75 3.01.72 1.24-.02 2.03-1.13 2.79-2.25.88-1.29 1.24-2.54 1.26-2.6-.03-.01-2.42-.93-2.45-3.71zM14.08 5.84c.64-.77 1.07-1.85.95-2.92-.92.04-2.03.61-2.69 1.38-.59.68-1.1 1.78-.97 2.83 1.03.08 2.07-.52 2.71-1.29z"/></symbol>
+    <symbol id="mark" viewBox="0 0 48 48"><path d="M6 28 A18 18 0 0 1 42 28" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><circle cx="13" cy="28" r="3.4" fill="currentColor"/><circle cx="24" cy="28" r="3.4" fill="currentColor"/><circle cx="35" cy="28" r="3.4" fill="currentColor"/></symbol>
+    <symbol id="tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   </svg>
-  <canvas id="field" aria-hidden="true"></canvas>
-  <div class="glow" aria-hidden="true"></div>
 
-  <header>
+  <header class="top">
     <div class="wrap">
-      <a class="brand" href="/" aria-label="Fermata">
-        <svg viewBox="0 0 48 48" width="28" height="28" aria-hidden="true">
-          <path d="M6 28 A18 18 0 0 1 42 28" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
-          <circle cx="13" cy="28" r="3.4" fill="currentColor"/><circle cx="24" cy="28" r="3.4" fill="currentColor"/><circle cx="35" cy="28" r="3.4" fill="currentColor"/>
-        </svg>
-        Fermata
-      </a>
-      <nav class="header-nav">
-        <a class="header-link watch" href="#how-it-works">How it works</a>
-        <a class="header-link" href="/guide/">User guide</a>
-        <a class="header-link contact-link" href="#contact">Contact</a>
-        <a class="header-link demo-link" href="https://web.getfermata.app">Try demo</a>
+      <a class="brand" href="/" aria-label="Fermata"><svg width="28" height="28" aria-hidden="true"><use href="#mark"/></svg>Fermata</a>
+      <nav class="nav" aria-label="Main">
+        <a class="hide-xs" href="#story">How it works</a>
+        <a class="hide-s" href="#industries">Industries</a>
+        <a class="hide-s watch" href="#how-it-works">Film</a>
+        <a class="hide-s" href="/guide/">User guide</a>
+        <a class="hide-xs" href="https://web.getfermata.app">Try demo</a>
         <a class="header-cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest">Download for Mac</a>
       </nav>
     </div>
   </header>
 
   <main>
-    <section class="hero wrap">
-      <h1>Do research you <em>fully</em> understand</h1>
-      <p class="lede">
-        Fermata is a proactive scientific reasoning tool that shows you what it’s assuming and which questions
-        are still open. When it spots an unexpected result, it pulls together evidence from earlier experiments
-        and lab notes so you can decide whether to keep going or change course.
-      </p>
-      <div>
+    <!-- 1. The promise, with a company's records scattered around it -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="papers" aria-hidden="true">
+        <div class="paper near" style="--x:3;--y:10;--r:-6deg;--d:.1"><span class="t pdf">PDF</span><span class="nm">Plant report · Oct 2025</span><i></i><i></i></div>
+        <div class="paper" style="--x:5;--y:36;--r:4deg;--d:.3;--o:.8"><span class="t nb">NOTEBOOK</span><span class="nm">Maya, pages 38–42</span><i></i><i></i></div>
+        <div class="paper far" style="--x:2;--y:58;--r:-3deg;--d:.5;--o:.6"><span class="t csv">CSV</span><span class="nm">Moisture QC log 2026</span><i></i><i></i></div>
+        <div class="paper near" style="--x:6;--y:76;--r:5deg;--d:.2"><span class="t ppt">SLIDES</span><span class="nm">Drying review · Mar 2026</span><i></i><i></i></div>
+        <div class="paper far" style="--x:85;--y:8;--r:5deg;--d:.4;--o:.6"><span class="t log">LOG</span><span class="nm">Pilot line maintenance</span><i></i><i></i></div>
+        <div class="paper near" style="--x:86;--y:32;--r:-4deg;--d:.15"><span class="t csv">CSV</span><span class="nm">Bench cycling results</span><i></i><i></i></div>
+        <div class="paper" style="--x:88;--y:56;--r:3deg;--d:.35;--o:.8"><span class="t doc">DOC</span><span class="nm">Weekly sync notes</span><i></i><i></i></div>
+        <div class="paper" style="--x:84;--y:76;--r:-5deg;--d:.25;--o:.85"><span class="t csv">CSV</span><span class="nm">Pilot tests, April</span><i></i><i></i></div>
+        <div class="paper far" style="--x:22;--y:4;--r:-2deg;--d:.6;--o:.5"><span class="t doc">DOC</span><span class="nm">Additive screening</span><i></i><i></i></div>
+        <div class="paper far" style="--x:68;--y:4;--r:3deg;--d:.55;--o:.5"><span class="t pdf">PDF</span><span class="nm">Supplier datasheet</span><i></i><i></i></div>
+        <div class="paper far" style="--x:24;--y:90;--r:4deg;--d:.65;--o:.55"><span class="t pdf">PDF</span><span class="nm">Coating spec, rev C</span><i></i><i></i></div>
+        <div class="paper far" style="--x:66;--y:91;--r:-4deg;--d:.7;--o:.55"><span class="t log">EMAIL</span><span class="nm">RE: roll R-31 results</span><i></i><i></i></div>
+      </div>
+      <div class="hero-copy">
+        <p class="eyebrow">The integrated research environment</p>
+        <h1 id="hero-title">From reactive to <em>proactive</em> R&amp;D&nbsp;decisions</h1>
+        <p class="lede">Fermata connects today’s result to everything your company already knows, from the lab bench to the pilot line to the plant.</p>
         <div class="actions">
-          <a class="cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest">
-            <svg aria-hidden="true"><use href="#apple"/></svg>
-            Download for Mac
-          </a>
-          <a class="cta-ghost demo" href="https://web.getfermata.app">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>
-            Try demo
-          </a>
+          <a class="cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest"><svg aria-hidden="true"><use href="#apple"/></svg>Download for Mac</a>
+          <a class="cta-ghost" href="https://web.getfermata.app"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>Try demo</a>
         </div>
+      </div>
+      <ol class="strip">
+        <li><a href="#memory"><span class="n">01</span><b>One memory</b><span>Reports, notebooks and data, read and linked.</span></a></li>
+        <li><a href="#lab"><span class="n">02</span><b>Every stage</b><span>Lab, pilot line and plant start from what is known.</span></a></li>
+        <li><a href="#team"><span class="n">03</span><b>Clear decisions</b><span>Push here, stop there, and keep the reasons.</span></a></li>
+      </ol>
+    </section>
+
+    <!-- 2. The story: memory on the left stays put; the stages pass on the right -->
+    <section class="story" id="story" aria-label="How Fermata works, from lab to team">
+      <aside class="rail" data-step="memory" aria-label="Company memory">
+        <div class="memory">
+          <div class="memory-head"><b>Company memory</b><span>Northfield Materials</span></div>
+          <svg class="web" viewBox="0 0 400 340" role="img" aria-label="A web of linked documents, findings and decisions, grouped by lab, pilot line and plant."></svg>
+          <div class="stats">
+            <div>Documents<b data-count="docs">1,278</b></div>
+            <div>Findings<b data-count="findings">41</b></div>
+            <div class="dec">Decisions<b data-count="decisions">12</b></div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="chapters">
+        <article class="chapter" id="memory" data-step="memory">
+          <p class="eyebrow"><span class="n">01</span>Memory</p>
+          <h2>Everything your company has learned, in one place.</h2>
+          <p>Reports, notebooks, instrument data, meeting notes and old decisions. Fermata reads them, links them and keeps them current. Every line points back to its file.</p>
+          <div class="win" data-stage="win">
+            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="title">Reading the company’s records</span></div>
+            <div class="win-body">
+              <ul class="files">
+                <li data-node="review"><span class="t ppt">SLIDES</span><span class="nm">Drying review · Mar 2026<span class="meta">Lab · 24 slides</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 6</span></span></li>
+                <li data-node="notebook"><span class="t nb">NOTEBOOK</span><span class="nm">Maya, pages 38–42<span class="meta">Lab · notebook</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 4</span></span></li>
+                <li data-node="bench"><span class="t csv">CSV</span><span class="nm">Bench cycling results 2026<span class="meta">Lab · 1,840 rows</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 5</span></span></li>
+                <li data-node="maint"><span class="t log">LOG</span><span class="nm">Pilot line maintenance 2026<span class="meta">Pilot line · 212 entries</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 9</span></span></li>
+                <li data-node="qc"><span class="t csv">CSV</span><span class="nm">Moisture QC log 2026<span class="meta">Plant · 3,107 rows</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 7</span></span></li>
+                <li data-node="report"><span class="t pdf">PDF</span><span class="nm">Drying line upgrade report<span class="meta">Plant · Oct 2025 · 38 pages</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 11</span></span></li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="chapter" id="lab" data-step="lab">
+          <p class="eyebrow"><span class="n">02</span>Lab</p>
+          <h2>In the lab, Maya starts where the last team stopped.</h2>
+          <p>Her project is a faster drying step. Before she plans a test, Fermata brings up last year’s plant trial, so she skips what already failed. Her result goes back into memory.</p>
+          <div class="win" data-stage="win">
+            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="title">Faster drying step</span><span class="who"><span class="av">M</span>Maya · Lab</span></div>
+            <div class="win-body">
+              <p class="k">Directions</p>
+              <div class="dirs">
+                <div class="dir" data-dir="a">
+                  <div class="dir-row"><span class="lt">A</span><span class="dir-name">Dry for 8 hours instead of 12</span><span class="chip" data-final="ok" data-final-text="Better on the bench">Open</span></div>
+                </div>
+                <div class="dir" data-dir="b">
+                  <div class="dir-row"><span class="lt">B</span><span class="dir-name">Dry hotter, at 140 °C</span><span class="chip" data-final="" data-final-text="Set aside">Open</span></div>
+                  <div class="recall" data-stage="recall" data-thread="report"><div><small>From memory · Plant report, Oct 2025</small>At 140 °C, 4 of 6 samples cracked.</div></div>
+                </div>
+                <div class="dir" data-stage="dir-c">
+                  <div class="dir-row"><span class="lt">C</span><span class="dir-name">Try 125 °C. Never tested.</span><span class="chip vi">New</span></div>
+                </div>
+              </div>
+              <div class="finding" data-stage="finding">
+                <p><small>FINDING</small>8-hour drying kept more output on the bench, over the first 50 cycles.</p>
+                <span class="btn" data-share="mayaF">Share with project</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="chapter" id="pilot" data-step="pilot">
+          <p class="eyebrow"><span class="n">03</span>Pilot line</p>
+          <h2>On the pilot line, the result arrives with its history.</h2>
+          <p>Tom’s output fell after the switch to 8-hour drying. Fermata reads Maya’s result, the maintenance log and the plant report together, and finds why the lab and the line disagree. An independent check works it out again before anyone acts on it.</p>
+          <div class="win" data-stage="win">
+            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="title">Pilot line · drying step</span><span class="who"><span class="av t">T</span>Tom · Pilot line</span></div>
+            <div class="win-body">
+              <div class="msg you" data-stage="ask">Since we moved to 8-hour drying, pilot output has dropped. Can you work out why?<br><span class="att">CSV · Pilot tests, November</span></div>
+              <div class="msg fermata" data-stage="answer">
+                <span class="from"><svg width="16" height="16" aria-hidden="true"><use href="#mark"/></svg>Fermata</span>
+                <p>The bench test stopped at cycle 50. The loss starts later: the 8-hour rolls fall behind near cycle 245.</p>
+                <div class="sources"><span>Read with</span><span class="chip vi" data-thread="mayaF">Maya’s bench result</span><span class="chip vi" data-thread="report">Plant report 2025 · 81% kept</span><span class="chip vi" data-thread="maint">Maintenance log</span></div>
+                <svg class="chart" viewBox="0 0 340 150" role="img" aria-label="Output kept against cycles. The bench test covers cycles 0 to 50, where 8-hour drying is slightly ahead. Near cycle 245 the 8-hour line falls behind and ends at 79 percent, against 90 percent for 12-hour drying.">
+                  <rect x="30" y="10" width="46.7" height="120" fill="#ece8f9"/>
+                  <text x="34" y="24">Bench test</text>
+                  <line class="axis" x1="30" y1="130" x2="310" y2="130"/>
+                  <line x1="258.7" y1="10" x2="258.7" y2="130" stroke="#c3c2b7" stroke-dasharray="3 3"/>
+                  <text x="236" y="143">cycle 245</text>
+                  <text x="30" y="143">0</text><text x="296" y="143">300</text>
+                  <path class="ln" pathLength="1" stroke="#0f6e56" d="M30 10 L76.7 17.2 L123.3 24.4 L170 30.8 L216.7 37.2 L258.7 43.2 L310 50"/>
+                  <path class="ln late" pathLength="1" stroke="#a52a2a" d="M30 10 L76.7 14.8 L123.3 21.6 L170 28.8 L216.7 36 L258.7 43.2 L286.7 68 L310 94"/>
+                  <text class="tag" x="314" y="53" fill="#0f6e56">12 h</text>
+                  <text class="tag" x="314" y="97" fill="#a52a2a">8 h</text>
+                </svg>
+              </div>
+              <div class="check" data-stage="check"><svg aria-hidden="true"><use href="#tick"/></svg>Independent check passed. It corrected two figures.</div>
+              <div class="finding" data-stage="finding">
+                <p><small>FINDING</small>8-hour drying keeps about 11 points less output at cycle 300.</p>
+                <span class="btn" data-share="tomF">Share with team</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="chapter" id="team" data-step="team">
+          <p class="eyebrow"><span class="n">04</span>Team</p>
+          <h2>Push here. Stop there.</h2>
+          <p>Daniel hears before his coating reaches the pilot line. The team sees every direction with its evidence, and decides. The reasons go back into memory.</p>
+          <div class="win" data-stage="win">
+            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="title">Electrodes team</span><span class="who"><span class="av d">D</span>Daniel · Lab</span></div>
+            <div class="win-body">
+              <div class="notice" data-stage="notice" data-thread="tomF">
+                <span class="av t">T</span>
+                <div><small>New for you · from Tom</small><p>Tom’s finding may affect your coating. It uses the same drying step.</p><span class="btn" data-add>Add a 12-hour drying test</span></div>
+              </div>
+              <div class="board" data-stage="board">
+                <div class="board-head">Team meeting, week 12 <span>3 directions</span></div>
+                <table>
+                  <thead><tr><th>Direction</th><th>Evidence</th><th>Decision</th></tr></thead>
+                  <tbody>
+                    <tr data-stage="row"><td>12-hour drying at pilot scale</td><td><span class="chip ok">Supported · checked</span></td><td><span class="sig push">Push</span></td></tr>
+                    <tr data-stage="row"><td>8-hour drying for the new coating</td><td><span class="chip no">Against at cycle 300</span></td><td><span class="sig stop">Stop</span></td></tr>
+                    <tr data-stage="row"><td>New raw-material batch</td><td><span class="chip">Not tested</span></td><td><span class="sig wait">Wait</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="saved" data-stage="saved"><span class="loop"><svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 3v2.5h-2.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Saved to memory: the decision, the reasons, who decided, and when to look again.</div>
+            </div>
+          </div>
+          <p class="after">The next project starts where this one ended.</p>
+        </article>
+        <p class="note-fiction">Northfield Materials, Maya, Tom and Daniel are made up. The pilot line story follows a real Fermata session on sample records.</p>
       </div>
     </section>
 
-    <section class="film wrap" id="film">
-      <span class="caps">See it work</span>
+    <!-- 3. Industries -->
+    <section class="block wrap" id="industries" aria-labelledby="ind-title">
+      <div class="block-head">
+        <p class="eyebrow">Industries</p>
+        <h2 id="ind-title">For teams that take chemistry from the bench to the plant.</h2>
+        <p>Each industry keeps its own records and asks its own questions. The way from lab to plant is the same.</p>
+      </div>
+      <div class="inds">
+        <article class="ind">
+          <svg class="art" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2"><path d="M32 8l17 10v20L32 48 15 38V18z"/><path d="M32 8v10M49 18l-9 5M49 38l-9-5M32 48V38M15 38l9-5M15 18l9 5"/><path d="M24 23l8-5 8 5v10l-8 5-8-5z" stroke-opacity=".5"/></g><circle cx="52" cy="50" r="4" fill="currentColor" fill-opacity=".25"/></svg>
+          <h3>Chemicals and process</h3>
+          <p>Catalysts, formulations and scale-up.</p>
+          <ul class="flow">
+            <li><b>Lab</b><span>A new catalyst ink beats the old one.</span></li>
+            <li><b>Pilot</b><span>Yield falls at 50 litres. Which step changed?</span></li>
+            <li><b>Plant</b><span>Which raw-material batch caused the drift?</span></li>
+          </ul>
+        </article>
+        <article class="ind">
+          <svg class="art" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="32" cy="32" r="8"/><circle cx="12" cy="32" r="6"/><circle cx="52" cy="32" r="6"/><path d="M18 30h6M18 34h6M40 30h6M40 34h6"/></g><path d="M8 52c8-5 16 5 24 0s16 5 24 0" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="2"/></svg>
+          <h3>Carbon capture and CO₂ conversion</h3>
+          <p>Sorbents, membranes and electrolysers.</p>
+          <ul class="flow">
+            <li><b>Lab</b><span>Does the membrane last at 80 °C?</span></li>
+            <li><b>Pilot</b><span>Capture rate in humid flue gas.</span></li>
+            <li><b>Plant</b><span>What each change does to cost per tonne.</span></li>
+          </ul>
+        </article>
+        <article class="ind">
+          <svg class="art" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2"><rect x="14" y="12" width="36" height="44" rx="4"/><path d="M26 7h12v5H26z"/><path d="M14 26h36M14 36h36M14 46h36" stroke-opacity=".45"/></g><path d="M30 18l-4 7h6l-4 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          <h3>Batteries and energy materials</h3>
+          <p>Electrodes, coatings and cells.</p>
+          <ul class="flow">
+            <li><b>Lab</b><span>8-hour drying beats 12 on the bench.</span></li>
+            <li><b>Pilot</b><span>Output falls after cycle 245.</span></li>
+            <li><b>Plant</b><span>Moisture against the QC limit, roll by roll.</span></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- 4. The film -->
+    <section class="block wrap film-block" id="film" aria-labelledby="film-title">
+      <div class="block-head">
+        <p class="eyebrow">See it work</p>
+        <h2 id="film-title">Fermata in two minutes.</h2>
+      </div>
       <div class="player" id="how-it-works">
         <video src="assets/fermata-film-4.mp4" poster="assets/fermata-film-4-poster.jpg" preload="none" playsinline
                aria-label="Fermata in two minutes: a lab's context is scattered from the bench to the plant; Fermata gathers the evidence from every project, challenges each finding and ties every decision to its evidence."></video>
-        <button class="play" type="button" aria-label="Play the film">
-          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg></span>
-        </button>
+        <button class="play" type="button" aria-label="Play the film"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg></span></button>
       </div>
     </section>
 
-    <section class="contact wrap" id="contact">
-      <span class="caps">Contact</span>
-      <h2>Questions, ideas, <em>or</em> a bug?</h2>
-      <p>We would love to hear from you.</p>
-      <a class="cta-ghost mail" href="mailto:hi@getfermata.app">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3.5 6.5h17v11h-17zM4 7l8 6 8-6"/></svg>
-        hi@getfermata.app
-      </a>
+    <!-- 5. Questions -->
+    <section class="block wrap" aria-labelledby="faq-title">
+      <div class="block-head">
+        <p class="eyebrow">Questions</p>
+        <h2 id="faq-title">Before you start.</h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>Does my team have to change how it works?</summary>
+          <p>No. Fermata sits beside the work you already do. You ask in plain words, attach the files you have, and it reads them where they are.</p>
+        </details>
+        <details>
+          <summary>Where do our files go?</summary>
+          <p>They stay on your Mac. Fermata reads them there and keeps its record of the work beside them. The parts a question needs go to the AI you chose, under your own account.</p>
+        </details>
+        <details>
+          <summary>Which AI does it use?</summary>
+          <p>Fermata works with Claude Code or OpenAI Codex, under your own account. You choose which one in Settings.</p>
+        </details>
+        <details>
+          <summary>Does Fermata make the decisions?</summary>
+          <p>No. People decide. Fermata shows the evidence, says what it assumed, has its findings checked independently, and keeps the reasons for each decision.</p>
+        </details>
+      </div>
     </section>
 
+    <!-- 6. Close -->
+    <section class="close wrap" id="contact">
+      <h2>Fermata works around your workflow. You don’t work around it.</h2>
+      <p>For macOS. Questions? Write to us.</p>
+      <div class="actions">
+        <a class="cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest"><svg aria-hidden="true"><use href="#apple"/></svg>Download for Mac</a>
+        <a class="cta-ghost mail" href="mailto:hi@getfermata.app">hi@getfermata.app</a>
+      </div>
+    </section>
   </main>
+
+  <footer>
+    <div class="wrap">
+      <a class="brand" href="/" aria-label="Fermata"><svg width="22" height="22" aria-hidden="true"><use href="#mark"/></svg>Fermata</a>
+      <nav aria-label="Footer">
+        <a href="#story">How it works</a>
+        <a href="#industries">Industries</a>
+        <a href="/guide/">User guide</a>
+        <a href="https://web.getfermata.app">Try demo</a>
+        <a href="mailto:hi@getfermata.app">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <svg class="threads" aria-hidden="true"></svg>
 
   <script>
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -263,18 +692,19 @@
       .then((release) => {
         const dmg = release.assets.find((a) => a.name.endsWith(".dmg"));
         if (!dmg) return;
-        document.querySelectorAll(".download").forEach((a) => (a.href = dmg.browser_download_url));
-        document.querySelectorAll(".download").forEach((a) => (a.dataset.version = release.tag_name.replace(/^v/, "")));
+        document.querySelectorAll(".download").forEach((a) => {
+          a.href = dmg.browser_download_url;
+          a.dataset.version = release.tag_name.replace(/^v/, "");
+        });
       })
       .catch(() => {});
-
     // ---- Download clicks, by button. The link leaves the page, so the event goes out as a beacon.
     document.querySelectorAll(".download").forEach((a) =>
       a.addEventListener("click", () =>
         window.posthog?.capture(
           "download_clicked",
           {
-            button: a.classList.contains("header-cta") ? "header" : "hero",
+            button: a.classList.contains("header-cta") ? "header" : a.closest(".close") ? "close" : "hero",
             target: a.href.endsWith(".dmg") ? "dmg" : "release_page",
             version: a.dataset.version ?? null,
           },
@@ -282,8 +712,6 @@
         ),
       ),
     );
-
-    // ---- Contact clicks. The mail link leaves the page, so the event goes out as a beacon.
     document.querySelector(".mail").addEventListener("click", () =>
       window.posthog?.capture("contact_clicked", {}, { transport: "sendBeacon" }),
     );
@@ -293,13 +721,8 @@
       const player = document.querySelector(".player");
       const video = player.querySelector("video");
       let from = "player", reported = false;
-      const start = () => {
-        player.classList.add("playing");
-        video.controls = true;
-        video.play();
-      };
+      const start = () => { player.classList.add("playing"); video.controls = true; video.play(); };
       player.querySelector(".play").addEventListener("click", start);
-      // How it works, in the header: glide down to the film and start it (the click lets it play with sound)
       document.querySelector(".watch").addEventListener("click", (e) => {
         e.preventDefault();
         from = "header";
@@ -312,82 +735,233 @@
         window.posthog?.capture("film_played", { from });
       });
       video.addEventListener("ended", () => window.posthog?.capture("film_finished"));
-      // A link to the film (getfermata.app/#how-it-works, or the older #film) opens the page on it, centred and
-      // ready to play; a browser plays nothing with sound until it is clicked. Again once the page has loaded,
-      // in case the fonts moved it.
+      // A shared link to the film (#how-it-works, or the older #film) opens the page on it, centred.
       if (location.hash === "#how-it-works" || location.hash === "#film") {
         from = "link";
         const centre = () => player.scrollIntoView({ behavior: "auto", block: "center" });
         requestAnimationFrame(centre);
-        window.addEventListener("load", centre, { once: true });
+        addEventListener("load", centre, { once: true });
       }
     })();
 
-    // ---- The field. Streamlines drift through a slow flow; the cursor gently draws them in and
-    // swallows what reaches it. The download button has a fainter pull of its own that never lets go.
+    // ---- The story. Memory is a web on the left that stays put. Each chapter on the right plays once
+    // when it reaches the middle of the screen: what memory gives it is threaded across, and what it
+    // shares flies back and becomes a node. Scrolling back re-lights a chapter but never replays it.
     (() => {
-      const canvas = document.getElementById("field");
-      const button = document.querySelector(".hero .cta");
-      const ctx = canvas.getContext("2d");
-      let w, h, points;
-      const well = { x: -1e4, y: -1e4, tx: -1e4, ty: -1e4, mass: 0, target: 0 };
-      const spawn = (p) => { p.x = Math.random() * w; p.y = Math.random() * h; p.vx = 0; p.vy = 0; p.age = 0; };
-      const resize = () => {
-        const dpr = Math.min(devicePixelRatio || 1, 2);
-        w = innerWidth; h = innerHeight;
-        canvas.width = w * dpr; canvas.height = h * dpr;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        points = Array.from({ length: Math.min(1600, Math.round((w * h) / 1500)) }, () => { const p = {}; spawn(p); p.age = Math.random() * 320; return p; });
-        ctx.fillStyle = "#0b0b0d"; ctx.fillRect(0, 0, w, h);
+      const NS = "http://www.w3.org/2000/svg";
+      const web = document.querySelector(".web");
+      const rail = document.querySelector(".rail");
+      const threads = document.querySelector(".threads");
+
+      // x, y in the 400×340 web; kind: bg (already known), doc (read in chapter 1), finding, decision
+      const NODES = {
+        b1: [62, 60, "bg"], b2: [118, 44, "bg"], b3: [40, 118, "bg"], b4: [150, 98, "bg"], b5: [70, 176, "bg"],
+        b6: [268, 52, "bg"], b7: [350, 70, "bg"], b8: [372, 140, "bg"], b9: [326, 196, "bg"], b10: [252, 118, "bg"],
+        b11: [138, 262, "bg"], b12: [190, 318, "bg"], b13: [262, 308, "bg"], b14: [300, 262, "bg"], b15: [110, 312, "bg"],
+        review: [88, 92, "doc", "Drying review · Mar 2026"],
+        notebook: [134, 66, "doc", "Maya’s notebook, p. 38–42"],
+        bench: [104, 146, "doc", "Bench cycling 2026"],
+        maint: [312, 104, "doc", "Pilot line maintenance"],
+        qc: [236, 280, "doc", "Moisture QC log"],
+        report: [168, 286, "doc", "Plant report · Oct 2025"],
+        mayaF: [160, 140, "finding", "Maya: 8 h better on the bench"],
+        tomF: [318, 186, "finding", "Tom: 11 points less by cycle 300"],
+        decision: [214, 206, "decision", "Week 12: push 12-hour drying"],
       };
-      const flow = (x, y, t) =>
-        Math.sin(x * 0.0036 + t * 0.00011) * 1.6 + Math.cos(y * 0.0044 - t * 0.00009) * 1.4 + Math.sin((x + y) * 0.0015) * 0.8;
-
-      addEventListener("pointermove", (e) => {
-        if (e.pointerType === "touch") return;
-        if (well.mass < 0.05) { well.x = e.clientX; well.y = e.clientY; }
-        well.tx = e.clientX; well.ty = e.clientY; well.target = 1;
-      });
-      document.addEventListener("mouseout", (e) => { if (!e.relatedTarget) well.target = 0; });
-
-      const frame = (t) => {
-        ctx.fillStyle = "rgba(11, 11, 13, 0.075)";
-        ctx.fillRect(0, 0, w, h);
-        well.x += (well.tx - well.x) * 0.2; well.y += (well.ty - well.y) * 0.2;
-        well.mass += (well.target - well.mass) * 0.05;
-        const G = 420 * well.mass, horizon = 5 + 3 * well.mass;
-        const btn = button.getBoundingClientRect(), bx = btn.left + btn.width / 2, by = btn.top + btn.height / 2;
-
-        ctx.lineWidth = 0.8;
-        ctx.strokeStyle = "rgba(168, 163, 232, 0.34)";
-        ctx.beginPath();
-        for (const p of points) {
-          const a = flow(p.x, p.y, t);
-          let ax = 0, ay = 0;
-          const dx = well.x - p.x, dy = well.y - p.y, r2 = dx * dx + dy * dy, r = Math.sqrt(r2) + 0.001;
-          if (G > 1 && r < 260) {
-            const pull = G / (r2 + 900);
-            ax += (dx / r) * pull - (dy / r) * pull * 0.35; // inward, and slowly around
-            ay += (dy / r) * pull + (dx / r) * pull * 0.35;
-          }
-          const ex = bx - p.x, ey = by - p.y, e2 = ex * ex + ey * ey, er = Math.sqrt(e2) + 0.001;
-          if (er < 380) { const pull = 360 / (e2 + 2500); ax += (ex / er) * pull; ay += (ey / er) * pull; }
-          p.vx = (p.vx + ax) * 0.9; p.vy = (p.vy + ay) * 0.9;
-          const sp = Math.hypot(p.vx, p.vy);
-          if (sp > 1.6) { p.vx *= 1.6 / sp; p.vy *= 1.6 / sp; }
-          const nx = p.x + p.vx + Math.cos(a) * 0.55, ny = p.y + p.vy + Math.sin(a) * 0.55;
-          ctx.moveTo(p.x, p.y); ctx.lineTo(nx, ny);
-          p.x = nx; p.y = ny;
-          if (++p.age > 320 || nx < -20 || nx > w + 20 || ny < -20 || ny > h + 20 || (G > 1 && r < horizon) || (Math.abs(ex) < btn.width / 2 - 6 && Math.abs(ey) < btn.height / 2 - 6)) spawn(p);
+      const EDGES = [
+        ["b1", "b2"], ["b1", "b3"], ["b2", "b4"], ["b3", "b5"], ["b4", "b5"], ["b6", "b7"], ["b7", "b8"], ["b8", "b9"],
+        ["b6", "b10"], ["b10", "b9"], ["b11", "b12"], ["b12", "b13"], ["b13", "b14"], ["b11", "b15"], ["b15", "b12"],
+        ["review", "b1"], ["review", "notebook"], ["notebook", "b2"], ["bench", "b3"], ["bench", "review"], ["bench", "b5"],
+        ["maint", "b7"], ["maint", "b10"], ["maint", "b8"], ["qc", "b13"], ["qc", "b14"], ["report", "b11"], ["report", "b12"],
+        ["report", "qc"], ["report", "bench", 1], ["b4", "b10", 1], ["b14", "b9", 1],
+        ["mayaF", "bench"], ["mayaF", "notebook"], ["mayaF", "report", 1],
+        ["tomF", "mayaF"], ["tomF", "maint"], ["tomF", "report"],
+        ["decision", "tomF"], ["decision", "mayaF"], ["decision", "report"], ["decision", "qc", 1],
+      ];
+      const el = {}, lbl = {}, edgeEls = [];
+      const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.append(e); return e; };
+      [["LAB", 34, 22], ["PILOT LINE", 300, 26], ["PLANT", 316, 330]].forEach(([t, x, y]) => (mk("text", { x, y, class: "cl" }, web).textContent = t));
+      const gEdges = mk("g", {}, web), gNodes = mk("g", {}, web), gLabels = mk("g", {}, web);
+      for (const [a, b, dash] of EDGES) {
+        const [x1, y1] = NODES[a], [x2, y2] = NODES[b];
+        edgeEls.push({ a, b, e: mk("line", { x1, y1, x2, y2, class: "edge" + (dash ? " dash" : "") }, gEdges) });
+      }
+      for (const [id, [x, y, kind, name]] of Object.entries(NODES)) {
+        const g = mk("g", { class: "node " + kind }, gNodes);
+        const r = kind === "bg" ? 4 : kind === "doc" ? 5.5 : 7;
+        mk("circle", { cx: x, cy: y, r: r + 5, class: "halo" }, g);
+        mk("circle", { cx: x, cy: y, r }, g);
+        el[id] = g;
+        if (name) {
+          const right = x < 250;
+          const t = mk("text", { x: right ? x + 12 : x - 12, y: y + 4, "text-anchor": right ? "start" : "end", class: "lbl" }, gLabels);
+          t.textContent = name;
+          lbl[id] = t;
         }
-        ctx.stroke();
-        if (!still) requestAnimationFrame(frame);
+      }
+      const born = new Set();
+      const refreshEdges = () => edgeEls.forEach(({ a, b, e }) => e.classList.toggle("on", born.has(a) && born.has(b)));
+      const birth = (id) => { born.add(id); el[id].classList.add("on"); refreshEdges(); };
+      Object.keys(NODES).filter((id) => NODES[id][2] === "bg").forEach(birth);
+      const light = (ids) => {
+        for (const id in el) { const on = ids.includes(id); el[id].classList.toggle("lit", on); lbl[id]?.classList.toggle("lit", on); }
+        edgeEls.forEach(({ a, b, e }) => e.classList.toggle("lit", ids.includes(a) && ids.includes(b)));
       };
-      resize();
-      addEventListener("resize", resize);
-      if (still) { for (let i = 0; i < 260; i++) frame(i * 16); } else requestAnimationFrame(frame);
-    })();
 
+      // counters in the rail
+      const counts = { docs: 1278, findings: 41, decisions: 12 };
+      const bump = (key) => {
+        counts[key]++;
+        const b = document.querySelector(`[data-count="${key}"]`);
+        b.textContent = counts[key].toLocaleString("en-US");
+        b.classList.add("bump");
+        setTimeout(() => b.classList.remove("bump"), 900);
+      };
+
+      // a dot leaves something on the page and lands on a node of the web
+      const go_duration = 950;
+      const fly = (from, id, kind, animate) => new Promise((done) => {
+        if (!animate) return done();
+        const a = from.getBoundingClientRect(), b = el[id].querySelector("circle:last-child").getBoundingClientRect();
+        const dot = document.createElement("span");
+        dot.className = "flyer " + kind;
+        dot.style.left = a.left + a.width / 2 + "px";
+        dot.style.top = a.top + a.height / 2 + "px";
+        document.body.append(dot);
+        const dx = b.left + b.width / 2 - (a.left + a.width / 2), dy = b.top + b.height / 2 - (a.top + a.height / 2);
+        dot.animate(
+          [{ transform: "translate(0,0) scale(.4)", opacity: 0 }, { transform: "translate(0,0) scale(1)", opacity: 1, offset: 0.12 },
+           { transform: `translate(${dx * 0.55}px, ${dy * 0.55 - 40}px) scale(1)`, offset: 0.6 },
+           { transform: `translate(${dx}px, ${dy}px) scale(.6)`, opacity: 1 }],
+          { duration: go_duration, easing: "cubic-bezier(.45,.05,.25,1)" },
+        ).finished.then(() => { dot.remove(); done(); });
+      });
+      const show = (root, name) => root.querySelectorAll(`[data-stage="${name}"]`).forEach((n) => n.classList.add("shown"));
+      const press = (btn, text, cls) => { btn.classList.add("press"); setTimeout(() => { btn.classList.remove("press"); btn.classList.add("done", ...(cls ? [cls] : [])); btn.textContent = text; }, 160); };
+      const settle = (chip) => { chip.textContent = chip.dataset.finalText; if (chip.dataset.final) chip.classList.add(chip.dataset.final); };
+
+      // each chapter: what it does, in order, and what it lights once done. `go` runs a step after a wait
+      // when animating, or at once when not, so the same list plays the chapter or jumps to its end.
+      const CHAPTERS = {
+        memory: {
+          lit: ["report"],
+          async play(root, go) {
+            show(root, "win");
+            for (const li of root.querySelectorAll(".files li")) {
+              await go(260);
+              li.classList.add("read");
+              await fly(li.querySelector(".t"), li.dataset.node, "doc", go.animate);
+              birth(li.dataset.node); bump("docs");
+            }
+          },
+        },
+        lab: {
+          lit: ["mayaF", "report"], threads: ["report"],
+          async play(root, go) {
+            show(root, "win");
+            await go(700); show(root, "recall"); go.focus(["report"]);
+            await go(1300); root.querySelector('[data-dir="b"]').classList.add("aside"); settle(root.querySelector('[data-dir="b"] .chip'));
+            await go(700); show(root, "dir-c");
+            await go(800); settle(root.querySelector('[data-dir="a"] .chip')); show(root, "finding");
+            await go(1100); const btn = root.querySelector("[data-share]"); press(btn, "Shared with project");
+            await fly(btn, "mayaF", "", go.animate); birth("mayaF"); bump("findings");
+          },
+        },
+        pilot: {
+          lit: ["tomF", "mayaF", "report", "maint"], threads: ["mayaF", "report", "maint"],
+          async play(root, go) {
+            show(root, "win");
+            await go(500); show(root, "ask");
+            await go(900); show(root, "answer"); go.focus(["mayaF", "report", "maint"]);
+            await go(300); root.querySelector(".chart").classList.add("drawn");
+            await go(1900); show(root, "check");
+            await go(900); show(root, "finding");
+            await go(1100); const btn = root.querySelector("[data-share]"); press(btn, "Shared with team");
+            await fly(btn, "tomF", "", go.animate); birth("tomF"); bump("findings");
+          },
+        },
+        team: {
+          lit: ["decision", "tomF", "mayaF", "report"], threads: ["tomF"],
+          async play(root, go) {
+            show(root, "win");
+            await go(500); show(root, "notice"); go.focus(["tomF"]);
+            await go(1200); press(root.querySelector("[data-add]"), "Added to Daniel’s plan");
+            await go(700); show(root, "board");
+            for (const row of root.querySelectorAll('[data-stage="row"]')) { await go(450); row.classList.add("shown"); }
+            await go(900); show(root, "saved");
+            await go(500); await fly(root.querySelector(".saved .loop"), "decision", "green", go.animate);
+            birth("decision"); bump("decisions"); go.focus(this.lit, []);
+          },
+        },
+      };
+
+      // threads: one curve from a lit node to the place on the page that uses it, kept true while scrolling
+      let live = [];
+      const wide = matchMedia("(min-width: 900px)");
+      function drawThreads(root, ids) {
+        threads.replaceChildren();
+        if (!wide.matches) { live = []; return; }
+        live = ids.map((id) => {
+          const target = root.querySelector(`[data-thread="${id}"]`);
+          const p = mk("path", { pathLength: 1, class: id === "decision" ? "green" : "" }, threads);
+          const c = mk("circle", { r: 2.5 }, threads);
+          return { id, target, p, c };
+        }).filter((t) => t.target);
+        place();
+        requestAnimationFrame(() => requestAnimationFrame(() => live.forEach((t) => t.p.classList.add("in"))));
+      }
+      function place() {
+        for (const t of live) {
+          const a = el[t.id].querySelector("circle:last-child").getBoundingClientRect();
+          const b = t.target.getBoundingClientRect();
+          const visible = b.bottom > 0 && b.top < innerHeight;
+          t.p.style.opacity = visible ? "" : "0";
+          t.c.style.opacity = visible ? "" : "0";
+          const x1 = a.left + a.width / 2, y1 = a.top + a.height / 2;
+          // a thread stops at the window's edge, level with what it feeds, so it never crosses the words
+          const win = t.target.closest(".win").getBoundingClientRect();
+          const x2 = win.left, y2 = Math.max(win.top + 24, Math.min(win.bottom - 24, b.top + b.height / 2));
+          const d = `M${x1} ${y1} C${x1 + (x2 - x1) * 0.55} ${y1}, ${x2 - (x2 - x1) * 0.45} ${y2}, ${x2} ${y2}`;
+          t.p.setAttribute("d", d);
+          t.c.setAttribute("cx", x2); t.c.setAttribute("cy", y2);
+        }
+      }
+      let ticking = false;
+      const onScroll = () => { if (ticking || !live.length) return; ticking = true; requestAnimationFrame(() => { place(); ticking = false; }); };
+      addEventListener("scroll", onScroll, { passive: true });
+      addEventListener("resize", onScroll);
+
+      const order = Object.keys(CHAPTERS);
+      const state = {}; // undefined, "playing", "done"
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      async function run(step, animate) {
+        if (state[step]) return;
+        state[step] = "playing";
+        const root = document.querySelector(`.chapter[data-step="${step}"]`);
+        const go = animate ? (ms) => wait(ms) : () => Promise.resolve();
+        go.animate = animate;
+        go.focus = (ids, threadIds = ids) => { if (current === step) { light(ids); drawThreads(root, threadIds); } };
+        await CHAPTERS[step].play(root, go);
+        state[step] = "done";
+        if (current === step) { light(CHAPTERS[step].lit); drawThreads(root, CHAPTERS[step].threads || []); }
+      }
+      let current = null;
+      async function enter(step) {
+        current = step;
+        rail.dataset.step = step;
+        // a chapter reached by a jump finishes the ones before it at once, so memory is never behind
+        for (const s of order.slice(0, order.indexOf(step))) if (!state[s]) await run(s, false);
+        if (!state[step]) { run(step, !still); return; }
+        if (state[step] === "done") { light(CHAPTERS[step].lit); drawThreads(document.querySelector(`.chapter[data-step="${step}"]`), CHAPTERS[step].threads || []); }
+      }
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) if (e.isIntersecting) enter(e.target.dataset.step);
+      }, { rootMargin: "-42% 0px -42% 0px" });
+      document.querySelectorAll(".chapter").forEach((c) => io.observe(c));
+      // leaving the story clears the threads
+      new IntersectionObserver(([e]) => { if (!e.isIntersecting) { threads.replaceChildren(); live = []; } }, { threshold: 0 })
+        .observe(document.querySelector(".chapters"));
+    })();
   </script>
 </body>
 </html>
