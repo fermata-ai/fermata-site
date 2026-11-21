@@ -242,7 +242,11 @@
     .win { background: var(--white); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; max-width: 640px; }
     .win-bar { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-bottom: 1px solid var(--line); background: var(--surface); font-size: 13px; }
     .dots { display: flex; gap: 6px; } .dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
-    .win-bar .title { font-weight: 600; }
+    /* the app the window belongs to: Fermata's own icon and name, then what is open in it */
+    .win-bar .app { display: inline-flex; align-items: center; gap: 7px; font-weight: 600; white-space: nowrap; }
+    .win-bar .app img { display: block; width: 20px; height: 20px; border-radius: 5px; box-shadow: 0 1px 2px rgba(26, 26, 31, 0.18); }
+    .win-bar .title { color: var(--ink-2); padding-left: 12px; border-left: 1px solid var(--line); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .win-bar .who { white-space: nowrap; flex: none; }
     .win-bar .who { margin-left: auto; display: flex; align-items: center; gap: 7px; color: var(--ink-3); font-size: 12.5px; }
     .av { width: 22px; height: 22px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 10.5px; font-weight: 700; background: var(--violet-soft); color: var(--violet); flex: none; }
     .av.t { background: #e1edfa; color: #1f5fa8; } .av.d { background: var(--amber-soft); color: var(--amber); }
@@ -417,6 +421,9 @@
       .nav { gap: 14px; }
       .nav .hide-xs { display: none; }
       .win-body { padding: 12px; }
+      .win-bar { gap: 9px; padding-inline: 12px; }
+      .win-bar .dots { display: none; }
+      .win-bar .title { padding-left: 9px; }
       .msg.you { margin-left: 0; }
       .finding { flex-wrap: wrap; } .finding .btn { margin-left: 0; }
       .board th:nth-child(2), .board td:nth-child(2) { display: none; }
@@ -588,7 +595,7 @@
           <h2>In the lab, Maya starts where the last team stopped.</h2>
           <p>Her project is a faster drying step. Before she plans a test, Fermata brings up last year’s plant trial, so she skips what already failed. Her result goes back into memory.</p>
           <div class="win" data-stage="win">
-            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="title">Faster drying step</span><span class="who"><span class="av">M</span>Maya · Lab</span></div>
+            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Faster drying step</span><span class="who"><span class="av">M</span>Maya · Lab</span></div>
             <div class="win-body">
               <p class="k">Directions</p>
               <div class="dirs">
@@ -618,7 +625,7 @@
           <h2>On the pilot line, the result arrives with its history.</h2>
           <p>Tom’s output fell after the switch to 8-hour drying. Fermata reads Maya’s result, the maintenance log and the plant report together, and finds why the lab and the line disagree. An independent check works it out again before anyone acts on it.</p>
           <div class="win" data-stage="win">
-            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="title">Pilot line · drying step</span><span class="who"><span class="av t">T</span>Tom · Pilot line</span></div>
+            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Pilot line · drying step</span><span class="who"><span class="av t">T</span>Tom · Pilot line</span></div>
             <div class="win-body pilot-body">
               <div class="msg you" data-stage="ask">Since we moved to 8-hour drying, pilot output has dropped. Can you work out why?<br><span class="att">CSV · Pilot tests, November</span></div>
               <div class="msg fermata" data-stage="answer">
@@ -658,7 +665,7 @@
           <h2>Push here. Stop there.</h2>
           <p>Before anything is scaled up, the team sees every direction with its evidence, and decides. Daniel hears before his coating reaches the pilot line. The reasons go back into memory.</p>
           <div class="win" data-stage="win">
-            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="title">Electrodes team</span><span class="who"><span class="av d">D</span>Daniel · Lab</span></div>
+            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Electrodes team</span><span class="who"><span class="av d">D</span>Daniel · Lab</span></div>
             <div class="win-body">
               <div class="notice" data-stage="notice" data-thread="tomF">
                 <span class="av t">T</span>
