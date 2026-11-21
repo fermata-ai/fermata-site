@@ -102,22 +102,6 @@
     .hero-copy > :nth-child(4) { animation-delay: 0.36s; }
     @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
-    /* the three steps, each a way into its chapter */
-    .strip {
-      position: relative; z-index: 2; list-style: none; margin: clamp(36px, 7vh, 72px) auto 0; padding: 0 24px;
-      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; max-width: 980px;
-      opacity: 0; animation: rise 0.9s 0.5s var(--ease) forwards;
-    }
-    .strip a {
-      display: block; height: 100%; text-decoration: none; padding: 16px 18px; border-radius: 14px;
-      background: rgba(252, 252, 251, 0.82); border: 1px solid var(--line); backdrop-filter: blur(6px);
-      transition: border-color 0.2s, transform 0.2s;
-    }
-    .strip a:hover { border-color: var(--violet-line); transform: translateY(-2px); }
-    .strip .n { font-family: var(--mono); font-size: 12px; color: var(--violet); }
-    .strip b { display: block; font-family: var(--serif); font-weight: 500; font-size: 19px; margin: 2px 0 4px; }
-    .strip span { font-size: 14px; color: var(--ink-2); line-height: 1.45; }
-
     .papers { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
     .paper {
       position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%);
@@ -364,9 +348,8 @@
     /* ---------- smaller screens: the memory forms once in the flow, then each stage reads text first ---------- */
     @media (max-width: 899px) {
       .nav .hide-s { display: none; }
-      .strip { grid-template-columns: 1fr; max-width: 480px; }
       .hero { align-content: start; padding-top: 28px; overflow-x: clip; overflow-y: visible; }
-      .hero-copy { order: 1; } .strip { order: 2; }
+      .hero-copy { order: 1; }
       .papers { order: 3; position: relative; inset: auto; display: flex; justify-content: center; align-items: flex-start; gap: 8px; height: 78px; margin-top: 36px; }
       .paper { position: relative; left: auto; top: auto; width: 112px; flex: none; --x: 30; --y: 10; --o: 1 !important; }
       .paper.far, .paper.near { scale: 1; filter: none; }
@@ -419,10 +402,6 @@
         .hero { view-timeline: --hero block; overflow-x: clip; overflow-y: visible; }
         .papers { z-index: 5; }
         .hero-copy { animation: leave linear both; animation-timeline: --hero; animation-range: exit 0% exit 18%; }
-        .strip {
-          animation: rise 0.9s 0.5s var(--ease) forwards, leave linear both;
-          animation-timeline: auto, --hero; animation-range: normal, exit 0% exit 16%;
-        }
         /* 1. POUR: each record leaves its place, narrows through the funnel, and ends as a dot at its mouth */
         .paper {
           --cx: calc(var(--x) * var(--hw, 1440px) / 100 + 75px);
@@ -507,8 +486,8 @@
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      .hero-copy > *, .strip, .paper { animation: none; opacity: var(--o, 0.92); }
-      .hero-copy > *, .strip { opacity: 1; }
+      .hero-copy > *, .paper { animation: none; opacity: var(--o, 0.92); }
+      .hero-copy > * { opacity: 1; }
       .memory, .web .node, .web .edge { transition: none; }
       .js [data-stage] { translate: 0 0; transition: opacity 0.2s; }
       .js .chart .ln { transition: none; }
@@ -565,7 +544,7 @@
       <div class="papers" aria-hidden="true">
         <svg class="funnel"><path class="fl" pathLength="1"/><path class="fr" pathLength="1"/></svg>
         <div class="paper near" style="--x:3;--y:10;--r:-6deg;--d:.1"><span class="t pdf">PDF</span><span class="nm">Plant report · Oct 2025</span><i></i><i></i></div>
-        <div class="paper" style="--x:5;--y:36;--r:4deg;--d:.3;--o:.8"><span class="t nb">NOTEBOOK</span><span class="nm">Lab notebook, p. 38–42</span><i></i><i></i></div>
+        <div class="paper" style="--x:5;--y:36;--r:4deg;--d:.3;--o:.8"><span class="t nb">NOTEBOOK</span><span class="nm">Lab notebook, <span style="white-space:nowrap">p. 38–42</span></span><i></i><i></i></div>
         <div class="paper far" style="--x:2;--y:58;--r:-3deg;--d:.5;--o:.6"><span class="t csv">CSV</span><span class="nm">Moisture QC log 2026</span><i></i><i></i></div>
         <div class="paper near" style="--x:6;--y:76;--r:5deg;--d:.2"><span class="t ppt">SLIDES</span><span class="nm">Drying review · Mar 2026</span><i></i><i></i></div>
         <div class="paper far" style="--x:85;--y:8;--r:5deg;--d:.4;--o:.6"><span class="t log">LOG</span><span class="nm">Pilot line maintenance</span><i></i><i></i></div>
@@ -578,7 +557,7 @@
         <div class="paper far" style="--x:66;--y:91;--r:-4deg;--d:.7;--o:.55"><span class="t log">EMAIL</span><span class="nm">RE: roll R-31 results</span><i></i><i></i></div>
       </div>
       <div class="hero-copy">
-        <p class="eyebrow">The integrated research environment</p>
+        <p class="eyebrow">The integrated research environment (IRE)</p>
         <h1 id="hero-title">From reactive to <em>proactive</em> R&amp;D&nbsp;decisions</h1>
         <p class="lede">Fermata connects today’s result to everything your company already knows, from the lab bench to the pilot line to the plant.</p>
         <div class="actions">
@@ -586,11 +565,6 @@
           <a class="cta-ghost" href="https://web.getfermata.app"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>Try demo</a>
         </div>
       </div>
-      <ol class="strip">
-        <li><a href="#memory"><span class="n">01</span><b>One memory</b><span>Reports, notebooks and data, read and linked.</span></a></li>
-        <li><a href="#lab"><span class="n">02</span><b>Every stage</b><span>R&amp;D, pilot and production start from what is known.</span></a></li>
-        <li><a href="#team"><span class="n">03</span><b>Clear decisions</b><span>Push here, stop there, and keep the reasons.</span></a></li>
-      </ol>
     </section>
 
     <!-- 2. The story: memory on the left stays put; the stages pass on the right -->
