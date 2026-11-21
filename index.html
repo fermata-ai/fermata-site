@@ -309,7 +309,7 @@
     .chart .ln { fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
     .chart .axis { stroke: var(--line); stroke-width: 1; }
     .chart text { font-size: 10px; fill: var(--ink-3); font-family: var(--sans); }
-    .chart .tag { font-weight: 700; font-size: 10.5px; }
+    .chart .key { font-weight: 700; font-size: 10.5px; }
     .sources { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 10px; font-size: 12px; color: var(--ink-3); }
     .check { margin-top: 10px; display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 8px 11px; border-radius: 9px; background: var(--green-soft); color: var(--green); border: 1px solid var(--green-line); }
     .check svg { width: 15px; height: 15px; flex: none; }
@@ -402,7 +402,7 @@
     .pilot-body .sources { margin: 0; }
     .pilot-body .plot .chart { max-width: none; }
     .pilot-body .check { margin-top: 8px; }
-    .pilot-body .chart text { font-size: 13px; } .pilot-body .chart .tag { font-size: 13px; }
+    .pilot-body .chart text { font-size: 13px; } .pilot-body .chart .key { font-size: 12px; }
     .pilot-body .finding { grid-column: 1 / -1; margin-top: 0; }
 
     /* ---------- smaller screens: the memory forms once in the flow, then each stage reads text first ---------- */
@@ -649,17 +649,17 @@
               </div>
               <div class="plot">
                 <div data-stage="answer">
-                <svg class="chart" viewBox="0 0 340 150" role="img" aria-label="Output kept against cycles. The bench test covers cycles 0 to 50, where 8-hour drying is slightly ahead. Near cycle 245 the 8-hour line falls behind and ends at 79 percent, against 90 percent for 12-hour drying.">
+                <svg class="chart" viewBox="0 0 340 150" role="img" aria-label="Output kept against cycles. The bench test covers cycles 0 to 50, where 8-hour drying is ahead, and it stays ahead until about cycle 200. Near cycle 245 the 8-hour line falls behind and ends at 79 percent, against 90 percent for 12-hour drying.">
                   <rect x="30" y="10" width="46.7" height="120" fill="#ece8f9"/>
                   <text x="34" y="124">Bench test</text>
                   <line class="axis" x1="30" y1="130" x2="310" y2="130"/>
                   <line x1="258.7" y1="10" x2="258.7" y2="130" stroke="#c3c2b7" stroke-dasharray="3 3"/>
                   <text x="252" y="143" text-anchor="end">cycle 245</text>
                   <text x="30" y="143">0</text><text x="296" y="143">300</text>
-                  <path class="ln" pathLength="1" stroke="#0f6e56" d="M30 10 L76.7 17.2 L123.3 24.4 L170 30.8 L216.7 37.2 L258.7 43.2 L310 50"/>
-                  <path class="ln late" pathLength="1" stroke="#a52a2a" d="M30 10 L76.7 14.8 L123.3 21.6 L170 28.8 L216.7 36 L258.7 43.2 L286.7 68 L310 94"/>
-                  <text class="tag" x="314" y="53" fill="#0f6e56">12 h</text>
-                  <text class="tag" x="314" y="97" fill="#a52a2a">8 h</text>
+                  <path class="ln" pathLength="1" stroke="#0f6e56" d="M30 14 L76.7 21.5 L123.3 28 L170 33.6 L216.7 38.8 L258.7 43.2 L310 50"/>
+                  <path class="ln late" pathLength="1" stroke="#a52a2a" d="M30 14 L76.7 15.2 L123.3 20.4 L170 27.4 L216.7 35.6 L258.7 43.2 L286.7 68 L310 94"/>
+                  <text class="key" x="314" y="54" style="fill:#0f6e56">12 h</text>
+                  <text class="key" x="314" y="98" style="fill:#a52a2a">8 h</text>
                 </svg>
                 </div>
                 <div class="check" data-stage="check"><svg aria-hidden="true"><use href="#tick"/></svg>Independent check passed. It corrected two figures.</div>
