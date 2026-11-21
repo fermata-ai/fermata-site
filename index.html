@@ -64,7 +64,7 @@
     .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
     /* ---------- masthead ---------- */
-    .top { position: relative; z-index: 3; }
+    .top { position: relative; z-index: 7; }
     .top .wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; }
     .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--serif); font-size: 21px; }
     .brand svg { color: var(--violet); }
@@ -93,7 +93,7 @@
 
     /* ---------- hero: scattered records drift around the promise ---------- */
     .hero { position: relative; min-height: calc(100svh - 72px); display: grid; align-content: center; padding-block: 24px 40px; overflow: clip; }
-    .hero-copy { position: relative; z-index: 2; text-align: center; max-width: 860px; margin: 0 auto; padding-inline: 24px; }
+    .hero-copy { position: relative; z-index: 6; text-align: center; max-width: 860px; margin: 0 auto; padding-inline: 24px; }
     h1 { font-size: clamp(40px, 6.2vw, 80px); line-height: 1.02; letter-spacing: -0.035em; margin-bottom: 22px; }
     .lede { font-family: var(--serif); font-weight: 300; font-size: clamp(18px, 2vw, 22px); line-height: 1.45; color: var(--ink-2); max-width: 640px; margin: 0 auto 32px; }
     .hero-copy > * { opacity: 0; animation: rise 0.9s var(--ease) forwards; }
@@ -102,7 +102,25 @@
     .hero-copy > :nth-child(4) { animation-delay: 0.36s; }
     @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
-    .papers { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+    .papers { position: absolute; inset: 0; z-index: 6; pointer-events: none; }
+    /* the canvas that draws the documents behind the hero and the memory they become, and the labels laid over it */
+    .space { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 5; pointer-events: none; }
+    .space-tags { position: fixed; inset: 0; z-index: 5; pointer-events: none; overflow: clip; }
+    .space-tags > * { position: absolute; left: 0; top: 0; will-change: transform; }
+    body.map-wide { cursor: grab; }
+    body.turning, body.turning * { cursor: grabbing !important; user-select: none; -webkit-user-select: none; }
+    /* a stage's name: a hub of the wide map (--w 0), a small caption once the map is in its card (--w 1) */
+    .hub { display: inline-flex; align-items: center; gap: calc(6px * (1 - var(--w, 1))); white-space: nowrap; border-radius: 999px;
+      padding: calc(5px * (1 - var(--w, 1))) calc(12px * (1 - var(--w, 1)));
+      background: rgba(255, 255, 255, calc(0.94 * (1 - var(--w, 1)))); border: 1px solid rgba(225, 224, 217, calc(1 - var(--w, 1)));
+      font-size: calc(13.5px - 4.5px * var(--w, 1)); font-weight: 600; letter-spacing: calc(0.02em + 0.16em * var(--w, 1)); text-transform: uppercase;
+      color: color-mix(in srgb, var(--ink-3) calc(var(--w, 1) * 100%), var(--hub)); opacity: 0; }
+    .hub svg { width: calc(15px * (1 - var(--w, 1))); height: 15px; opacity: calc(1 - var(--w, 1)); }
+    .hub b { font-weight: 600; }
+    .team { white-space: nowrap; padding: 3px 9px; border-radius: 999px; background: rgba(255, 255, 255, 0.88); border: 1px solid var(--line);
+      font-size: 11.5px; font-weight: 600; opacity: 0; box-shadow: 0 4px 12px -9px rgba(26, 26, 31, 0.4); }
+    .team.rnd { color: var(--violet); } .team.pilot { color: #1f5fa8; } .team.prod { color: #8a5a00; }
+    .hub.rnd { --hub: var(--violet); } .hub.pilot { --hub: #1f5fa8; } .hub.prod { --hub: #8a5a00; }
     .paper {
       position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%);
       width: 150px; padding: 10px 11px 12px; border-radius: 9px; background: var(--white); border: 1px solid var(--line);
@@ -120,8 +138,6 @@
     .t.nb { background: var(--violet-soft); color: var(--violet); } .t.log { background: var(--sunk); color: var(--ink-2); }
     @keyframes settle { from { opacity: 0; translate: 0 18px; } to { opacity: var(--o, 0.92); translate: 0 0; } }
     .paper::after { content: ""; position: absolute; left: 50%; top: 50%; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; background: #9b95c9; opacity: 0; }
-    .funnel { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; display: none; }
-    .funnel path { fill: none; stroke: #c3c2b7; stroke-width: 1; }
 
     /* ---------- the story: memory stays on the left, one stage at a time on the right ---------- */
     .story { position: relative; display: grid; grid-template-columns: minmax(300px, 5fr) 7fr; grid-template-rows: auto auto; column-gap: clamp(24px, 4vw, 64px); max-width: 1280px; margin: 0 auto; padding-inline: 32px; }
@@ -147,13 +163,8 @@
       position: relative; width: min(100%, 440px); background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
       box-shadow: var(--shadow); padding: 18px 18px 14px; transform-origin: 0 0;
     }
-    .deep { position: absolute; z-index: 0; pointer-events: none; }
-    /* the 3D memory: a canvas, with the tags, captions and hover chip laid over it */
+    /* the memory's place in its card; the canvas draws into it */
     div.web { position: relative; width: 100%; aspect-ratio: 400 / 340; margin: 6px 0 4px; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
-    div.web.turning { cursor: grabbing; }
-    div.web canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-    .tags { position: absolute; inset: 0; pointer-events: none; }
-    .tags > * { position: absolute; left: 0; top: 0; will-change: transform; }
     .tag { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; padding: 3px 8px 3px 6px; border-radius: 999px; background: rgba(255, 255, 255, 0.92);
       border: 1px solid var(--line); font-size: 10.5px; color: var(--ink); box-shadow: 0 4px 12px -8px rgba(26, 26, 31, 0.4); opacity: 0; transition: opacity 0.4s; }
     .tag.on { opacity: 1; }
@@ -161,7 +172,6 @@
     .tag b { font-weight: 700; }
     .tag.rnd { color: var(--violet); } .tag.pilot { color: #1f5fa8; } .tag.prod { color: #8a5a00; } .tag.dec { color: var(--green); }
     .tag span { color: var(--ink); font-weight: 500; }
-    .cap { font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; }
     /* the chip a record shows under the pointer: small, like a label on a shelf */
     .hchip { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; padding: 3px 9px 3px 4px; border-radius: 999px; background: rgba(255, 255, 255, 0.96);
       border: 1px solid var(--line); box-shadow: 0 6px 18px -10px rgba(26, 26, 31, 0.45); font-size: 11px; z-index: 2; }
@@ -217,11 +227,6 @@
     .web .thr { fill: none; stroke: var(--violet-2); stroke-width: 1.3; opacity: 0.7; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.5s var(--ease); }
     .web .thr.in { stroke-dashoffset: 0; }
     .web .lbl.lit { opacity: 1; }
-    .stats { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); padding-top: 10px; }
-    .stats div { font-size: 11.5px; color: var(--ink-3); }
-    .stats b { display: block; font-family: var(--serif); font-weight: 500; font-size: 20px; color: var(--ink); font-variant-numeric: tabular-nums; transition: color 0.4s; }
-    .stats b.bump { color: var(--violet); }
-    .stats .dec b.bump { color: var(--green); }
 
     .chapter { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-block: 12vh; }
     /* wide screens: a stage holds still while the scroll plays its steps, then lets go */
@@ -230,9 +235,8 @@
       .chapters .pin { position: sticky; top: var(--bar); min-height: calc(100svh - var(--bar)); display: flex; flex-direction: column; justify-content: center; padding-block: 16px; }
     }
     .chapter h2 { font-size: clamp(30px, 3.4vw, 46px); line-height: 1.08; margin-bottom: 14px; }
-    .pin > p:not(.eyebrow):not(.after) { font-family: var(--serif); font-weight: 300; font-size: clamp(17px, 1.5vw, 19px); color: var(--ink-2); max-width: 560px; margin: 0 0 28px; }
+    .pin > p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: clamp(17px, 1.5vw, 19px); color: var(--ink-2); max-width: 560px; margin: 0 0 28px; }
     .chapter .eyebrow .n { font-family: var(--mono); letter-spacing: 0; margin-right: 6px; }
-    .note-fiction { font-size: 12.5px; color: var(--ink-3); margin: 0 0 18vh; }
 
     /* ---------- app windows: the product, drawn ---------- */
     .win { background: var(--white); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; max-width: 640px; }
@@ -309,7 +313,6 @@
     .sig.push { background: var(--green); color: var(--white); } .sig.stop { background: var(--red-soft); color: var(--red); } .sig.wait { background: var(--amber-soft); color: var(--amber); }
     .saved { display: flex; align-items: center; gap: 9px; margin-top: 12px; font-size: 13px; color: var(--green); }
     .saved .loop { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--green-soft); flex: none; }
-    .after { font-family: var(--serif); font-size: 19px; font-style: italic; color: var(--ink-2); margin: 26px 0 0; }
 
     /* staged parts wait for their moment once the script is running; without it, everything shows */
     .js [data-stage] { opacity: 0; translate: 0 8px; transition: opacity 0.6s var(--ease), translate 0.6s var(--ease); }
@@ -324,10 +327,6 @@
     .threads path.in { stroke-dashoffset: 0; }
     .threads path.green { stroke: var(--green-2); }
     .threads circle { fill: var(--violet-2); }
-    .feed { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: visible; pointer-events: none; z-index: 7; display: none; }
-    .feed path { fill: none; stroke: #b9b2e0; stroke-width: 1; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.1s var(--ease); }
-    .feed.in path { stroke-dashoffset: 0; }
-    .feed circle { fill: #9b95c9; }
     .flyer { position: fixed; z-index: 6; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--violet); box-shadow: 0 0 0 5px rgba(74, 58, 167, 0.16); pointer-events: none; }
     .flyer.green { background: var(--green-2); box-shadow: 0 0 0 5px rgba(29, 158, 117, 0.18); }
     .flyer.doc { background: #9b95c9; box-shadow: 0 0 0 4px rgba(74, 58, 167, 0.1); }
@@ -379,6 +378,7 @@
     .intro-copy .eyebrow .n { font-family: var(--mono); letter-spacing: 0; margin-right: 6px; }
     .intro h2 { font-size: clamp(30px, 3.4vw, 46px); line-height: 1.08; margin-bottom: 14px; }
     .intro-copy > p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: clamp(17px, 1.5vw, 19px); color: var(--ink-2); max-width: 560px; margin: 0; }
+    .intro-copy > p.hint:not(.eyebrow) { display: none; font: 500 12px var(--sans); letter-spacing: 0.03em; color: var(--ink-3); margin-top: 16px; }
 
     /* the pilot window reads in two columns, so it fits a laptop screen with its headline */
     .pilot-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 16px; align-items: start; }
@@ -395,14 +395,9 @@
       .nav .hide-s { display: none; }
       .hero { align-content: start; padding-top: 28px; overflow-x: clip; overflow-y: visible; }
       .hero-copy { order: 1; }
-      .papers { order: 3; position: relative; inset: auto; display: flex; justify-content: center; align-items: flex-start; gap: 8px; height: 78px; margin-top: 36px; }
-      .paper { position: relative; left: auto; top: auto; width: 112px; flex: none; --x: 30; --y: 10; --o: 1 !important; }
-      .paper.far, .paper.near { scale: 1; filter: none; }
-      .papers .paper:not(:nth-child(3), :nth-child(5), :nth-child(6)) { display: none; } /* child 1 is the funnel */
-      .papers .paper:nth-child(5) { order: 1; } .papers .paper:nth-child(3) { order: 2; } .papers .paper:nth-child(6) { order: 3; }
-      .feed { display: block; }
+      .papers { display: none; }
       .memory { display: flex; flex-direction: column; }
-      .memory .web { order: 1; margin-top: 2px; } .memory-head { order: 2; margin: 2px 0 8px; } .memory .stats { order: 3; }
+      .memory .web { order: 1; margin-top: 2px; } .memory-head { order: 2; margin: 2px 0 8px; }
       .story { display: flex; flex-direction: column; padding-inline: 16px; }
       .rail { order: 1; position: static; height: auto; padding: 8px 0 0; display: block; }
       .intro { order: 2; } .chapters { order: 3; }
@@ -412,7 +407,6 @@
       .intro { padding-top: 40px; padding-bottom: 8px; }
       .pilot-body { grid-template-columns: minmax(0, 1fr); }
       .pilot-body .msg.you { margin-left: 0; }
-      .note-fiction { margin-bottom: 0; }
       .inds { grid-template-columns: 1fr; }
       .ind { aspect-ratio: 4 / 3; }
       :root { --bar: 52px; }
@@ -430,10 +424,9 @@
       .faq summary { font-size: 18px; }
     }
 
-    /* ---------- the moment the memory is born: pour, form, dock. Scrubbed by scroll, so it reverses. ----------
-       The memory's resting place is the rail on the left. The script measures that place and sets --dx, --dy and
-       --s, the move from the centre of the screen into it; this animation runs that move backwards from centre
-       to rail. Without support, or with reduced motion, the memory simply rests in the rail. */
+    /* ---------- the moment the memory is born: gather, the wide map, the fold. Scrubbed by scroll, so it reverses.
+       The canvas draws the documents and the map; this CSS moves the hero's twelve records, places the statement,
+       and brings the card in. Without support, or with reduced motion, the memory simply rests in its card. */
     @keyframes leave { to { opacity: 0; translate: 0 -40px; } }
     @keyframes appear { from { opacity: 0; } to { opacity: 1; } }
     @keyframes ink { 0%, 68% { opacity: 1; } 78%, 100% { opacity: 0; } }
@@ -445,9 +438,8 @@
       @media (prefers-reduced-motion: no-preference) and (min-width: 900px) {
         body { timeline-scope: --intro; }
         .hero { view-timeline: --hero block; overflow-x: clip; overflow-y: visible; }
-        .papers { z-index: 5; }
         .hero-copy { animation: leave linear both; animation-timeline: --hero; animation-range: exit 0% exit 18%; }
-        /* 1. POUR: each record leaves its place, narrows through the funnel, and ends as a dot at its mouth */
+        /* 1. GATHER: each record in front of the hero leaves its place and flies to its own place in the map */
         .paper {
           --cx: calc(var(--x) * var(--hw, 1440px) / 100 + 75px);
           --cy: calc(var(--y) * var(--hh, 828px) / 100 + 36px);
@@ -459,76 +451,35 @@
         }
         .paper > * { animation: ink linear both; animation-timeline: --hero; animation-range: var(--range); }
         .paper::after { animation: dot linear both; animation-timeline: --hero; animation-range: var(--range); }
-        /* a record stays a crisp white card at full strength until it is inside the funnel; only there does it become a dot */
+        /* a record stays a crisp white card for most of the way, then is a dot, and the map takes it from there */
         @keyframes pour {
-          12% { opacity: 1; scale: 1; filter: none; }
-          44% { translate: calc((var(--mx, 50vw) - var(--cx)) * 0.6) calc(var(--rim, 60vh) + 24px - var(--cy)); rotate: 0deg; scale: 0.82; opacity: 1; filter: none; }
-          66% { translate: calc((var(--mx, 50vw) - var(--cx)) * 0.92) calc(var(--rim, 60vh) + (var(--my, 120vh) - var(--rim, 60vh)) * 0.45 - var(--cy)); rotate: 0deg; scale: 0.5; opacity: 1; filter: none;
-                background-color: #fff; border-color: var(--line); }
-          80% { scale: 0.12; background-color: rgba(255, 255, 255, 0); border-color: transparent; box-shadow: none; filter: none; }
+          10% { opacity: 1; scale: 1; filter: none; }
+          66% { opacity: 1; background-color: #fff; border-color: var(--line); filter: none; }
+          80% { background-color: rgba(255, 255, 255, 0); border-color: transparent; box-shadow: none; }
           92% { opacity: 1; }
-          100% { translate: calc(var(--mx, 50vw) - var(--cx)) calc(var(--my, 120vh) - var(--cy)); rotate: 0deg; scale: 0.07; opacity: 0;
+          100% { translate: calc(var(--mx, 50vw) - var(--cx)) calc(var(--my, 120vh) - var(--cy)); rotate: 0deg; scale: 0.06; opacity: 0;
                  background-color: rgba(255, 255, 255, 0); border-color: transparent; box-shadow: none; filter: none; }
         }
-        /* the funnel is drawn once the promise has left, below where it stood, and goes when the last record is through */
-        .funnel { display: block; }
-        .funnel path { stroke-dasharray: 1; animation: funnel linear both; animation-timeline: --hero; animation-range: exit 18% exit 100%; }
-        @keyframes funnel { 0% { stroke-dashoffset: 1; opacity: 1; } 20% { stroke-dashoffset: 0; } 82% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
 
-        /* 2. FORM: the web grows big in the middle of the screen, top first, as the dots land */
-        .intro { grid-column: 1 / -1; height: 130vh; min-height: 0; padding: 0; display: block; view-timeline: --intro block; position: relative; z-index: 5; pointer-events: none; }
+        /* 2. THE WIDE MAP: the memory fills the screen, with its statement in the middle */
+        .intro { grid-column: 1 / -1; height: 170vh; min-height: 0; padding: 0; display: block; view-timeline: --intro block; position: relative; z-index: 6; pointer-events: none; }
         .intro-copy {
-          position: sticky; top: var(--copy-top, 68vh); max-width: 900px; margin: 0 auto; text-align: center; pointer-events: auto;
-          animation: introCopy linear both; animation-timeline: --intro; animation-range: cover 26% cover 46%;
+          position: sticky; top: var(--copy-top, 36vh); max-width: 620px; margin: 0 auto; text-align: center; pointer-events: auto;
+          animation: introCopy linear both; animation-timeline: --intro; animation-range: cover 28% cover 52%;
         }
+        @keyframes introCopy { 0% { opacity: 0; translate: 0 14px; } 22%, 80% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 -14px; } }
         .intro-copy .eyebrow { margin-bottom: 10px; }
         .intro h2 { font-size: clamp(30px, 2.9vw, 42px); margin-bottom: 10px; }
         .intro-copy > p:not(.eyebrow) { margin: 0 auto; max-width: 620px; }
-        @keyframes introCopy { 0% { opacity: 0; translate: 0 14px; } 45%, 70% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 -14px; } }
-        .web .node.form {
-          animation: nodeIn var(--ease) both; animation-timeline: --intro;
-          animation-range: cover calc(18% + var(--i) * 17%) cover calc(24% + var(--i) * 17%);
-        }
-        .web .edge.form {
-          stroke-dasharray: 1; animation: edgeIn linear both; animation-timeline: --intro;
-          animation-range: cover calc(18% + var(--i) * 17%) cover calc(24% + var(--i) * 17%);
-        }
-        .web .edge.form.dash { stroke-dasharray: 3 3; animation-name: edgeFade; }
-        .web .cl { animation: appear linear both; animation-timeline: --intro; animation-range: cover 30% cover 40%; }
-        .web .ft { animation: ftShow linear both; animation-timeline: --intro; animation-range: cover 36% cover 58%; }
-        @keyframes ftShow { 0% { opacity: 0; } 25%, 70% { opacity: 1; } 100% { opacity: 0; } }
-        .stats { animation: appear linear both; animation-timeline: --intro; animation-range: cover 35% cover 42%; }
-        .deep { animation: appear linear both; animation-timeline: --intro; animation-range: cover 24% cover 46%; }
+        .intro-copy > p.hint:not(.eyebrow) { display: block; margin-top: 16px; }
 
-        /* 3. DOCK: the same element shrinks and slides into the rail, and its card closes round it */
-        .memory { animation: dock linear both; animation-timeline: --intro; animation-range: cover 46% cover 70%; }
+        /* 3. THE FOLD: the map draws into its place on the left, and its card appears round it */
+        .memory { animation: appear linear both; animation-timeline: --intro; animation-range: cover 56% cover 66%; }
+        /* the lab's words wait until the map has folded out of their way */
+        #lab .pin { animation: appear linear both; animation-timeline: --intro; animation-range: cover 60% cover 70%; }
         .chapters { margin-top: var(--pull, 0px); }
-        /* the web leaves the right column first (most of the sideways move and the shrink in the first third), so the
-           lab's words, rising in the flow, never meet it; then it settles into the rail and its card closes round it */
-        @keyframes dock {
-          from { transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(var(--s, 1)); background-color: rgba(252, 252, 251, 0); border-color: transparent; box-shadow: none;
-                 animation-timing-function: cubic-bezier(0.45, 0, 0.35, 1); }
-          36% { transform: translate(calc(var(--dx, 0px) * 0.08), calc(var(--dy, 0px) * 0.45)) scale(calc(1 + (var(--s, 1) - 1) * 0.12));
-                animation-timing-function: cubic-bezier(0.3, 0, 0.3, 1); }
-          55% { background-color: rgba(252, 252, 251, 0); border-color: transparent; box-shadow: none; }
-          to { transform: translate(0px, 0px) scale(1); }
-        }
-        .memory-head { animation: appear linear both; animation-timeline: --intro; animation-range: cover 60% cover 70%; }
       }
 
-      /* the phone: no dock and no pour. Three records rest above the web, each with a fine line to its node; the web forms once. */
-      @media (prefers-reduced-motion: no-preference) and (max-width: 899px) {
-        .web { view-timeline: --web block; }
-        .web .node.form {
-          animation: nodeIn var(--ease) both; animation-timeline: --web;
-          animation-range: cover calc(10% + var(--i) * 22%) cover calc(17% + var(--i) * 22%);
-        }
-        .web .edge.form {
-          stroke-dasharray: 1; animation: edgeIn linear both; animation-timeline: --web;
-          animation-range: cover calc(10% + var(--i) * 22%) cover calc(17% + var(--i) * 22%);
-        }
-        .web .edge.form.dash { stroke-dasharray: 3 3; animation-name: edgeFade; }
-      }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -588,7 +539,6 @@
     <!-- 1. The promise, with a company's records scattered around it -->
     <section class="hero" aria-labelledby="hero-title">
       <div class="papers" aria-hidden="true">
-        <svg class="funnel"><path class="fl" pathLength="1"/><path class="fr" pathLength="1"/></svg>
         <div class="paper near" style="--x:3;--y:10;--r:-6deg;--d:.1"><span class="t pdf">PDF</span><span class="nm">Plant report · Oct 2025</span><i></i><i></i></div>
         <div class="paper" style="--x:5;--y:36;--r:4deg;--d:.3;--o:.8"><span class="t nb">NOTEBOOK</span><span class="nm">Lab notebook, <span style="white-space:nowrap">p. 38–42</span></span><i></i><i></i></div>
         <div class="paper far" style="--x:2;--y:58;--r:-3deg;--d:.5;--o:.6"><span class="t csv">CSV</span><span class="nm">Moisture QC log 2026</span><i></i><i></i></div>
@@ -618,12 +568,7 @@
       <aside class="rail" data-step="memory" aria-label="Company memory">
         <div class="memory">
           <div class="memory-head"><b>Company memory</b><span>Acme Labs</span></div>
-          <div class="web" role="img" aria-label="The company's memory in three dimensions: linked documents, findings and decisions, grouped by R&amp;D, pilot and production. Drag to turn it; hover a record to see what it is."><canvas aria-hidden="true"></canvas><div class="tags"></div></div>
-          <div class="stats">
-            <div>Documents<b data-count="docs">1,278</b></div>
-            <div>Findings<b data-count="findings">41</b></div>
-            <div class="dec">Decisions<b data-count="decisions">12</b></div>
-          </div>
+          <div class="web" role="img" aria-label="The company's memory: linked documents, findings and decisions in three groups, R&amp;D, pilot and production. Drag to turn it; hover a record to see what it is."></div>
         </div>
       </aside>
 
@@ -631,7 +576,8 @@
         <div class="intro-copy">
           <p class="eyebrow"><span class="n">01</span>Memory</p>
           <h2>Everything your company has learned, in one place.</h2>
-          <p>Reports, notebooks, instrument data, meeting notes and old decisions. Fermata reads them, links them and keeps them current. Every line points back to its file.</p>
+          <p>Fermata reads every record and links them into one memory.</p>
+          <p class="hint">Move the cursor or drag to turn it. Click a record to see what it is.</p>
         </div>
       </article>
 
@@ -732,10 +678,8 @@
               <div class="saved" data-stage="saved"><span class="loop"><svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 3v2.5h-2.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Saved to memory: the decision, the reasons, who decided, and when to look again.</div>
             </div>
           </div>
-          <p class="after">The next project starts where this one ended.</p>
           </div>
         </article>
-        <p class="note-fiction">Acme Labs, Maya, Tom and Daniel are made up. The pilot line story follows a real Fermata session on sample records.</p>
       </div>
     </section>
 
@@ -833,6 +777,8 @@
     <a href="#team" data-key="team"><svg aria-hidden="true"><use href="#i-prod"/></svg>Production</a>
   </div></nav>
   <svg class="threads" aria-hidden="true"></svg>
+  <canvas class="space" aria-hidden="true"></canvas>
+  <div class="space-tags" aria-hidden="true"></div>
 
   <script>
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -962,70 +908,118 @@
           for (let i = 0; i < 2; i++) link(A[Math.floor(rand() * A.length)], B[Math.floor(rand() * B.length)], 1);
         });
       }
-      // ---- The memory, in three dimensions. Every record is a point in space. As the page scrolls, the records
-      // pour out of the funnel, gather into one sphere, and the sphere opens into the company's memory, grouped by
-      // stage. Drag to turn it; hover a record to see what it is. It moves only when the scroll, a drag or a new
-      // record moves it, and otherwise rests.
+      // ---- The memory. One canvas, fixed over the page, draws all of it in screen space: the hundreds of documents
+      // drifting behind the hero; each of them shrinking to a point as the page scrolls and taking its place in a map
+      // that fills the whole screen; and the map folding into its card on the left. Drag turns it; hovering a record
+      // names it. Past the hero it moves only when the scroll, a drag or a new record moves it.
       const degree = {};
       for (const [a, b] of EDGES) { degree[a] = (degree[a] || 0) + 1; degree[b] = (degree[b] || 0) + 1; }
       const formed = (id) => NODES[id][2] === "bg" || NODES[id][2] === "doc";
-      const canvas = web.querySelector("canvas"), tagLayer = web.querySelector(".tags");
+      const canvas = document.querySelector(".space"), layer = document.querySelector(".space-tags");
       const ctx = canvas.getContext("2d");
+      const hero = document.querySelector(".hero"), heroCopy = hero.querySelector(".hero-copy"), papers = document.querySelector(".papers");
+      const memory = document.querySelector(".memory"), story = document.querySelector(".story");
+      const intro = document.querySelector(".intro"), copy = document.querySelector(".intro-copy");
+      const docking = () => wide.matches && !still && CSS.supports("animation-timeline: view()");
+      function dockProgress() { const r = intro.getBoundingClientRect(); return (innerHeight - r.top) / (r.height + innerHeight); }
       const clamp = (v) => Math.max(0, Math.min(1, v));
       const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+      const mix = (a, b, t) => a + (b - a) * t;
       const gauss = () => { const u = rand() || 1e-6, v = rand(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
       const RGB = { rnd: [74, 58, 167], pilot: [31, 95, 168], prod: [176, 114, 14], dec: [22, 150, 110] };
       const Z = { review: 18, notebook: -8, bench: 26, maint: 12, qc: -18, report: 22, mayaF: 40, tomF: 34, decision: 52 };
       const ZC = { rnd: 18, pilot: -26, prod: 0 };
-      const SPH_R = 138, CX = 200, CY = 172, FOCAL = 720;
-      const DUST = 1050, ids = Object.keys(NODES), total = ids.length + DUST;
-      const fib = (i) => { const y = 1 - (2 * (i + 0.5)) / total, r = Math.sqrt(1 - y * y), t = i * 2.399963; return [CX + Math.cos(t) * r * SPH_R, CY + y * SPH_R, Math.sin(t) * r * SPH_R]; };
-      const slots = Array.from({ length: total }, (_, i) => i);
-      for (let i = slots.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [slots[i], slots[j]] = [slots[j], slots[i]]; }
-      const startOf = () => [CX + (rand() - 0.5) * 26, -48 + (rand() - 0.5) * 10, (rand() - 0.5) * 26];
-      const delayOf = (s) => clamp((s[1] - (CY - SPH_R)) / (2 * SPH_R)) * 0.75 + rand() * 0.25; // the top of the sphere fills first
+      const small = !wide.matches;
+      const ids = Object.keys(NODES);
       const N = {};
-      ids.forEach((id, i) => {
+      for (const id of ids) {
         const [x, y, kind] = NODES[id];
-        const st = kind === "decision" ? "dec" : stageOf(x, y);
-        const s = fib(slots[i]);
         N[id] = {
-          f: [x, y, Z[id] ?? ZC[stageOf(x, y)] + (rand() - 0.5) * 190], s, o: startOf(), st, kind,
+          f: [x, y, Z[id] ?? ZC[stageOf(x, y)] + (rand() - 0.5) * 190], st: kind === "decision" ? "dec" : stageOf(x, y), kind,
           r: kind === "bg" ? Math.min(3.2, 1.4 + (degree[id] || 0) * 0.26) : kind === "doc" ? Math.min(5.2, 3 + (degree[id] || 0) * 0.28) : 5.4,
-          d1: delayOf(s), d2: rand(),
         };
+      }
+      // the rest of what the company wrote: fainter points, spread over the whole screen and gathered round the stages
+      const HUB_UV = { rnd: [-0.55, -0.44], pilot: [0.56, -0.36], prod: [0.02, 0.84] };
+      const DUSTN = small ? 300 : 760;
+      const DUST = Array.from({ length: DUSTN }, (_, i) => {
+        let u, v;
+        if (rand() < 0.5) { const [hu, hv] = Object.values(HUB_UV)[i % 3]; u = hu + gauss() * 0.3; v = hv + gauss() * 0.3; }
+        else { u = (rand() * 2 - 1) * 1.2; v = (rand() * 2 - 1) * 1.15; }
+        return { u, v, zn: rand() * 2 - 1, a: 0.3 + rand() * 0.7, out: Math.abs(u) > 1 || Math.abs(v) > 1.04 };
       });
-      const STAGE_KEYS = Object.keys(STAGES);
-      const DUSTS = Array.from({ length: DUST }, (_, i) => {
-        const s = fib(slots[ids.length + i]);
-        let f;
-        if (rand() < 0.62) { const k = STAGE_KEYS[i % 3], [cx, cy] = STAGES[k]; f = [cx + gauss() * 62, cy + gauss() * 48, ZC[k] + gauss() * 110]; }
-        else { const u = rand() * 2 - 1, t = rand() * Math.PI * 2, rr = Math.cbrt(rand()), q = Math.sqrt(1 - u * u); f = [CX + q * Math.cos(t) * 270 * rr, CY + u * 205 * rr, q * Math.sin(t) * 260 * rr]; }
-        return { f, s, o: startOf(), d1: delayOf(s), d2: rand(), a: 0.3 + rand() * 0.7 };
+      const DLINKS = [];
+      DUST.forEach((p, i) => {
+        let b1 = -1, d1 = 1e9, b2 = -1, d2 = 1e9;
+        for (let j = i + 1; j < DUSTN; j++) {
+          const o = DUST[j], d = (p.u - o.u) ** 2 + (p.v - o.v) ** 2 + ((p.zn - o.zn) * 0.25) ** 2;
+          if (d < d1) { b2 = b1; d2 = d1; b1 = j; d1 = d; } else if (d < d2) { b2 = j; d2 = d; }
+        }
+        if (b1 >= 0 && d1 < 0.02) DLINKS.push([i, b1]);
+        if (b2 >= 0 && d2 < 0.02 && i % 2) DLINKS.push([i, b2]);
       });
 
-      // what the story knows: which records are in memory, which are lit, which one is under the pointer
-      const born = new Set(), lit = new Set(), bornAt = {};
-      let hover = null;
-      const view = { yaw: -0.32, pitch: 0.14, vy: 0, vp: 0 };
-      let pourT = 1, resT = 1, cyw = 1, syw = 0, cp = 1, sp = 0;
-      const lerp3 = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
-      const pourOf = (n) => clamp(pourT * 1.5 - n.d1 * 0.5);
-      const posOf = (n) => lerp3(lerp3(n.o, n.s, ease(pourOf(n))), n.f, ease(clamp(resT * 1.4 - n.d2 * 0.4)));
-      const project = (p) => {
-        let dx = p[0] - CX, dy = p[1] - CY, dz = p[2];
-        [dx, dz] = [dx * cyw + dz * syw, -dx * syw + dz * cyw];
-        [dy, dz] = [dy * cp - dz * sp, dy * sp + dz * cp];
-        const k = FOCAL / (FOCAL - dz);
-        return [CX + dx * k, CY + dy * k, dz, k];
+      // the twelve records in front of the hero are real elements; each becomes one record of the map
+      const paperEls = [...papers.querySelectorAll(".paper")];
+      const gOf = (st, n) => ids.filter((id) => id[0] === "g" && N[id].st === st)[n];
+      const PAPER_NODE = ["report", "notebook", "qc", "review", "maint", "bench", gOf("rnd", 0), gOf("pilot", 0), gOf("rnd", 1), gOf("rnd", 2), gOf("prod", 0), gOf("pilot", 1)];
+      const paperD = {};
+      paperEls.forEach((p, i) => { if (PAPER_NODE[i]) paperD[PAPER_NODE[i]] = parseFloat(p.style.getPropertyValue("--d")) || 0.3; });
+
+      // the hundreds behind them are drawn: small cards at different depths, each on its way to one record or one point
+      const BADGE = ["#f3c0b7", "#aedbc9", "#f0d792", "#b3cff0", "#c9c1ee", "#d5d4cb"];
+      const CARDN = small ? 120 : 340;
+      const CARDS = [];
+      {
+        const free = ids.filter((id) => formed(id) && !(id in paperD));
+        const rx = small ? 0.62 : 0.33;
+        for (let i = 0, tries = 0; i < CARDN && tries < 40000; tries++) {
+          const hx = -0.03 + rand() * 1.06, hy = 0.01 + rand() * 1.2;
+          let zc = rand() ** 1.5;
+          if (((hx - 0.5) / rx) ** 2 + ((hy - 0.47) / 0.36) ** 2 < 1) { if (rand() > 0.14) continue; zc *= 0.3; }
+          const c = { hx, hy, zc, rot: (rand() - 0.5) * 0.34, type: Math.floor(rand() * 6), d: rand(),
+            ax: 6 + rand() * 16, ay: 5 + rand() * 14, o1: 0.18 + rand() * 0.26, o2: 0.16 + rand() * 0.24, p1: rand() * 6.28, p2: rand() * 6.28,
+            node: free[i] || null, dust: free[i] ? -1 : i - free.length, t: 0, x: 0, y: 0, T: null };
+          if (c.node) N[c.node].card = c; else if (DUST[c.dust]) DUST[c.dust].card = c;
+          CARDS.push(c); i++;
+        }
+        CARDS.sort((a, b) => a.zc - b.zc);
+      }
+
+      // ---- where things are
+      const born = new Set(), lit = new Set(), bornAt = {}, proj = {};
+      let hover = null, e = 0, L = 0, w = 1, S = null, timeS = 0, paused = false, busy = false;
+      const t0 = performance.now();
+      const view = { yaw: -0.2, pitch: 0.09, vy: 0, vp: 0, hy: 0, hp: 0, ty: 0, tp: 0, wy: 0, wp: 0 }; // hy, hp: the lean toward the cursor; wy, wp: how far the wide map was spun
+      let cyw = 1, syw = 0, cp = 1, sp = 0;
+      const FW = 1500, WS = 2.1;
+      const rot = (x, y, z) => { const x1 = x * cyw + z * syw, z1 = -x * syw + z * cyw; return [x1, y * cp - z1 * sp, y * sp + z1 * cp]; };
+      // the statement sits in the middle of the wide map; records make room for it
+      const pushed = (x, y, a, b) => { const d = Math.hypot(x / a, y / b); if (d >= 1) return [x, y]; const k = (0.62 + 0.38 * d) / Math.max(d, 0.04); return [x * k, y * k]; };
+      const place3 = (wx, wy, wz, fx, fy, fz) => {
+        let X = 0, Y = 0, K = 1, Zn = 0;
+        if (w < 1) {
+          const [a, b, c] = rot(wx, wy, wz), k = FW / (FW - c);
+          X = S.wcx + a * k; Y = S.wcy + b * k; K = k * WS; Zn = c / (120 * S.zs);
+          if (w <= 0) return [X, Y, Zn, K];
+        }
+        const bs = S.bs, [a, b, c] = rot((fx - 200) * bs, (fy - 170) * bs, fz * bs), k = (720 * bs) / (720 * bs - c);
+        const X2 = S.bcx + a * k, Y2 = S.bcy + b * k;
+        if (w >= 1) return [X2, Y2, c / (120 * bs), k * bs];
+        return [mix(X, X2, w), mix(Y, Y2, w), mix(Zn, c / (120 * bs), w), mix(K, k * bs, w)];
       };
-      const formProgress = () => {
-        if (still) return 1;
-        if (docking()) return dockProgress();
-        const r = web.getBoundingClientRect();
-        return 0.15 + clamp((innerHeight - r.top) / (innerHeight * 0.8)) * 0.4;
+      const nodeTarget = (n) => {
+        const [x, y] = w < 1 ? pushed((n.f[0] - 200) * S.sx, (n.f[1] - 170) * S.sy, S.pa, S.pb) : [0, 0];
+        return place3(x, y, n.f[2] * S.zs, n.f[0], n.f[1], n.f[2]);
       };
-      const scrollYaw = () => (still ? 0 : Math.max(-0.3, Math.min(0.45, (scrollY - (story.getBoundingClientRect().top + scrollY)) / innerHeight * 0.06)));
+      const dustTarget = (d) => place3(d.u * 188 * S.sx, d.v * 140 * S.sy, d.zn * 110 * S.zs, 200 + d.u * 188, 170 + d.v * 140, d.zn * 100);
+      const homeOf = (c) => [
+        S.hr.left + c.hx * S.hr.width + Math.sin(timeS * c.o1 + c.p1) * c.ax * (0.5 + c.zc),
+        S.hr.top + c.hy * S.hr.height + Math.cos(timeS * c.o2 + c.p2) * c.ay * (0.5 + c.zc) + (1 - c.zc) * 0.2 * scrollY,
+      ];
+      const tOf = (c) => clamp((e - (0.06 + 0.44 * c.d)) / 0.45);
+      const dotA = (t) => clamp((t - 0.45) / 0.45);
+      const scrollYaw = () => (still ? 0 : Math.max(-0.2, Math.min(0.4, (-story.getBoundingClientRect().top / innerHeight) * 0.05)));
 
       // soft glows, drawn once per colour and stamped
       const glow = {};
@@ -1047,15 +1041,34 @@
         t.className = "tag " + stage; t.dataset.side = SIDE[id] || "right";
         t.innerHTML = `<svg aria-hidden="true"><use href="#i-${stage}"/></svg><b></b><span></span>`;
         t.querySelector("b").textContent = stg + " · "; t.querySelector("span").textContent = what;
-        tagLayer.append(t); TAGS[id] = t;
+        layer.append(t); TAGS[id] = t;
       }
-      const CAPS = [["R&D", [40, 30, 20]], ["Pilot", [338, 34, -26]], ["Production", [300, 326, 0]]].map(([text, p]) => {
-        const c = document.createElement("span"); c.className = "cap"; c.textContent = text; tagLayer.append(c); return { c, p };
+      // the three stages: hubs of the wide map, small captions once it is in its card
+      const HUBS = [["rnd", "R&D", [-0.6, -0.8], [40, 30, 20]], ["pilot", "Pilot", [0.6, -0.74], [338, 34, -26]], ["prod", "Production", [0.02, 0.56], [300, 326, 0]]].map(([st, text, uv, corner]) => {
+        const h = document.createElement("span");
+        h.className = "hub " + st;
+        h.innerHTML = `<svg aria-hidden="true"><use href="#i-${st}"/></svg><b></b>`;
+        h.querySelector("b").textContent = text;
+        layer.append(h);
+        return { h, st, uv, corner };
       });
+
+      // the labs and teams inside each stage: labels of the wide map, and where a record's chip says it came from
+      const TEAM_AT = {
+        rnd: [["Electrodes lab", 58, 88], ["Materials lab", 134, 60], ["Analytical lab", 98, 156]],
+        pilot: [["Pilot line 2", 280, 96], ["Scale-up team", 342, 148]],
+        prod: [["Plant QC, line 1", 144, 294], ["Process engineering", 268, 282]],
+      };
+      const TEAM_EL = Object.entries(TEAM_AT).flatMap(([st, list]) => list.map(([name, x, y]) => {
+        const t = document.createElement("span");
+        t.className = "team " + st; t.textContent = name;
+        layer.append(t);
+        return { t, st, f: [x, y, 30], at: null };
+      }));
+      const teamOf = (id) => { const n = N[id], list = TEAM_AT[n.st]; if (!list) return "Electrodes team"; return [...list].sort((a, b) => Math.hypot(a[1] - n.f[0], a[2] - n.f[1]) - Math.hypot(b[1] - n.f[0], b[2] - n.f[1]))[0][0]; };
 
       // what a record is, for its chip: the type, the name, and the lab or team it came from
       const T = { PDF: "pdf", CSV: "csv", SLIDES: "ppt", DOC: "doc", NOTEBOOK: "nb", LOG: "log", EMAIL: "log", FINDING: "nb", DECISION: "csv" };
-      const TEAMS = { rnd: ["Electrodes lab", "Materials lab", "Analytical lab"], pilot: ["Pilot line 2", "Scale-up team"], prod: ["Plant QC, line 1", "Process engineering"], dec: ["Electrodes team"] };
       const DOCS = {
         review: ["SLIDES", "Drying review, Mar 2026", "Electrodes lab"],
         notebook: ["NOTEBOOK", "Lab notebook, p. 38–42", "Materials lab"],
@@ -1077,127 +1090,226 @@
         if (DOCS[id]) continue;
         const st = N[id].st, pool = POOL[st], n = used[st]++;
         const [type, name] = pool[n % pool.length], round = Math.floor(n / pool.length);
-        DOCS[id] = [type, round ? `${name}, ${["2025", "2024", "archive", "draft"][(round - 1) % 4]}` : name, TEAMS[st][n % TEAMS[st].length]];
+        DOCS[id] = [type, round ? `${name}, ${["2025", "2024", "archive", "draft"][(round - 1) % 4]}` : name, teamOf(id)];
       }
       const chip = document.createElement("span");
       chip.className = "hchip"; chip.setAttribute("role", "tooltip"); chip.hidden = true;
-      tagLayer.append(chip);
+      layer.append(chip);
 
       // ---- drawing
-      const proj = {};
-      let lastK = 0;
+      let dpr = 1;
       function sizeCanvas() {
-        const w = web.clientWidth, h = web.clientHeight;
-        if (!w) return false;
-        const vis = web.getBoundingClientRect().width / w;
-        const k = Math.min(3.5, Math.round((devicePixelRatio || 1) * Math.max(1, vis) * 2) / 2);
-        if (k !== lastK || canvas.width !== Math.round(w * k)) {
-          lastK = k; canvas.width = Math.round(w * k); canvas.height = Math.round(h * k);
-          ctx.setTransform((k * w) / 400, 0, 0, (k * h) / 340, 0, 0);
-        }
-        return true;
+        const k = Math.min(2, devicePixelRatio || 1), W = innerWidth, H = innerHeight;
+        if (canvas.width !== Math.round(W * k) || canvas.height !== Math.round(H * k)) { canvas.width = Math.round(W * k); canvas.height = Math.round(H * k); }
+        dpr = k; ctx.setTransform(k, 0, 0, k, 0, 0);
       }
-      const drawable = (id) => born.has(id) && (formed(id) ? pourOf(N[id]) > 0 : true);
+      const rr = (x, y, ww, hh, r) => { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, ww, hh, r); else ctx.rect(x, y, ww, hh); };
+      function drawCard(c, x, y, t, fade) {
+        const alpha = (0.26 + 0.62 * c.zc) * (1 - clamp((t - 0.5) / 0.35)) * fade;
+        if (alpha < 0.012) return;
+        const s = (0.5 + 1.05 * c.zc) * (small ? 0.78 : 1) * (1 - 0.84 * ease(t)), a = c.rot * (1 - t) + Math.sin(timeS * c.o1 * 0.7 + c.p2) * 0.03, cs = Math.cos(a) * s * dpr, sn = Math.sin(a) * s * dpr;
+        ctx.setTransform(cs, sn, -sn, cs, x * dpr, y * dpr);
+        ctx.globalAlpha = alpha;
+        if (c.zc > 0.55) { ctx.fillStyle = "rgba(26, 26, 31, 0.07)"; rr(-36, -24, 76, 58, 6); ctx.fill(); }
+        ctx.fillStyle = "#ffffff"; rr(-38, -28, 76, 56, 5); ctx.fill();
+        ctx.strokeStyle = "#dedcd3"; ctx.lineWidth = 1 / s; ctx.stroke();
+        ctx.fillStyle = BADGE[c.type]; rr(-31, -21, 20 + (c.type % 3) * 5, 8, 2.5); ctx.fill();
+        ctx.fillStyle = "#e9e8e2"; ctx.fillRect(-31, -6, 62, 4); ctx.fillRect(-31, 3, 46 + (c.type % 2) * 10, 4); ctx.fillRect(-31, 12, 54 - (c.type % 3) * 8, 4);
+        ctx.globalAlpha = 1;
+      }
+      const clearing = (r, op, kx, ky) => {
+        if (op < 0.03 || r.bottom < 0 || r.top > S.H) return;
+        ctx.save(); ctx.translate(r.left + r.width / 2, r.top + r.height / 2); ctx.scale(r.width * kx, r.height * ky);
+        const g = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+        g.addColorStop(0, `rgba(244, 244, 241, ${0.95 * op})`); g.addColorStop(0.58, `rgba(244, 244, 241, ${0.9 * op})`); g.addColorStop(1, "rgba(244, 244, 241, 0)");
+        ctx.fillStyle = g; ctx.fillRect(-1, -1, 2, 2); ctx.restore();
+      };
       function render() {
-        if (!sizeCanvas()) return;
-        const now = performance.now();
-        const dp = formProgress();
-        pourT = clamp((dp - 0.15) / 0.19); resT = clamp((dp - 0.38) / 0.14);
-        const yaw = view.yaw + (1 - resT) * pourT * 2.1 + scrollYaw(), pitch = view.pitch * resT + 0.28 * (1 - resT) * pourT;
+        sizeCanvas();
+        const now = performance.now(), VW = innerWidth, H = innerHeight;
+        const hr = hero.getBoundingClientRect(), wr = web.getBoundingClientRect(), dock = docking(), dp = dock ? dockProgress() : 1;
+        e = still ? 1 : dock ? clamp(1 - hr.bottom / H) : clamp((H * 0.95 - wr.top) / (H * 0.75));
+        L = clamp((e - 0.8) / 0.19);
+        w = dock ? ease(clamp((dp - 0.46) / 0.18)) : 1;
+        const sx = (VW * 0.47) / 188, sy = (H * 0.44) / 140;
+        S = { VW, H, hr, wr, dock, dp, sx, sy, zs: Math.min(sx, sy), bs: wr.width / 400, wcx: VW / 2, wcy: Math.max(0, story.getBoundingClientRect().top) + H / 2,
+          bcx: wr.left + wr.width / 2, bcy: wr.top + wr.height / 2, pa: Math.min(VW * 0.27, 400), pb: copy.offsetHeight / 2 + 64 };
+        view.hy += (view.ty - view.hy) * 0.09; view.hp += (view.tp - view.hp) * 0.09;
+        const leaning = Math.abs(view.ty - view.hy) > 0.002 || Math.abs(view.tp - view.hp) > 0.002;
+        // a spin given to the wide map unwinds as it folds into its card, so the card always starts the right way round
+        const yaw = view.yaw + view.wy * (1 - w) + view.hy + (1 - ease(L)) * 0.3 + scrollYaw(), pitch = view.pitch + view.wp * (1 - w) + view.hp;
         cyw = Math.cos(yaw); syw = Math.sin(yaw); cp = Math.cos(pitch); sp = Math.sin(pitch);
-        ctx.clearRect(-50, -50, 500, 440);
-        let busy = false;
+        for (const hub of HUBS) hub.at = place3(hub.uv[0] * 188 * sx, hub.uv[1] * 140 * sy, 0, ...hub.corner);
+        for (const tm of TEAM_EL) tm.at = nodeTarget(tm);
+        ctx.clearRect(0, 0, VW, H);
+        busy = leaning;
+        document.body.classList.toggle("map-wide", dock && L > 0.5 && w < 0.5);
+        const heroOn = hr.bottom > -40, mapOn = e > 0 && wr.bottom > -120 && (wr.top < H + 120 || w < 1);
+        if (!heroOn && !mapOn) { for (const k in proj) delete proj[k]; syncLayer(); return; }
 
-        // the dust: everything the company wrote, far and near
-        for (const d of DUSTS) {
-          const t = pourOf(d);
-          if (t <= 0) continue;
-          const [x, y, z, k] = project(posOf(d));
-          const near = clamp((z + 270) / 540);
-          // brighter while they form the sphere, quieter once the memory has opened
-          ctx.fillStyle = `rgba(74, 58, 167, ${(d.a * (0.08 + 0.34 * near) * (1.35 - 0.5 * resT) * Math.min(1, t * 3)).toFixed(3)})`;
-          const r = (0.45 + 1.15 * near) * k;
-          ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill();
+        // 1. every drawn document: where it is between its place behind the hero and its place in the map
+        const load = still ? 1 : (now - t0) / 900;
+        if (load < 1.9) busy = true;
+        for (const c of CARDS) {
+          c.t = still ? 1 : tOf(c);
+          if (c.t <= 0 && !still) { [c.x, c.y] = homeOf(c); c.T = null; continue; }
+          c.T = c.node ? nodeTarget(N[c.node]) : dustTarget(DUST[c.dust]);
+          if (c.t >= 1) { c.x = c.T[0]; c.y = c.T[1]; } else { const h = homeOf(c), q = ease(c.t); c.x = mix(h[0], c.T[0], q); c.y = mix(h[1], c.T[1], q); }
         }
-        // the records
-        const live = ids.filter(drawable);
-        for (const id of live) proj[id] = project(posOf(N[id]));
-        for (const id of ids) if (!live.includes(id)) delete proj[id];
-        // the links, which appear as the sphere opens
-        if (resT > 0) {
-          for (const [a, b, dash] of EDGES) {
-            const A = proj[a], B = proj[b];
-            if (!A || !B) continue;
-            const on = lit.has(a) && lit.has(b);
-            const near = clamp(((A[2] + B[2]) / 2 + 220) / 440);
-            ctx.strokeStyle = on ? `rgba(106, 92, 196, ${0.9 * resT})` : `rgba(120, 114, 150, ${((0.1 + 0.32 * near) * resT ** 1.5).toFixed(3)})`;
-            ctx.lineWidth = on ? 1.3 : 0.6;
-            ctx.setLineDash(dash ? [3, 3] : []);
-            ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.lineTo(B[0], B[1]); ctx.stroke();
+        // 2. the fainter points and their links
+        if (mapOn) {
+          const late = clamp((e - 0.45) / 0.4), P = new Array(DUSTN);
+          for (let i = 0; i < DUSTN; i++) {
+            const d = DUST[i], c = d.card;
+            let x, y, T, a;
+            if (c) { if (!c.T) continue; T = c.T; x = c.x; y = c.y; a = dotA(c.t); } else { T = dustTarget(d); x = T[0]; y = T[1]; a = late; }
+            if (d.out) a *= 1 - w;
+            if (a < 0.02) continue;
+            P[i] = [x, y, a];
+            const near = clamp(0.5 + T[2] * 0.5);
+            ctx.fillStyle = `rgba(74, 58, 167, ${(d.a * (0.1 + 0.36 * near) * a).toFixed(3)})`;
+            ctx.beginPath(); ctx.arc(x, y, (0.45 + 0.95 * near) * T[3], 0, 6.283); ctx.fill();
           }
-          ctx.setLineDash([]);
-        }
-        // far first, so near records sit on top
-        live.sort((a, b) => proj[a][2] - proj[b][2]);
-        for (const id of live) {
-          const n = N[id], [x, y, z, k] = proj[id];
-          const near = clamp((z + 220) / 440);
-          let s = 1;
-          if (bornAt[id]) { const t = (now - bornAt[id]) / 700; if (t < 1) { s = ease(clamp(t)); busy = true; } }
-          const on = lit.has(id) || hover === id;
-          const fade = formed(id) ? Math.min(1, pourOf(n) * 3) : 1;
-          const r = n.r * k * s * (on ? 1.25 : 1);
-          if (n.kind !== "bg" || on) {
-            const g = (on ? 7.5 : 5.2) * r;
-            ctx.globalAlpha = fade * (0.55 + 0.45 * near) * (n.kind === "bg" ? 0.6 : 1);
-            ctx.drawImage(glow[n.kind === "bg" ? "bg" : n.st], x - g, y - g, g * 2, g * 2);
-          }
-          const [cr, cg, cb] = n.kind === "bg" ? [128, 122, 165] : RGB[n.st];
-          ctx.globalAlpha = fade * (n.kind === "bg" ? 0.35 + 0.55 * near : 0.7 + 0.3 * near);
-          ctx.fillStyle = `rgb(${cr}, ${cg}, ${cb})`;
-          ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill();
-          if (on) {
-            ctx.globalAlpha = 0.5; ctx.strokeStyle = `rgb(${cr}, ${cg}, ${cb})`; ctx.lineWidth = 1;
-            ctx.beginPath(); ctx.arc(x, y, r + 4, 0, 6.283); ctx.stroke();
-          }
-          ctx.globalAlpha = 1;
-        }
-
-        // tags, captions and the chip follow their records
-        const W = web.clientWidth, H = web.clientHeight, at = (p) => [(p[0] / 400) * W, (p[1] / 340) * H];
-        for (const [id, t] of Object.entries(TAGS)) {
-          const show = lit.has(id) && proj[id] && resT > 0.9;
-          t.classList.toggle("on", !!show);
-          if (show) {
-            // a tag sits on the side of its record with room, so turning the memory never pushes it off the card
-            const px = proj[id][0], side = px > 250 ? "left" : px < 150 ? "right" : t.dataset.side === "left" || t.dataset.side === "right" ? "below" : t.dataset.side;
-            const [x, y] = at(proj[id]); t.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) ${OFFSET[side]}`;
+          if (L > 0) {
+            ctx.strokeStyle = `rgba(106, 92, 196, ${((0.1 + 0.08 * (1 - w)) * L).toFixed(3)})`; ctx.lineWidth = 0.5 + 0.2 * (1 - w); ctx.beginPath();
+            for (const [i, j] of DLINKS) { const A = P[i], B = P[j]; if (A && B && A[2] > 0.5 && B[2] > 0.5) { ctx.moveTo(A[0], A[1]); ctx.lineTo(B[0], B[1]); } }
+            ctx.stroke();
           }
         }
-        for (const { c, p } of CAPS) { const [x, y] = at(project(p)); c.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -50%)`; c.style.opacity = (resT * 0.9).toFixed(2); }
-        if (hover && proj[hover]) { const [x, y] = at(proj[hover]); chip.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, calc(-100% - 10px))`; }
-        else if (!chip.hidden) { chip.hidden = true; hover = null; }
-
-        if (live.length && typeof place === "function") place();
-        if (busy) requestRender();
+        // 3. the documents themselves, far ones first
+        if (heroOn || e < 1 || still) {
+          for (const c of CARDS) {
+            if (still) { const h = homeOf(c); drawCard(c, h[0], h[1], 0, 1); }
+            else if (c.t < 0.9) drawCard(c, c.x, c.y, c.t, clamp(load - c.d * 0.9));
+          }
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        // 4. the records and their links
+        for (const k in proj) delete proj[k];
+        if (mapOn) {
+          const fadeOf = {};
+          for (const id of ids) {
+            if (!born.has(id)) continue;
+            const n = N[id], c = n.card;
+            let p, f = 1;
+            if (c) { if (!c.T) continue; p = [c.x, c.y, c.T[2], c.T[3]]; f = dotA(c.t); }
+            else { p = nodeTarget(n); if (formed(id)) f = id in paperD && dock ? clamp((e - (0.48 + 0.32 * paperD[id])) / 0.12) : clamp((e - 0.5) / 0.3); }
+            if (f < 0.02) continue;
+            proj[id] = p; fadeOf[id] = f;
+          }
+          if (L > 0) {
+            EDGES.forEach(([a, b, dash], n) => {
+              const A = proj[a], B = proj[b];
+              if (!A || !B) return;
+              const on = lit.has(a) && lit.has(b), grow = clamp(L * 1.6 - ((n % 17) / 17) * 0.6);
+              if (grow <= 0) return;
+              const near = clamp(0.5 + (A[2] + B[2]) * 0.25);
+              ctx.strokeStyle = on ? `rgba(106, 92, 196, ${0.9 * L})` : `rgba(112, 104, 160, ${((0.12 + 0.3 * near) * (1 + 0.5 * (1 - w)) * L).toFixed(3)})`;
+              ctx.lineWidth = on ? 1.3 : 0.6 + 0.35 * (1 - w);
+              ctx.setLineDash(dash ? [3, 3] : []);
+              ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.lineTo(mix(A[0], B[0], grow), mix(A[1], B[1], grow)); ctx.stroke();
+            });
+            ctx.setLineDash([]);
+            // the branches of the wide map: from the statement out to each stage
+            if (w < 1) {
+              for (const hub of HUBS) {
+                const [hx2, hy2] = hub.at, [r, g, b] = RGB[hub.st], grow = ease(L);
+                const x0 = S.wcx + (hx2 - S.wcx) * 0.36, y0 = S.wcy + (hy2 - S.wcy) * 0.36;
+                ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(0.5 * (1 - w) * L).toFixed(3)})`; ctx.lineWidth = 1.6;
+                ctx.beginPath(); ctx.moveTo(x0, y0);
+                ctx.quadraticCurveTo(mix(x0, hx2, 0.5), y0, mix(x0, hx2, grow), mix(y0, hy2, grow)); ctx.stroke();
+                // and from each stage on to its labs and teams
+                ctx.lineWidth = 1; ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(0.4 * (1 - w) * L).toFixed(3)})`;
+                for (const tm of TEAM_EL) {
+                  if (tm.st !== hub.st) continue;
+                  ctx.beginPath(); ctx.moveTo(hx2, hy2); ctx.quadraticCurveTo(hx2, mix(hy2, tm.at[1], 0.6), mix(hx2, tm.at[0], grow), mix(hy2, tm.at[1], grow)); ctx.stroke();
+                }
+              }
+            }
+          }
+          const order = Object.keys(proj).sort((a, b) => proj[a][2] - proj[b][2]);
+          for (const id of order) {
+            const n = N[id], [x, y, zn, k] = proj[id], near = clamp(0.5 + zn * 0.5);
+            let s = 1;
+            if (bornAt[id]) { const t = (now - bornAt[id]) / 700; if (t < 1) { s = ease(clamp(t)); busy = true; } }
+            const on = lit.has(id) || hover === id, fade = fadeOf[id];
+            const r = n.r * k * s * (on ? 1.25 : 1);
+            if (n.kind !== "bg" || on) {
+              const g = (on ? 7.5 : 5.2) * r;
+              ctx.globalAlpha = fade * (0.55 + 0.45 * near) * (n.kind === "bg" ? 0.6 : 1);
+              ctx.drawImage(glow[n.kind === "bg" ? "bg" : n.st], x - g, y - g, g * 2, g * 2);
+            }
+            const [cr, cg, cb] = n.kind === "bg" ? [128, 122, 165] : RGB[n.st];
+            ctx.globalAlpha = fade * (n.kind === "bg" ? 0.35 + 0.55 * near : 0.7 + 0.3 * near);
+            ctx.fillStyle = `rgb(${cr}, ${cg}, ${cb})`;
+            ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill();
+            if (on) { ctx.globalAlpha = 0.5; ctx.strokeStyle = `rgb(${cr}, ${cg}, ${cb})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, r + 4, 0, 6.283); ctx.stroke(); }
+            ctx.globalAlpha = 1;
+          }
+        }
+        // 5. room for the words in front
+        if (heroOn) clearing(heroCopy.getBoundingClientRect(), parseFloat(getComputedStyle(heroCopy).opacity), 0.6, 0.78);
+        if (dock && w < 1 && e > 0.3) clearing(copy.getBoundingClientRect(), parseFloat(getComputedStyle(copy).opacity), 0.72, 0.95);
+        syncLayer();
+        place();
       }
-      let frame = 0;
-      const requestRender = () => { if (!frame) frame = requestAnimationFrame(() => { frame = 0; render(); }); };
+      // tags, stage names and the chip are elements laid over the canvas; they follow their records
+      function syncLayer() {
+        const mapOn = S && e > 0 && L > 0;
+        for (const hub of HUBS) {
+          if (!mapOn) { hub.h.style.opacity = "0"; continue; }
+          hub.h.style.transform = `translate(${hub.at[0].toFixed(1)}px, ${hub.at[1].toFixed(1)}px) translate(-50%, -50%)`;
+          hub.h.style.opacity = (L * 0.95 * (1 - 0.92 * Math.sin(Math.PI * w))).toFixed(2);
+          hub.h.style.setProperty("--w", w.toFixed(3));
+        }
+        for (const tm of TEAM_EL) {
+          const o = mapOn && tm.at ? L * (1 - w) : 0;
+          tm.t.style.opacity = o.toFixed(2);
+          if (o > 0) tm.t.style.transform = `translate(${tm.at[0].toFixed(1)}px, ${tm.at[1].toFixed(1)}px) translate(-50%, -50%)`;
+        }
+        // a tag sits beside its record on a side with room: inside the card where it can, and never over another tag
+        const taken = [];
+        for (const [id, t] of Object.entries(TAGS)) {
+          const p = proj[id], show = lit.has(id) && p && L >= 1 && w > 0.9;
+          t.classList.toggle("on", !!show);
+          if (!show) continue;
+          const u = (p[0] - S.wr.left) / S.wr.width, tw = t.offsetWidth, th = t.offsetHeight;
+          const first = u > 0.62 ? "left" : u < 0.38 ? "right" : t.dataset.side === "left" || t.dataset.side === "right" ? "below" : t.dataset.side;
+          const box = (side) => side === "above" ? [p[0] - tw / 2, p[1] - th - 11] : side === "below" ? [p[0] - tw / 2, p[1] + 11] : side === "left" ? [p[0] - tw - 11, p[1] - th / 2] : [p[0] + 11, p[1] - th / 2];
+          const clear = ([x, y]) => !taken.some(([x2, y2, w2, h2]) => x < x2 + w2 + 4 && x + tw + 4 > x2 && y < y2 + h2 + 3 && y + th + 3 > y2);
+          const side = [first, "below", "above", "left", "right"].find((sd) => clear(box(sd))) || first;
+          taken.push([...box(side), tw, th]);
+          t.style.transform = `translate(${p[0].toFixed(1)}px, ${p[1].toFixed(1)}px) ${OFFSET[side]}`;
+        }
+        if (hover && proj[hover]) chip.style.transform = `translate(${proj[hover][0].toFixed(1)}px, ${proj[hover][1].toFixed(1)}px) translate(-50%, calc(-100% - 10px))`;
+        else if (!chip.hidden) { chip.hidden = true; hover = null; }
+      }
+      // the documents behind the hero keep drifting while it is on screen; everything else is drawn on demand
+      let rafId = 0, lastNow = performance.now();
+      const wantsLoop = () => !still && !paused && S && S.hr.bottom > -40 && e < 1 && document.visibilityState === "visible";
+      function loop(now) {
+        rafId = 0;
+        if (!paused) timeS += Math.min(0.05, (now - lastNow) / 1000);
+        lastNow = now;
+        render();
+        if (wantsLoop() || busy) rafId = requestAnimationFrame(loop);
+      }
+      const requestRender = () => { if (!rafId) rafId = requestAnimationFrame(loop); };
+      document.addEventListener("visibilitychange", requestRender);
 
       // where a record is on the screen, for the dots that fly to it and the threads that leave it
-      const screenPos = (id) => {
-        const p = proj[id] || project(N[id].f), r = web.getBoundingClientRect();
-        return [r.left + (p[0] / 400) * r.width, r.top + (p[1] / 340) * r.height];
-      };
+      const screenPos = (id) => { const p = proj[id] || (S ? nodeTarget(N[id]) : [0, 0]); return [p[0], p[1]]; };
 
       // ---- drag to turn it, hover to read it
-      const local = (e) => { const r = web.getBoundingClientRect(); return [((e.clientX - r.left) / r.width) * 400, ((e.clientY - r.top) / r.height) * 340]; };
-      const nearest = (e) => {
-        const [x, y] = local(e), reach = (13 / web.getBoundingClientRect().width) * 400;
+      const overBox = (ev) => { const r = web.getBoundingClientRect(); return ev.clientX >= r.left && ev.clientX <= r.right && ev.clientY >= r.top && ev.clientY <= r.bottom; };
+      const mapWide = () => document.body.classList.contains("map-wide");
+      const nearest = (ev, reach = 16) => {
+        if (L < 1) return null;
         let best = null, bd = reach;
-        for (const id in proj) { const d = Math.hypot(proj[id][0] - x, proj[id][1] - y); if (d < bd) { bd = d; best = id; } }
-        return resT > 0.8 ? best : null;
+        for (const id in proj) { const d = Math.hypot(proj[id][0] - ev.clientX, proj[id][1] - ev.clientY); if (d < bd) { bd = d; best = id; } }
+        return best;
       };
+      let pinned = null; // the record a click named; its chip stays until the next click or scroll
       const showChip = (id) => {
         if (id === hover) return;
         hover = id;
@@ -1209,53 +1321,65 @@
         requestRender();
       };
       let drag = null;
-      web.addEventListener("pointerdown", (e) => {
-        if (e.pointerType === "touch") { showChip(nearest(e)); }
-        drag = { x: e.clientX, y: e.clientY, moved: false, touch: e.pointerType === "touch" };
-        if (!drag.touch) web.setPointerCapture(e.pointerId);
+      document.addEventListener("pointerdown", (ev) => {
+        if (ev.button || L < 1) return;
+        const touch = ev.pointerType === "touch";
+        const inBox = overBox(ev) && w > 0.5, inWide = mapWide() && !touch && !ev.target.closest("a, button, header, .stages");
+        if (!inBox && !inWide) return;
+        if (!touch) ev.preventDefault();
+        drag = { x: ev.clientX, y: ev.clientY, moved: false, touch, wide: !inBox };
         view.vy = view.vp = 0;
       });
-      web.addEventListener("pointermove", (e) => {
+      document.addEventListener("pointermove", (ev) => {
         if (drag) {
-          const dx = e.clientX - drag.x, dy = e.clientY - drag.y, w = web.getBoundingClientRect().width;
-          if (Math.abs(dx) + Math.abs(dy) > 2) drag.moved = true;
-          drag.x = e.clientX; drag.y = e.clientY;
-          view.vy = (dx / w) * 3.4; view.vp = drag.touch ? 0 : (dy / w) * 2.6;
-          view.yaw += view.vy; view.pitch = Math.max(-0.9, Math.min(0.9, view.pitch + view.vp));
-          web.classList.add("turning"); if (drag.moved) showChip(null);
+          const dx = ev.clientX - drag.x, dy = ev.clientY - drag.y, span = Math.max(360, w > 0.5 ? S.wr.width : S.VW * 0.5);
+          if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
+          drag.x = ev.clientX; drag.y = ev.clientY;
+          if (!drag.moved) return;
+          view.vy = (dx / span) * 3.2; view.vp = drag.touch ? 0 : (dy / span) * 2.4;
+          turn(drag.wide);
+          document.body.classList.add("turning"); pinned = null; showChip(null);
           requestRender();
-        } else if (e.pointerType !== "touch") showChip(nearest(e));
+          return;
+        }
+        if (ev.pointerType === "touch" || !S || still) return;
+        // the map leans toward the cursor: across the whole screen while it is wide, over its card once it is there
+        const wideNow = mapWide(), box = !wideNow && overBox(ev) && L >= 1;
+        if (wideNow) { view.ty = (ev.clientX / S.VW - 0.5) * 0.7; view.tp = -(ev.clientY / S.H - 0.5) * 0.42; }
+        else if (box) { view.ty = ((ev.clientX - S.wr.left) / S.wr.width - 0.5) * 0.8; view.tp = -((ev.clientY - S.wr.top) / S.wr.height - 0.5) * 0.5; }
+        else { view.ty = 0; view.tp = 0; }
+        showChip(wideNow || box ? nearest(ev) || pinned : pinned);
+        requestRender();
       });
+      const turn = (wideMap) => {
+        if (wideMap) { view.wy += view.vy; view.wp = Math.max(-0.8, Math.min(0.8, view.wp + view.vp)); }
+        else { view.yaw += view.vy; view.pitch = Math.max(-0.9, Math.min(0.9, view.pitch + view.vp)); }
+      };
+      let coasting = false;
       const coast = () => {
-        if (still || (Math.abs(view.vy) < 0.0004 && Math.abs(view.vp) < 0.0004)) return;
-        view.yaw += view.vy; view.pitch = Math.max(-0.9, Math.min(0.9, view.pitch + view.vp));
+        if (still || drag || (Math.abs(view.vy) < 0.0004 && Math.abs(view.vp) < 0.0004)) return;
+        turn(coasting);
         view.vy *= 0.93; view.vp *= 0.93;
         render(); requestAnimationFrame(coast);
       };
-      const release = () => { if (!drag) return; const moved = drag.moved; drag = null; web.classList.remove("turning"); if (moved) requestAnimationFrame(coast); };
-      web.addEventListener("pointerup", release);
-      web.addEventListener("pointercancel", release);
-      web.addEventListener("pointerleave", () => { if (!drag) showChip(null); });
-      addEventListener("scroll", () => {
-        if (hover && !drag) showChip(null);
-        const r = web.getBoundingClientRect(); if (r.bottom > -200 && r.top < innerHeight + 200) requestRender();
-      }, { passive: true });
+      const release = (ev) => {
+        if (!drag) return;
+        const moved = drag.moved; coasting = drag.wide; drag = null; document.body.classList.remove("turning");
+        if (moved) { requestAnimationFrame(coast); return; }
+        // a click, not a drag: name the nearest record
+        pinned = ev.type === "pointerup" ? nearest(ev, w < 0.5 ? 120 : 44) : null;
+        hover = null; showChip(pinned);
+      };
+      document.addEventListener("pointerup", release);
+      document.addEventListener("pointercancel", release);
+      document.addEventListener("mouseleave", () => { view.ty = 0; view.tp = 0; requestRender(); });
+      addEventListener("scroll", () => { pinned = null; if (hover && !drag) showChip(null); requestRender(); }, { passive: true });
       addEventListener("resize", requestRender);
 
       Object.keys(NODES).filter(formed).forEach((id) => born.add(id));
       let birth = (id) => { born.add(id); if (!formed(id)) bornAt[id] = performance.now(); requestRender(); };
       const unbirth = (id) => { born.delete(id); delete bornAt[id]; requestRender(); };
       const light = (ids2) => { lit.clear(); ids2.forEach((i) => lit.add(i)); requestRender(); };
-
-      // counters in the rail
-      const counts = { docs: 1284, findings: 41, decisions: 12 };
-      const bump = (key) => {
-        counts[key]++;
-        const b = document.querySelector(`[data-count="${key}"]`);
-        b.textContent = counts[key].toLocaleString("en-US");
-        b.classList.add("bump");
-        setTimeout(() => b.classList.remove("bump"), 900);
-      };
 
       // a dot leaves something on the page and lands on a node of the web
       const go_duration = 950;
@@ -1295,7 +1419,6 @@
         chip.textContent = on ? chip.dataset.finalText : chip.dataset.idle;
         if (chip.dataset.final) chip.classList.toggle(chip.dataset.final, on);
       };
-      const unbump = (key) => { counts[key]--; document.querySelector(`[data-count="${key}"]`).textContent = counts[key].toLocaleString("en-US"); };
       // a share: the button is pressed, a dot flies to memory, and a node is born there. Back, and it is undone.
       const inFlight = {};
       const share = (sel, id, kind, text, key) => ({
@@ -1303,11 +1426,11 @@
           const btn = q(r, sel);
           if (text) pressTo(btn, true, text);
           inFlight[id] = true;
-          fly(btn, id, kind, animate).then(() => { if (inFlight[id]) { delete inFlight[id]; birth(id); bump(key); } });
+          fly(btn, id, kind, animate).then(() => { if (inFlight[id]) { delete inFlight[id]; birth(id); } });
         },
         off(r) {
           if (text) pressTo(q(r, sel), false);
-          if (inFlight[id]) delete inFlight[id]; else { unbirth(id); unbump(key); }
+          if (inFlight[id]) delete inFlight[id]; else unbirth(id);
         },
       });
       const shown = (name) => ({ on: (r) => stageTo(r, name, true), off: (r) => stageTo(r, name, false) });
@@ -1426,92 +1549,42 @@
       const schedule = () => { if (pendingUpdate) return; pendingUpdate = true; requestAnimationFrame(() => { pendingUpdate = false; update(); }); };
       addEventListener("scroll", schedule, { passive: true });
       addEventListener("resize", schedule);
-      // ---- The dock. The memory's resting place is the rail; measure it, then tell the CSS how far the
-      // centred, enlarged web sits from there (--dx, --dy, --s), where the papers' funnel ends (--mx, --my,
-      // --rim), and where chapter 01's words sit under the web (--copy-top). All scrubbing is the CSS's.
-      const docking = () => wide.matches && !still && CSS.supports("animation-timeline: view()");
-      const hero = document.querySelector(".hero"), papers = document.querySelector(".papers");
-      const memory = document.querySelector(".memory"), story = document.querySelector(".story");
-      const intro = document.querySelector(".intro"), copy = document.querySelector(".intro-copy");
-      const docsCount = document.querySelector('[data-count="docs"]');
+      // ---- Measures the CSS needs: where the statement sits in the wide map, how far the lab's words rise as the
+      // map folds into its card, and where each of the hero's twelve records lands in the map.
       const chapters = document.querySelector(".chapters"), lab = document.getElementById("lab");
-      const DOCK_END = 0.7; // where the .memory dock animation ends, as a share of the intro's cover range
-      function dockProgress() { const r = intro.getBoundingClientRect(); return (innerHeight - r.top) / (r.height + innerHeight); }
+      const DOCK_END = 0.7; // where the map has come to rest in its card, as a share of the intro's cover range
       function measure() {
         const root = document.documentElement.style;
-        if (!docking()) { docsCount.textContent = "1,284"; root.removeProperty("--pull"); return; }
-        const W = innerWidth, H = innerHeight;
-        const rail0 = rail.getBoundingClientRect();
-        const w = memory.offsetWidth, h = memory.offsetHeight;
-        const bar = parseFloat(getComputedStyle(rail).top) || 0;
-        const nl = rail0.left + memory.offsetLeft, nt = bar + memory.offsetTop; // where it rests once the rail is stuck
-        const mr = memory.getBoundingClientRect(), wr = web.getBoundingClientRect(), k = mr.width / w;
-        const webTop = (wr.top - mr.top) / k, webH = wr.height / k;
-        const copyH = copy.offsetHeight, gap = 14;
-        const s = Math.max(1, Math.min(0.58 * H / webH, (H - 48 - gap - copyH) / (h - webTop), (0.8 * W) / w));
-        const block = s * (h - webTop) + gap + copyH;
-        const m = Math.max(16, (H - block) / 2);
-        const left = W / 2 - (s * w) / 2, top = m - s * webTop;
-        root.setProperty("--dx", (left - nl).toFixed(1) + "px");
-        root.setProperty("--dy", (top - nt).toFixed(1) + "px");
-        root.setProperty("--s", s.toFixed(4));
-        root.setProperty("--copy-top", (m + s * (h - webTop) + gap).toFixed(1) + "px");
-        // the lab chapter rises with the dock: when the web comes to rest, the lab's words sit level with the card
+        if (!docking()) { root.removeProperty("--pull"); requestRender(); return; }
+        const VW = innerWidth, H = innerHeight;
+        root.setProperty("--copy-top", ((H - copy.offsetHeight) / 2).toFixed(1) + "px");
+        // the lab chapter rises as the map folds away: when the map is at rest, the lab's words sit level with the card
+        const h = memory.offsetHeight, bar = parseFloat(getComputedStyle(rail).top) || 0, nt = bar + memory.offsetTop;
         const eyebrow = lab.querySelector(".eyebrow"), para = lab.querySelector("h2 + p");
         const eb = eyebrow.getBoundingClientRect(), off = eb.top - lab.getBoundingClientRect().top, copyLen = para.getBoundingClientRect().bottom - eb.top;
         const pull = parseFloat(getComputedStyle(chapters).marginTop) || 0;
         const naturalGap = chapters.offsetTop - pull - (intro.offsetTop + intro.offsetHeight);
         const introBottomAtRest = H - DOCK_END * (intro.offsetHeight + H) + intro.offsetHeight;
-        const cardMid = nt + h / 2; // the rail is stuck at the top of the screen by then
-        root.setProperty("--pull", (cardMid - copyLen / 2 - off - introBottomAtRest - naturalGap).toFixed(1) + "px");
-        // the funnel's mouth is the top of the web as it forms, in the hero's own coordinates
-        const heroTop = hero.getBoundingClientRect().top + scrollY, storyTop = story.getBoundingClientRect().top + scrollY;
-        const hc = hero.querySelector(".hero-copy"), acts = hc.querySelector(".actions");
-        const mx = W / 2, my = storyTop - heroTop + m + s * 10, rim = hc.offsetTop + acts.offsetTop + acts.offsetHeight + 56, half = Math.min(300, 0.22 * W);
-        papers.style.setProperty("--mx", mx + "px"); papers.style.setProperty("--my", my + "px"); papers.style.setProperty("--rim", rim + "px");
+        root.setProperty("--pull", (nt + h / 2 - copyLen / 2 - off - introBottomAtRest - naturalGap).toFixed(1) + "px");
+        // each record in front of the hero flies to its own place in the wide map
+        const hr = hero.getBoundingClientRect(), base = story.getBoundingClientRect().top - hr.top + H / 2;
+        const sx = (VW * 0.47) / 188, sy = (H * 0.44) / 140, zs = Math.min(sx, sy), pa = Math.min(VW * 0.27, 400), pb = copy.offsetHeight / 2 + 64;
+        const y0 = view.yaw + 0.1, c1 = Math.cos(y0), s1 = Math.sin(y0), c2 = Math.cos(view.pitch), s2 = Math.sin(view.pitch);
         papers.style.setProperty("--hw", hero.offsetWidth + "px"); papers.style.setProperty("--hh", hero.offsetHeight + "px");
-        const fl = papers.querySelector(".fl"), fr = papers.querySelector(".fr");
-        const neck = my - rim;
-        fl.setAttribute("d", `M${mx - half} ${rim} C${mx - half * 0.3} ${rim + 0.35 * neck}, ${mx - 14} ${my - 0.4 * neck}, ${mx - 10} ${my - 6}`);
-        fr.setAttribute("d", `M${mx + half} ${rim} C${mx + half * 0.3} ${rim + 0.35 * neck}, ${mx + 14} ${my - 0.4 * neck}, ${mx + 10} ${my - 6}`);
-        count();
-      }
-      // the documents counter follows the web as it forms, and runs back when you scroll up
-      function count() {
-        if (!docking()) return;
-        const r = intro.getBoundingClientRect(), p = (innerHeight - r.top) / (r.height + innerHeight);
-        const n = 1278 + Math.round(6 * Math.min(1, Math.max(0, (p - 0.19) / 0.22)));
-        docsCount.textContent = n.toLocaleString("en-US");
+        paperEls.forEach((p, i) => {
+          const id = PAPER_NODE[i];
+          if (!id) return;
+          const f = N[id].f, [x, y] = pushed((f[0] - 200) * sx, (f[1] - 170) * sy, pa, pb), z = f[2] * zs;
+          const x1 = x * c1 + z * s1, z1 = -x * s1 + z * c1, y1 = y * c2 - z1 * s2, k = FW / (FW - (y * s2 + z1 * c2));
+          p.style.setProperty("--mx", (VW / 2 + x1 * k - hr.left).toFixed(1) + "px"); p.style.setProperty("--my", (base + y1 * k).toFixed(1) + "px");
+        });
+        requestRender();
       }
       measure();
       addEventListener("resize", measure);
       document.fonts?.ready.then(measure);
-      addEventListener("scroll", () => requestAnimationFrame(count), { passive: true });
 
-      // ---- The phone: three records rest above the web, each with one fine line into the node it became.
-      const feed = document.createElementNS(NS, "svg");
-      feed.setAttribute("class", "feed"); feed.setAttribute("aria-hidden", "true");
-      document.body.append(feed);
-      const FEED = [[".paper:nth-child(5)", "review"], [".paper:nth-child(3)", "notebook"], [".paper:nth-child(6)", "maint"]];
-      function drawFeed() {
-        feed.replaceChildren();
-        if (wide.matches) return;
-        for (const [sel, id] of FEED) {
-          const card = papers.querySelector(sel).getBoundingClientRect();
-          const [nx, ny] = screenPos(id), rr = 7;
-          const sx = card.left + card.width / 2, sy = card.bottom + scrollY - 3, ex = nx, ey = ny + scrollY - rr;
-          mk("path", { pathLength: 1, d: `M${sx} ${sy} C${sx} ${sy + (ey - sy) * 0.55}, ${ex} ${ey - (ey - sy) * 0.45}, ${ex} ${ey}` }, feed);
-          mk("circle", { cx: sx, cy: sy, r: 1.8 }, feed);
-        }
-      }
-      drawFeed();
-      addEventListener("resize", drawFeed); addEventListener("load", drawFeed);
-      document.fonts?.ready.then(drawFeed);
-      setTimeout(drawFeed, 1600); // after the records have settled into place
-      if (still) feed.classList.add("in");
-      else new IntersectionObserver(([e], o) => { if (e.isIntersecting) { feed.classList.add("in"); o.disconnect(); } }, { threshold: 0.35 }).observe(memory);
-
-      render();
+      requestRender();
       addEventListener("load", requestRender);
       document.fonts?.ready.then(requestRender);
 
