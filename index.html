@@ -251,7 +251,12 @@
     .chapter .eyebrow .n { font-family: var(--mono); letter-spacing: 0; margin-right: 6px; }
 
     /* ---------- app windows: the product, drawn ---------- */
-    .win { background: var(--white); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; max-width: 640px; }
+    .win { position: relative; background: var(--white); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; max-width: 640px; }
+    /* the pointer that comes in and presses a button, and the ring its click leaves */
+    .cur { position: absolute; z-index: 5; width: 24px; height: 24px; margin: -3px 0 0 -5px; pointer-events: none; transform-origin: 5px 3px; filter: drop-shadow(0 2px 3px rgba(26, 26, 31, 0.35)); }
+    .cur svg { display: block; width: 100%; height: 100%; }
+    .cur path { fill: var(--ink); stroke: var(--white); stroke-width: 1.4; stroke-linejoin: round; }
+    .tap { position: absolute; z-index: 4; width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--violet-2); background: rgba(106, 92, 196, 0.14); pointer-events: none; }
     .win-bar { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-bottom: 1px solid var(--line); background: var(--surface); font-size: 13px; }
     .dots { display: flex; gap: 6px; } .dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
     /* the app the window belongs to: Fermata's own icon and name, then what is open in it */
@@ -1486,15 +1491,55 @@
       };
       // a share: the button is pressed, a dot flies to memory, and a node is born there. Back, and it is undone.
       const inFlight = {};
+      // A press is shown being made: a pointer glides to the button inside the window and clicks it. The promise
+      // settles at the click, with false if the step was undone on the way.
+      const clicks = new WeakMap();
+      const clickOn = (btn, animate) => {
+        const token = {};
+        clicks.set(btn, token);
+        const live = () => clicks.get(btn) === token;
+        if (!animate) return Promise.resolve(true);
+        const win = btn.closest(".win"), wr2 = win.getBoundingClientRect(), br = btn.getBoundingClientRect();
+        const tx = br.left - wr2.left + Math.min(br.width * 0.62, br.width - 14), ty = br.top - wr2.top + br.height * 0.55;
+        // it comes across the window from the left, far enough to be seen arriving
+        const sx = Math.max(20, tx - 230), sy = Math.max(60, ty - 70);
+        const cur = document.createElement("span");
+        cur.className = "cur";
+        cur.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l14 8.2-6.3 1.5 3.6 6.6-2.6 1.4-3.6-6.7L5 18.8z"/></svg>';
+        cur.style.left = tx + "px"; cur.style.top = ty + "px";
+        win.append(cur);
+        const glide = cur.animate(
+          [{ transform: `translate(${sx - tx}px, ${sy - ty}px)`, opacity: 0 }, { opacity: 1, offset: 0.25 }, { transform: "translate(0, 0)", opacity: 1 }],
+          { duration: 900, easing: "cubic-bezier(.3, .1, .2, 1)", fill: "forwards" },
+        );
+        const leave = () => cur.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, fill: "forwards" }).finished.then(() => cur.remove());
+        return glide.finished.then(() => wait(140)).then(() => {
+          if (!live()) { leave(); return false; }
+          cur.animate([{ transform: "scale(1)" }, { transform: "scale(.84)" }, { transform: "scale(1)" }], { duration: 240 });
+          const tap = document.createElement("span");
+          tap.className = "tap"; tap.style.left = tx + "px"; tap.style.top = ty + "px";
+          win.append(tap);
+          tap.animate([{ transform: "translate(-50%, -50%) scale(.25)", opacity: 0.55 }, { transform: "translate(-50%, -50%) scale(1)", opacity: 0 }], { duration: 520, easing: "ease-out" }).finished.then(() => tap.remove());
+          setTimeout(leave, 650);
+          return true;
+        });
+      };
+      const unclick = (btn) => clicks.delete(btn);
+      const wait = (ms) => new Promise((res) => setTimeout(res, ms));
       const share = (sel, id, kind, text, key) => ({
         on(r, animate) {
           const btn = q(r, sel);
-          if (text) pressTo(btn, true, text);
           inFlight[id] = true;
-          fly(btn, id, kind, animate).then(() => { if (inFlight[id]) { delete inFlight[id]; birth(id); } });
+          (text ? clickOn(btn, animate) : Promise.resolve(true)).then((ok) => {
+            if (!ok || !inFlight[id]) return;
+            if (text) pressTo(btn, true, text);
+            return fly(btn, id, kind, animate).then(() => { if (inFlight[id]) { delete inFlight[id]; birth(id); } });
+          });
         },
         off(r) {
-          if (text) pressTo(q(r, sel), false);
+          const btn = q(r, sel);
+          unclick(btn);
+          if (text) pressTo(btn, false);
           if (inFlight[id]) delete inFlight[id]; else unbirth(id);
         },
       });
@@ -1523,7 +1568,8 @@
         team: [
           { focus: [], ...shown("win") },
           { focus: ["tomF"], ...shown("notice") },
-          { on: (r) => pressTo(q(r, "[data-add]"), true, "Added to Daniel’s plan"), off: (r) => pressTo(q(r, "[data-add]"), false) },
+          { on: (r, animate) => { const btn = q(r, "[data-add]"); clickOn(btn, animate).then((ok) => ok && pressTo(btn, true, "Added to Daniel’s plan")); },
+            off: (r) => { const btn = q(r, "[data-add]"); unclick(btn); pressTo(btn, false); } },
           { on: (r) => { stageTo(r, "board", true); r.querySelectorAll('[data-stage="row"]')[0].classList.add("shown"); },
             off: (r) => { stageTo(r, "board", false); r.querySelectorAll('[data-stage="row"]')[0].classList.remove("shown"); } },
           { on: (r) => r.querySelectorAll('[data-stage="row"]')[1].classList.add("shown"), off: (r) => r.querySelectorAll('[data-stage="row"]')[1].classList.remove("shown") },
