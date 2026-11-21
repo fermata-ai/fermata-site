@@ -1337,7 +1337,8 @@
           if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
           drag.x = ev.clientX; drag.y = ev.clientY;
           if (!drag.moved) return;
-          view.vy = (dx / span) * 3.2; view.vp = drag.touch ? 0 : (dy / span) * 2.4;
+          // the map is held like an object: pull it down and its top comes toward you, pull it right and its left does
+          view.vy = (dx / span) * 3.2; view.vp = drag.touch ? 0 : -(dy / span) * 2.4;
           turn(drag.wide);
           document.body.classList.add("turning"); pinned = null; showChip(null);
           requestRender();
