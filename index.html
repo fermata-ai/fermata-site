@@ -135,31 +135,19 @@
     .t.ppt { background: var(--amber-soft); color: var(--amber); } .t.doc { background: #e1edfa; color: #1f5fa8; }
     .t.nb { background: var(--violet-soft); color: var(--violet); } .t.log { background: var(--sunk); color: var(--ink-2); }
     @keyframes settle { from { opacity: 0; translate: 0 18px; } to { opacity: var(--o, 0.92); translate: 0 0; } }
-    /* as the hero leaves, the records fall toward the memory on the left, nearer ones faster */
-    @supports ((animation-timeline: view()) and (animation-range: entry)) {
-      @media (prefers-reduced-motion: no-preference) {
-        .hero { view-timeline: --hero block; }
-        .paper {
-          animation: settle 1.4s var(--ease) forwards, gather linear both;
-          animation-delay: calc(var(--d) * 1s), 0s;
-          animation-timeline: auto, --hero;
-          animation-range: normal, exit 0% exit var(--end, 90%);
-        }
-        .paper.far { --end: 100%; }
-        .paper.near { --end: 70%; }
-        @keyframes gather {
-          to { translate: calc((18 - var(--x)) * 1vw) calc((130 - var(--y)) * 1svh); opacity: 0; rotate: 0deg; scale: 0.35; }
-        }
-      }
-    }
+    .paper::after { content: ""; position: absolute; left: 50%; top: 50%; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; background: #9b95c9; opacity: 0; }
+    .funnel { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; display: none; }
+    .funnel path { fill: none; stroke: #c3c2b7; stroke-width: 1; }
 
     /* ---------- the story: memory stays on the left, one stage at a time on the right ---------- */
-    .story { --bar: 60px; position: relative; display: grid; grid-template-columns: minmax(300px, 5fr) 7fr; gap: clamp(24px, 4vw, 64px); max-width: 1280px; margin: 0 auto; padding-inline: 32px; }
-    /* the stage bar: R&D, pilot, production, held at the top while the story is on screen */
-    .stages { grid-column: 1 / -1; position: sticky; top: 0; z-index: 7; height: var(--bar); display: grid; place-items: center; }
-    /* a full-width band, so the words scroll under it rather than into it */
-    .stages::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 100vw; translate: -50% 0; background: rgba(244, 244, 241, 0.86); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
-    .stages .pill { position: relative; display: flex; align-items: center; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
+    .story { position: relative; display: grid; grid-template-columns: minmax(300px, 5fr) 7fr; grid-template-rows: auto auto; column-gap: clamp(24px, 4vw, 64px); max-width: 1280px; margin: 0 auto; padding-inline: 32px; }
+    /* the stage bar: R&D, pilot, production. A full-width band fixed at the top while a stage is on screen */
+    :root { --bar: 60px; }
+    .stages { position: fixed; top: 0; left: 0; right: 0; z-index: 8; height: var(--bar); display: grid; place-items: center;
+      background: rgba(244, 244, 241, 0.86); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line);
+      opacity: 0; translate: 0 -100%; visibility: hidden; transition: opacity 0.45s var(--ease), translate 0.45s var(--ease), visibility 0s 0.45s; }
+    .stages.on { opacity: 1; translate: 0 0; visibility: visible; transition: opacity 0.45s var(--ease), translate 0.45s var(--ease); }
+    .stages .pill { display: flex; align-items: center; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
     .stages a { display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; border-radius: 999px; font-size: 13.5px; font-weight: 600; color: var(--ink-3); text-decoration: none; transition: color 0.4s, background 0.4s; }
     .stages a svg { width: 16px; height: 16px; }
     .stages i { width: 34px; height: 2px; border-radius: 2px; background: var(--line); position: relative; overflow: hidden; }
@@ -167,18 +155,21 @@
     .stages a.done { color: var(--violet); }
     .stages a.now { color: var(--violet); background: var(--violet-soft); }
     .stages i.done::after { transform: scaleX(1); }
-    .rail { position: sticky; top: var(--bar); height: calc(100svh - var(--bar)); display: grid; place-items: center; z-index: 4; }
+    .chapter { scroll-margin-top: var(--bar); }
+    .rail { grid-column: 1; grid-row: 1 / 3; position: sticky; top: var(--bar); height: calc(100svh - var(--bar)); display: grid; place-items: center; z-index: 4; }
+    .intro { grid-column: 2; grid-row: 1; }
+    .chapters { grid-column: 2; grid-row: 2; }
     .memory {
-      width: min(100%, 440px); background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
-      box-shadow: var(--shadow); padding: 18px 18px 14px; transition: scale 0.9s var(--ease); transform-origin: left center;
+      position: relative; width: min(100%, 440px); background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+      box-shadow: var(--shadow); padding: 18px 18px 14px; transform-origin: 0 0;
     }
-    .rail[data-step="memory"] .memory { scale: 1.04; }
+    .web .ft { font-family: var(--mono); font-size: 8px; font-weight: 600; letter-spacing: 0.04em; fill: var(--ink-3); opacity: 0; }
     .memory-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
     .memory-head b { font-family: var(--serif); font-weight: 500; font-size: 18px; }
     .memory-head span { font-size: 12px; color: var(--ink-3); }
     .web { display: block; width: 100%; height: auto; margin: 6px 0 4px; overflow: visible; }
     .web .cl { font-size: 9px; letter-spacing: 0.16em; fill: var(--ink-3); font-family: var(--sans); font-weight: 600; }
-    .web .edge { stroke: var(--line-2); stroke-width: 1; opacity: 0; transition: opacity 0.8s, stroke 0.5s; }
+    .web .edge { fill: none; stroke: var(--line-2); stroke-width: 1; opacity: 0; transition: opacity 0.8s, stroke 0.5s; }
     .web .edge.dash { stroke-dasharray: 3 3; }
     .web .edge.on { opacity: 0.9; }
     .web .edge.lit { stroke: var(--violet-2); opacity: 1; }
@@ -194,19 +185,21 @@
     .web .node.lit circle:not(.halo) { fill: var(--violet); }
     .web .node.decision.lit circle:not(.halo) { fill: var(--green-2); }
     .web .lbl { opacity: 0; transition: opacity 0.5s; pointer-events: none; }
-    .web .lbl.lit { opacity: 1; }
-    .web .lbl rect { fill: var(--white); stroke: var(--line); }
     .web .lbl text { font-size: 10.5px; font-family: var(--sans); font-weight: 500; fill: var(--ink); }
-    .web .lbl .stg { font-weight: 700; }
+    .web .lbl .stg { font-weight: 700; fill: currentColor; }
     .web .lbl.rnd { color: var(--violet); } .web .lbl.pilot { color: #1f5fa8; } .web .lbl.prod { color: #8a5a00; } .web .lbl.dec { color: var(--green); }
-    .web .lbl .stg { fill: currentColor; }
+    .web .lbl rect { fill: var(--white); stroke: var(--line); stroke-width: 1; }
+    /* the part of a thread inside the web: straight from its node to the card's right edge, under the nodes */
+    .web .thr { fill: none; stroke: var(--violet-2); stroke-width: 1.3; opacity: 0.7; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.5s var(--ease); }
+    .web .thr.in { stroke-dashoffset: 0; }
+    .web .lbl.lit { opacity: 1; }
     .stats { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); padding-top: 10px; }
     .stats div { font-size: 11.5px; color: var(--ink-3); }
     .stats b { display: block; font-family: var(--serif); font-weight: 500; font-size: 20px; color: var(--ink); font-variant-numeric: tabular-nums; transition: color 0.4s; }
     .stats b.bump { color: var(--violet); }
     .stats .dec b.bump { color: var(--green); }
 
-    .chapter { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-block: calc(12vh + var(--bar)) 12vh; scroll-margin-top: var(--bar); }
+    .chapter { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-block: 12vh; }
     .chapter h2 { font-size: clamp(30px, 3.4vw, 46px); line-height: 1.08; margin-bottom: 14px; }
     .chapter > p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: clamp(17px, 1.5vw, 19px); color: var(--ink-2); max-width: 560px; margin: 0 0 28px; }
     .chapter .eyebrow .n { font-family: var(--mono); letter-spacing: 0; margin-right: 6px; }
@@ -302,6 +295,10 @@
     .threads path.in { stroke-dashoffset: 0; }
     .threads path.green { stroke: var(--green-2); }
     .threads circle { fill: var(--violet-2); }
+    .feed { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: visible; pointer-events: none; z-index: 7; display: none; }
+    .feed path { fill: none; stroke: #b9b2e0; stroke-width: 1; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.1s var(--ease); }
+    .feed.in path { stroke-dashoffset: 0; }
+    .feed circle { fill: #9b95c9; }
     .flyer { position: fixed; z-index: 6; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--violet); box-shadow: 0 0 0 5px rgba(74, 58, 167, 0.16); pointer-events: none; }
     .flyer.green { background: var(--green-2); box-shadow: 0 0 0 5px rgba(29, 158, 117, 0.18); }
     .flyer.doc { background: #9b95c9; box-shadow: 0 0 0 4px rgba(74, 58, 167, 0.1); }
@@ -320,6 +317,7 @@
     .ind-text { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 24px; color: var(--white); }
     .ind h3 { font-size: clamp(24px, 2.2vw, 30px); line-height: 1.1; margin-bottom: 6px; }
     .ind p { margin: 0; font-size: 15px; color: rgba(255, 255, 255, 0.82); }
+
     .film-block { text-align: center; }
     .film-block .block-head { margin-inline: auto; }
     .player { position: relative; max-width: 1040px; margin: 0 auto; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #0b0b0d; border: 1px solid var(--line); box-shadow: 0 40px 90px -40px rgba(26, 26, 31, 0.55); }
@@ -348,32 +346,50 @@
     footer a { text-decoration: none; color: var(--ink-2); }
     footer a:hover { color: var(--ink); }
 
-    /* ---------- smaller screens: memory becomes a strip above the stages ---------- */
+    /* chapter 01: the memory's own screen. Without scroll-driven animation it is a plain chapter on the right. */
+    .intro-copy .eyebrow .n { font-family: var(--mono); letter-spacing: 0; margin-right: 6px; }
+    .intro h2 { font-size: clamp(30px, 3.4vw, 46px); line-height: 1.08; margin-bottom: 14px; }
+    .intro-copy > p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: clamp(17px, 1.5vw, 19px); color: var(--ink-2); max-width: 560px; margin: 0; }
+
+    /* the pilot window reads in two columns, so it fits a laptop screen with its headline */
+    .pilot-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 16px; align-items: start; }
+    .pilot-body .msg.you { grid-column: 1 / -1; margin-left: 18%; }
+    .pilot-body .msg.fermata { margin-top: 0; }
+    .pilot-body .sources { margin: 0; }
+    .pilot-body .plot .chart { max-width: none; }
+    .pilot-body .check { margin-top: 8px; }
+    .pilot-body .chart text { font-size: 13px; } .pilot-body .chart .tag { font-size: 13px; }
+    .pilot-body .finding { grid-column: 1 / -1; margin-top: 0; }
+
+    /* ---------- smaller screens: the memory forms once in the flow, then each stage reads text first ---------- */
     @media (max-width: 899px) {
       .nav .hide-s { display: none; }
       .strip { grid-template-columns: 1fr; max-width: 480px; }
-      .papers { position: relative; inset: auto; display: flex; justify-content: center; gap: 8px; height: 92px; margin-bottom: 18px; }
-      .paper { position: relative; left: auto; top: auto; width: 112px; flex: none; --x: 30; --y: 10; }
-      .paper.far, .paper.near { scale: 0.92; filter: none; }
-      .papers .paper:not(:nth-child(1), :nth-child(2), :nth-child(6)) { display: none; }
-      .hero { align-content: start; padding-top: 28px; }
-      .stats div { display: flex; justify-content: space-between; gap: 8px; }
-      .story { display: block; padding-inline: 16px; }
-      .story { --bar: 52px; }
-      .stages a { padding: 6px 10px; font-size: 12.5px; }
-      .stages i { width: 16px; }
-      .rail { height: auto; top: var(--bar); padding: 8px 0; place-items: stretch; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(8px); }
-      .memory { width: 100%; padding: 10px 12px 8px; display: grid; grid-template-columns: 1fr 120px; grid-template-areas: "head head" "web stats"; gap: 2px 12px; }
-      .rail[data-step="memory"] .memory { scale: 1; }
-      .memory-head { grid-area: head; } .memory-head b { font-size: 15px; }
-      .web { grid-area: web; height: 104px; width: auto; justify-self: start; margin: 0; }
-      .web .lbl, .web .cl { display: none; }
-      .stats { grid-area: stats; grid-template-columns: 1fr; border-top: 0; padding-top: 0; align-content: center; gap: 2px; }
-      .stats b { display: inline; font-size: 15px; margin-right: 4px; }
+      .hero { align-content: start; padding-top: 28px; overflow-x: clip; overflow-y: visible; }
+      .hero-copy { order: 1; } .strip { order: 2; }
+      .papers { order: 3; position: relative; inset: auto; display: flex; justify-content: center; align-items: flex-start; gap: 8px; height: 78px; margin-top: 36px; }
+      .paper { position: relative; left: auto; top: auto; width: 112px; flex: none; --x: 30; --y: 10; --o: 1 !important; }
+      .paper.far, .paper.near { scale: 1; filter: none; }
+      .papers .paper:not(:nth-child(3), :nth-child(5), :nth-child(6)) { display: none; } /* child 1 is the funnel */
+      .papers .paper:nth-child(5) { order: 1; } .papers .paper:nth-child(3) { order: 2; } .papers .paper:nth-child(6) { order: 3; }
+      .feed { display: block; }
+      .memory { display: flex; flex-direction: column; }
+      .memory .web { order: 1; margin-top: 2px; } .memory-head { order: 2; margin: 2px 0 8px; } .memory .stats { order: 3; }
+      .story { display: flex; flex-direction: column; padding-inline: 16px; }
+      .rail { order: 1; position: static; height: auto; padding: 8px 0 0; display: block; }
+      .intro { order: 2; } .chapters { order: 3; }
+      .memory { width: 100%; padding: 14px 14px 10px; }
+      .web .lbl { display: none; }
       .chapter { min-height: 0; padding-block: 56px; }
+      .intro { padding-top: 40px; padding-bottom: 8px; }
+      .pilot-body { grid-template-columns: minmax(0, 1fr); }
+      .pilot-body .msg.you { margin-left: 0; }
       .note-fiction { margin-bottom: 0; }
       .inds { grid-template-columns: 1fr; }
       .ind { aspect-ratio: 4 / 3; }
+      :root { --bar: 52px; }
+      .stages a { padding: 6px 10px; font-size: 12.5px; }
+      .stages i { width: 16px; }
     }
     @media (max-width: 560px) {
       .wrap { padding-inline: 16px; }
@@ -384,6 +400,110 @@
       .finding { flex-wrap: wrap; } .finding .btn { margin-left: 0; }
       .board th:nth-child(2), .board td:nth-child(2) { display: none; }
       .faq summary { font-size: 18px; }
+    }
+
+    /* ---------- the moment the memory is born: pour, form, dock. Scrubbed by scroll, so it reverses. ----------
+       The memory's resting place is the rail on the left. The script measures that place and sets --dx, --dy and
+       --s, the move from the centre of the screen into it; this animation runs that move backwards from centre
+       to rail. Without support, or with reduced motion, the memory simply rests in the rail. */
+    @keyframes leave { to { opacity: 0; translate: 0 -40px; } }
+    @keyframes appear { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes ink { 0%, 68% { opacity: 1; } 78%, 100% { opacity: 0; } }
+    @keyframes dot { 0%, 72% { opacity: 0; } 84%, 100% { opacity: 1; } }
+    @keyframes nodeIn { from { opacity: 0; scale: 0.15; translate: var(--fx, 0px) var(--fy, 0px); } to { opacity: 1; scale: 1; translate: 0 0; } }
+    @keyframes edgeIn { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+    @keyframes edgeFade { from { opacity: 0; } }
+    @supports ((animation-timeline: view()) and (animation-range: entry)) {
+      @media (prefers-reduced-motion: no-preference) and (min-width: 900px) {
+        body { timeline-scope: --intro; }
+        .hero { view-timeline: --hero block; overflow-x: clip; overflow-y: visible; }
+        .papers { z-index: 5; }
+        .hero-copy { animation: leave linear both; animation-timeline: --hero; animation-range: exit 0% exit 18%; }
+        .strip {
+          animation: rise 0.9s 0.5s var(--ease) forwards, leave linear both;
+          animation-timeline: auto, --hero; animation-range: normal, exit 0% exit 16%;
+        }
+        /* 1. POUR: each record leaves its place, narrows through the funnel, and ends as a dot at its mouth */
+        .paper {
+          --cx: calc(var(--x) * var(--hw, 1440px) / 100 + 75px);
+          --cy: calc(var(--y) * var(--hh, 828px) / 100 + 36px);
+          --range: exit calc(21% + var(--d) * 18%) exit calc(60% + var(--d) * 32%);
+          animation: settle 1.4s var(--ease) forwards, pour linear both;
+          animation-delay: calc(var(--d) * 1s), 0s;
+          animation-timeline: auto, --hero;
+          animation-range: normal, var(--range);
+        }
+        .paper > * { animation: ink linear both; animation-timeline: --hero; animation-range: var(--range); }
+        .paper::after { animation: dot linear both; animation-timeline: --hero; animation-range: var(--range); }
+        /* a record stays a crisp white card at full strength until it is inside the funnel; only there does it become a dot */
+        @keyframes pour {
+          12% { opacity: 1; scale: 1; filter: none; }
+          44% { translate: calc((var(--mx, 50vw) - var(--cx)) * 0.6) calc(var(--rim, 60vh) + 24px - var(--cy)); rotate: 0deg; scale: 0.82; opacity: 1; filter: none; }
+          66% { translate: calc((var(--mx, 50vw) - var(--cx)) * 0.92) calc(var(--rim, 60vh) + (var(--my, 120vh) - var(--rim, 60vh)) * 0.45 - var(--cy)); rotate: 0deg; scale: 0.5; opacity: 1; filter: none;
+                background-color: #fff; border-color: var(--line); }
+          80% { scale: 0.12; background-color: rgba(255, 255, 255, 0); border-color: transparent; box-shadow: none; filter: none; }
+          92% { opacity: 1; }
+          100% { translate: calc(var(--mx, 50vw) - var(--cx)) calc(var(--my, 120vh) - var(--cy)); rotate: 0deg; scale: 0.07; opacity: 0;
+                 background-color: rgba(255, 255, 255, 0); border-color: transparent; box-shadow: none; filter: none; }
+        }
+        /* the funnel is drawn once the promise has left, below where it stood, and goes when the last record is through */
+        .funnel { display: block; }
+        .funnel path { stroke-dasharray: 1; animation: funnel linear both; animation-timeline: --hero; animation-range: exit 18% exit 100%; }
+        @keyframes funnel { 0% { stroke-dashoffset: 1; opacity: 1; } 20% { stroke-dashoffset: 0; } 82% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+
+        /* 2. FORM: the web grows big in the middle of the screen, top first, as the dots land */
+        .intro { grid-column: 1 / -1; height: 130vh; min-height: 0; padding: 0; display: block; view-timeline: --intro block; position: relative; z-index: 5; pointer-events: none; }
+        .intro-copy {
+          position: sticky; top: var(--copy-top, 68vh); max-width: 900px; margin: 0 auto; text-align: center; pointer-events: auto;
+          animation: introCopy linear both; animation-timeline: --intro; animation-range: cover 26% cover 46%;
+        }
+        .intro-copy .eyebrow { margin-bottom: 10px; }
+        .intro h2 { font-size: clamp(30px, 2.9vw, 42px); margin-bottom: 10px; }
+        .intro-copy > p:not(.eyebrow) { margin: 0 auto; max-width: 620px; }
+        @keyframes introCopy { 0% { opacity: 0; translate: 0 14px; } 45%, 70% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 -14px; } }
+        .web .node.form {
+          animation: nodeIn var(--ease) both; animation-timeline: --intro;
+          animation-range: cover calc(18% + var(--i) * 17%) cover calc(24% + var(--i) * 17%);
+        }
+        .web .edge.form {
+          stroke-dasharray: 1; animation: edgeIn linear both; animation-timeline: --intro;
+          animation-range: cover calc(18% + var(--i) * 17%) cover calc(24% + var(--i) * 17%);
+        }
+        .web .edge.form.dash { stroke-dasharray: 3 3; animation-name: edgeFade; }
+        .web .cl { animation: appear linear both; animation-timeline: --intro; animation-range: cover 30% cover 40%; }
+        .web .ft { animation: ftShow linear both; animation-timeline: --intro; animation-range: cover 36% cover 58%; }
+        @keyframes ftShow { 0% { opacity: 0; } 25%, 70% { opacity: 1; } 100% { opacity: 0; } }
+        .stats { animation: appear linear both; animation-timeline: --intro; animation-range: cover 35% cover 42%; }
+
+        /* 3. DOCK: the same element shrinks and slides into the rail, and its card closes round it */
+        .memory { animation: dock linear both; animation-timeline: --intro; animation-range: cover 46% cover 70%; }
+        .chapters { margin-top: var(--pull, 0px); }
+        /* the web leaves the right column first (most of the sideways move and the shrink in the first third), so the
+           lab's words, rising in the flow, never meet it; then it settles into the rail and its card closes round it */
+        @keyframes dock {
+          from { transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(var(--s, 1)); background-color: rgba(252, 252, 251, 0); border-color: transparent; box-shadow: none;
+                 animation-timing-function: cubic-bezier(0.45, 0, 0.35, 1); }
+          36% { transform: translate(calc(var(--dx, 0px) * 0.08), calc(var(--dy, 0px) * 0.45)) scale(calc(1 + (var(--s, 1) - 1) * 0.12));
+                animation-timing-function: cubic-bezier(0.3, 0, 0.3, 1); }
+          55% { background-color: rgba(252, 252, 251, 0); border-color: transparent; box-shadow: none; }
+          to { transform: translate(0px, 0px) scale(1); }
+        }
+        .memory-head { animation: appear linear both; animation-timeline: --intro; animation-range: cover 60% cover 70%; }
+      }
+
+      /* the phone: no dock and no pour. Three records rest above the web, each with a fine line to its node; the web forms once. */
+      @media (prefers-reduced-motion: no-preference) and (max-width: 899px) {
+        .web { view-timeline: --web block; }
+        .web .node.form {
+          animation: nodeIn var(--ease) both; animation-timeline: --web;
+          animation-range: cover calc(10% + var(--i) * 22%) cover calc(17% + var(--i) * 22%);
+        }
+        .web .edge.form {
+          stroke-dasharray: 1; animation: edgeIn linear both; animation-timeline: --web;
+          animation-range: cover calc(10% + var(--i) * 22%) cover calc(17% + var(--i) * 22%);
+        }
+        .web .edge.form.dash { stroke-dasharray: 3 3; animation-name: edgeFade; }
+      }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -443,6 +563,7 @@
     <!-- 1. The promise, with a company's records scattered around it -->
     <section class="hero" aria-labelledby="hero-title">
       <div class="papers" aria-hidden="true">
+        <svg class="funnel"><path class="fl" pathLength="1"/><path class="fr" pathLength="1"/></svg>
         <div class="paper near" style="--x:3;--y:10;--r:-6deg;--d:.1"><span class="t pdf">PDF</span><span class="nm">Plant report · Oct 2025</span><i></i><i></i></div>
         <div class="paper" style="--x:5;--y:36;--r:4deg;--d:.3;--o:.8"><span class="t nb">NOTEBOOK</span><span class="nm">Lab notebook, p. 38–42</span><i></i><i></i></div>
         <div class="paper far" style="--x:2;--y:58;--r:-3deg;--d:.5;--o:.6"><span class="t csv">CSV</span><span class="nm">Moisture QC log 2026</span><i></i><i></i></div>
@@ -474,17 +595,10 @@
 
     <!-- 2. The story: memory on the left stays put; the stages pass on the right -->
     <section class="story" id="story" aria-label="How Fermata works, from lab to team">
-      <nav class="stages" aria-label="From R&amp;D to production"><div class="pill">
-        <a href="#lab" data-key="lab"><svg aria-hidden="true"><use href="#i-rnd"/></svg>R&amp;D</a>
-        <i aria-hidden="true"></i>
-        <a href="#pilot" data-key="pilot"><svg aria-hidden="true"><use href="#i-pilot"/></svg>Pilot</a>
-        <i aria-hidden="true"></i>
-        <a href="#team" data-key="team"><svg aria-hidden="true"><use href="#i-prod"/></svg>Production</a>
-      </div></nav>
       <aside class="rail" data-step="memory" aria-label="Company memory">
         <div class="memory">
           <div class="memory-head"><b>Company memory</b><span>Acme Labs</span></div>
-          <svg class="web" viewBox="0 0 400 340" role="img" aria-label="A web of linked documents, findings and decisions, grouped by lab, pilot line and plant."></svg>
+          <svg class="web" viewBox="0 0 400 340" role="img" aria-label="A web of linked documents, findings and decisions, grouped by R&amp;D, pilot and production."></svg>
           <div class="stats">
             <div>Documents<b data-count="docs">1,278</b></div>
             <div>Findings<b data-count="findings">41</b></div>
@@ -493,26 +607,15 @@
         </div>
       </aside>
 
-      <div class="chapters">
-        <article class="chapter" id="memory" data-step="memory">
+      <article class="chapter intro" id="memory" data-step="memory">
+        <div class="intro-copy">
           <p class="eyebrow"><span class="n">01</span>Memory</p>
           <h2>Everything your company has learned, in one place.</h2>
           <p>Reports, notebooks, instrument data, meeting notes and old decisions. Fermata reads them, links them and keeps them current. Every line points back to its file.</p>
-          <div class="win" data-stage="win">
-            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="title">Reading the company’s records</span></div>
-            <div class="win-body">
-              <ul class="files">
-                <li data-node="review"><span class="t ppt">SLIDES</span><span class="nm">Drying review · Mar 2026<span class="meta">R&amp;D · 24 slides</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 6</span></span></li>
-                <li data-node="notebook"><span class="t nb">NOTEBOOK</span><span class="nm">Lab notebook, p. 38–42<span class="meta">R&amp;D · notebook</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 4</span></span></li>
-                <li data-node="bench"><span class="t csv">CSV</span><span class="nm">Bench cycling results 2026<span class="meta">R&amp;D · 1,840 rows</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 5</span></span></li>
-                <li data-node="maint"><span class="t log">LOG</span><span class="nm">Pilot line maintenance 2026<span class="meta">Pilot · 212 entries</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 9</span></span></li>
-                <li data-node="qc"><span class="t csv">CSV</span><span class="nm">Moisture QC log 2026<span class="meta">Production · 3,107 rows</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 7</span></span></li>
-                <li data-node="report"><span class="t pdf">PDF</span><span class="nm">Drying line upgrade report<span class="meta">Production · Oct 2025 · 38 pages</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 11</span></span></li>
-              </ul>
-            </div>
-          </div>
-        </article>
+        </div>
+      </article>
 
+      <div class="chapters">
         <article class="chapter" id="lab" data-step="lab">
           <p class="eyebrow"><span class="n">02</span>R&amp;D</p>
           <h2>In the lab, Maya starts where the last team stopped.</h2>
@@ -547,26 +650,30 @@
           <p>Tom’s output fell after the switch to 8-hour drying. Fermata reads Maya’s result, the maintenance log and the plant report together, and finds why the lab and the line disagree. An independent check works it out again before anyone acts on it.</p>
           <div class="win" data-stage="win">
             <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="title">Pilot line · drying step</span><span class="who"><span class="av t">T</span>Tom · Pilot line</span></div>
-            <div class="win-body">
+            <div class="win-body pilot-body">
               <div class="msg you" data-stage="ask">Since we moved to 8-hour drying, pilot output has dropped. Can you work out why?<br><span class="att">CSV · Pilot tests, November</span></div>
               <div class="msg fermata" data-stage="answer">
                 <span class="from"><svg width="16" height="16" aria-hidden="true"><use href="#mark"/></svg>Fermata</span>
                 <p>The bench test stopped at cycle 50. The loss starts later: the 8-hour rolls fall behind near cycle 245.</p>
                 <div class="sources"><span>Read with</span><span class="chip vi" data-thread="mayaF">R&amp;D bench result</span><span class="chip vi" data-thread="report">Plant report 2025 · 81% kept</span><span class="chip vi" data-thread="maint">Maintenance log</span></div>
+              </div>
+              <div class="plot">
+                <div data-stage="answer">
                 <svg class="chart" viewBox="0 0 340 150" role="img" aria-label="Output kept against cycles. The bench test covers cycles 0 to 50, where 8-hour drying is slightly ahead. Near cycle 245 the 8-hour line falls behind and ends at 79 percent, against 90 percent for 12-hour drying.">
                   <rect x="30" y="10" width="46.7" height="120" fill="#ece8f9"/>
-                  <text x="34" y="24">Bench test</text>
+                  <text x="34" y="124">Bench test</text>
                   <line class="axis" x1="30" y1="130" x2="310" y2="130"/>
                   <line x1="258.7" y1="10" x2="258.7" y2="130" stroke="#c3c2b7" stroke-dasharray="3 3"/>
-                  <text x="236" y="143">cycle 245</text>
+                  <text x="252" y="143" text-anchor="end">cycle 245</text>
                   <text x="30" y="143">0</text><text x="296" y="143">300</text>
                   <path class="ln" pathLength="1" stroke="#0f6e56" d="M30 10 L76.7 17.2 L123.3 24.4 L170 30.8 L216.7 37.2 L258.7 43.2 L310 50"/>
                   <path class="ln late" pathLength="1" stroke="#a52a2a" d="M30 10 L76.7 14.8 L123.3 21.6 L170 28.8 L216.7 36 L258.7 43.2 L286.7 68 L310 94"/>
                   <text class="tag" x="314" y="53" fill="#0f6e56">12 h</text>
                   <text class="tag" x="314" y="97" fill="#a52a2a">8 h</text>
                 </svg>
+                </div>
+                <div class="check" data-stage="check"><svg aria-hidden="true"><use href="#tick"/></svg>Independent check passed. It corrected two figures.</div>
               </div>
-              <div class="check" data-stage="check"><svg aria-hidden="true"><use href="#tick"/></svg>Independent check passed. It corrected two figures.</div>
               <div class="finding" data-stage="finding">
                 <p><small>FINDING</small>8-hour drying keeps about 11 points less output at cycle 300.</p>
                 <span class="btn" data-share="tomF">Share with team</span>
@@ -692,6 +799,13 @@
     </div>
   </footer>
 
+  <nav class="stages" aria-label="From R&amp;D to production"><div class="pill">
+    <a href="#lab" data-key="lab"><svg aria-hidden="true"><use href="#i-rnd"/></svg>R&amp;D</a>
+    <i aria-hidden="true"></i>
+    <a href="#pilot" data-key="pilot"><svg aria-hidden="true"><use href="#i-pilot"/></svg>Pilot</a>
+    <i aria-hidden="true"></i>
+    <a href="#team" data-key="team"><svg aria-hidden="true"><use href="#i-prod"/></svg>Production</a>
+  </div></nav>
   <svg class="threads" aria-hidden="true"></svg>
 
   <script>
@@ -764,6 +878,7 @@
       const web = document.querySelector(".web");
       const rail = document.querySelector(".rail");
       const threads = document.querySelector(".threads");
+      const wide = matchMedia("(min-width: 900px)");
 
       // x, y in the 400×340 web; kind: bg (already known), doc (read in chapter 1), finding, decision
       const NODES = {
@@ -792,53 +907,83 @@
       ];
       const el = {}, lbl = {}, edgeEls = [];
       const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.append(e); return e; };
-      [["R&D", 34, 22], ["PILOT", 330, 26], ["PRODUCTION", 290, 330]].forEach(([t, x, y]) => (mk("text", { x, y, class: "cl" }, web).textContent = t));
-      const gEdges = mk("g", {}, web), gNodes = mk("g", {}, web), gLabels = mk("g", {}, web);
-      for (const [a, b, dash] of EDGES) {
+      const clusters = [["R&D", 34, 22], ["PILOT", 330, 26], ["PRODUCTION", 290, 330]].map(([t, x, y]) => { const e = mk("text", { x, y, class: "cl" }, web); e.textContent = t; return e; });
+      // on the phone a line comes down from above to the pilot line's log, so that cluster's name sits under it
+      const placeClusters = () => { const c = clusters[1]; c.setAttribute("y", wide.matches ? 26 : 234); c.setAttribute("x", wide.matches ? 330 : 398); c.setAttribute("text-anchor", wide.matches ? "start" : "end"); };
+      placeClusters(); wide.addEventListener("change", placeClusters);
+      const gEdges = mk("g", {}, web), gThr = mk("g", {}, web), gNodes = mk("g", {}, web), gLabels = mk("g", {}, web);
+      // what is in memory before any stage begins forms in chapter 01; findings and the decision come later
+      const formed = (id) => NODES[id][2] === "bg" || NODES[id][2] === "doc";
+      const MOUTH = [200, -6];
+      const order01 = (id) => { const [x, y] = NODES[id]; return Math.min(1, Math.hypot(x - MOUTH[0], (y - MOUTH[1]) * 1.15) / 380); };
+      const degree = {};
+      for (const [a, b] of EDGES) { degree[a] = (degree[a] || 0) + 1; degree[b] = (degree[b] || 0) + 1; }
+      EDGES.forEach(([a, b, dash], n) => {
         const [x1, y1] = NODES[a], [x2, y2] = NODES[b];
-        edgeEls.push({ a, b, e: mk("line", { x1, y1, x2, y2, class: "edge" + (dash ? " dash" : "") }, gEdges) });
-      }
+        // a fine, slightly curved thread: the control point sits a little off the straight line
+        const bend = (n % 2 ? 1 : -1) * 0.12, mx = (x1 + x2) / 2 - (y2 - y1) * bend, my = (y1 + y2) / 2 + (x2 - x1) * bend;
+        const attrs = { d: `M${x1} ${y1} Q${mx.toFixed(1)} ${my.toFixed(1)} ${x2} ${y2}`, class: "edge" + (dash ? " dash" : "") };
+        if (!dash) attrs.pathLength = 1;
+        const e = mk("path", attrs, gEdges);
+        if (formed(a) && formed(b)) { e.classList.add("form"); e.style.setProperty("--i", Math.max(order01(a), order01(b)).toFixed(3)); }
+        edgeEls.push({ a, b, e });
+      });
+      const TYPES = { review: "SLIDES", notebook: "NOTEBOOK", bench: "CSV", maint: "LOG", qc: "CSV", report: "PDF" };
       for (const [id, [x, y, kind, name]] of Object.entries(NODES)) {
         const g = mk("g", { class: "node " + kind }, gNodes);
-        const r = kind === "bg" ? 4 : kind === "doc" ? 5.5 : 7;
+        // the more a record is linked, the larger its dot
+        const r = kind === "bg" ? 2.4 + (degree[id] || 0) * 0.55 : kind === "doc" ? 3.4 + (degree[id] || 0) * 0.6 : 7;
         mk("circle", { cx: x, cy: y, r: r + 5, class: "halo" }, g);
         mk("circle", { cx: x, cy: y, r }, g);
         el[id] = g;
+        if (formed(id)) {
+          g.classList.add("form");
+          const i = order01(id);
+          g.style.setProperty("--i", i.toFixed(3));
+          g.style.setProperty("--fx", ((MOUTH[0] - x) * 0.4).toFixed(1) + "px");
+          g.style.setProperty("--fy", ((MOUTH[1] - y) * 0.4).toFixed(1) + "px");
+        }
+        if (TYPES[id]) mk("text", { x, y: y + r + 11, "text-anchor": "middle", class: "ft" }, gLabels).textContent = TYPES[id];
         if (name) {
-          // a label is a small card: the stage's icon, the stage, then what it is. No one's name.
+          // a tag names the stage, with its icon, and what the record is. Never a person's name.
           const [stage, stg, what] = name;
-          const g = mk("g", { class: "lbl " + stage }, gLabels);
-          const box = mk("rect", { rx: 6, height: 20 }, g);
-          const icon = mk("use", { href: "#i-" + stage, width: 11, height: 11 }, g);
-          const t = mk("text", {}, g);
+          const g2 = mk("g", { class: "lbl " + stage }, gLabels);
+          const rect = mk("rect", { rx: 5 }, g2);
+          const icon = mk("use", { href: "#i-" + stage, width: 10, height: 10 }, g2);
+          const t = mk("text", {}, g2);
           mk("tspan", { class: "stg" }, t).textContent = stg + " · ";
           mk("tspan", {}, t).textContent = what;
-          lbl[id] = { g, box, icon, t, x, y };
+          lbl[id] = { g: g2, rect, icon, t, x, y, r };
         }
       }
-      // place each label card beside its node, on the side with room
-      const placeLabels = () => {
-        for (const { box, icon, t, x, y } of Object.values(lbl)) {
-          const w = t.getComputedTextLength() + 32;
-          const left = x < 250 ? x + 11 : x - 11 - w;
-          box.setAttribute("x", left); box.setAttribute("y", y - 10); box.setAttribute("width", w);
-          icon.setAttribute("x", left + 7); icon.setAttribute("y", y - 5.5);
-          t.setAttribute("x", left + 23); t.setAttribute("y", y + 3.8);
+      // each label is a small tag placed where it meets no other tag, no halo, and no thread leaving its node
+      // (a thread leaves to the right, so a threaded node's tag sits left of it, above it or below it)
+      const SIDE = { mayaF: "above", tomF: "left", report: "below", maint: "left", decision: "below" };
+      function layoutLabels() {
+        for (const [id, L] of Object.entries(lbl)) {
+          const w = (L.t.getComputedTextLength() || L.t.textContent.length * 5.9) + 14, px = 6, h = 18, gap = L.r + 9;
+          let cx, cy;
+          if (SIDE[id] === "left") { cx = L.x - gap - w / 2 - px; cy = L.y - 5; }
+          else if (SIDE[id] === "above") { cx = L.x; cy = L.y - gap - h / 2 + 2; }
+          else { cx = L.x; cy = L.y + gap + h / 2 - 2; }
+          L.icon.setAttribute("x", (cx - w / 2).toFixed(1)); L.icon.setAttribute("y", (cy - 5).toFixed(1));
+          L.t.setAttribute("x", (cx - w / 2 + 14).toFixed(1)); L.t.setAttribute("y", (cy + 3.8).toFixed(1));
+          Object.entries({ x: cx - w / 2 - px, y: cy - h / 2, width: w + 2 * px, height: h }).forEach(([k, v]) => L.rect.setAttribute(k, v.toFixed(1)));
         }
-      };
-      placeLabels();
-      document.fonts?.ready.then(placeLabels);
+      }
+      layoutLabels();
+      document.fonts?.ready.then(layoutLabels);
       const born = new Set();
       const refreshEdges = () => edgeEls.forEach(({ a, b, e }) => e.classList.toggle("on", born.has(a) && born.has(b)));
       const birth = (id) => { born.add(id); el[id].classList.add("on"); refreshEdges(); };
-      Object.keys(NODES).filter((id) => NODES[id][2] === "bg").forEach(birth);
+      Object.keys(NODES).filter(formed).forEach(birth);
       const light = (ids) => {
         for (const id in el) { const on = ids.includes(id); el[id].classList.toggle("lit", on); lbl[id]?.g.classList.toggle("lit", on); }
         edgeEls.forEach(({ a, b, e }) => e.classList.toggle("lit", ids.includes(a) && ids.includes(b)));
       };
 
       // counters in the rail
-      const counts = { docs: 1278, findings: 41, decisions: 12 };
+      const counts = { docs: 1284, findings: 41, decisions: 12 };
       const bump = (key) => {
         counts[key]++;
         const b = document.querySelector(`[data-count="${key}"]`);
@@ -850,7 +995,7 @@
       // a dot leaves something on the page and lands on a node of the web
       const go_duration = 950;
       const fly = (from, id, kind, animate) => new Promise((done) => {
-        if (!animate) return done();
+        if (!animate || !wide.matches) return done();
         const a = from.getBoundingClientRect(), b = el[id].querySelector("circle:last-child").getBoundingClientRect();
         const dot = document.createElement("span");
         dot.className = "flyer " + kind;
@@ -873,16 +1018,8 @@
       // when animating, or at once when not, so the same list plays the chapter or jumps to its end.
       const CHAPTERS = {
         memory: {
-          lit: ["report"],
-          async play(root, go) {
-            show(root, "win");
-            for (const li of root.querySelectorAll(".files li")) {
-              await go(260);
-              li.classList.add("read");
-              await fly(li.querySelector(".t"), li.dataset.node, "doc", go.animate);
-              birth(li.dataset.node); bump("docs");
-            }
-          },
+          lit: [],
+          async play() {},
         },
         lab: {
           lit: ["mayaF", "report"], threads: ["report"],
@@ -926,31 +1063,34 @@
 
       // threads: one curve from a lit node to the place on the page that uses it, kept true while scrolling
       let live = [];
-      const wide = matchMedia("(min-width: 900px)");
       function drawThreads(root, ids) {
-        threads.replaceChildren();
+        threads.replaceChildren(); gThr.replaceChildren();
         if (!wide.matches) { live = []; return; }
         live = ids.map((id) => {
           const target = root.querySelector(`[data-thread="${id}"]`);
+          const inner = mk("path", { pathLength: 1, class: "thr" }, gThr);
           const p = mk("path", { pathLength: 1, class: id === "decision" ? "green" : "" }, threads);
           const c = mk("circle", { r: 2.5 }, threads);
-          return { id, target, p, c };
+          return { id, target, inner, p, c };
         }).filter((t) => t.target);
         place();
-        requestAnimationFrame(() => requestAnimationFrame(() => live.forEach((t) => t.p.classList.add("in"))));
+        requestAnimationFrame(() => requestAnimationFrame(() => live.forEach((t) => { t.inner.classList.add("in"); setTimeout(() => t.p.classList.add("in"), still ? 0 : 380); })));
       }
       function place() {
         for (const t of live) {
-          const a = el[t.id].querySelector("circle:last-child").getBoundingClientRect();
+          const [nx, ny] = NODES[t.id];
           const b = t.target.getBoundingClientRect();
           const visible = b.bottom > 0 && b.top < innerHeight;
-          t.p.style.opacity = visible ? "" : "0";
-          t.c.style.opacity = visible ? "" : "0";
-          const x1 = a.left + a.width / 2, y1 = a.top + a.height / 2;
-          // a thread stops at the window's edge, level with what it feeds, so it never crosses the words
+          for (const e of [t.p, t.c, t.inner]) e.style.opacity = visible ? "" : "0";
+          // inside the web: level from the node to the card's right edge, so it crosses no label and no counter
+          const ctm = web.getScreenCTM();
+          const x1 = memory.getBoundingClientRect().right, y1 = new DOMPoint(nx, ny).matrixTransform(ctm).y;
+          const edge = new DOMPoint(x1, y1).matrixTransform(ctm.inverse());
+          t.inner.setAttribute("d", `M${nx} ${ny} H${edge.x.toFixed(1)}`);
+          // across the gutter: one curve to the window's edge, level with what it feeds, so it never crosses the words
           const win = t.target.closest(".win").getBoundingClientRect();
           const x2 = win.left, y2 = Math.max(win.top + 24, Math.min(win.bottom - 24, b.top + b.height / 2));
-          const d = `M${x1} ${y1} C${x1 + (x2 - x1) * 0.55} ${y1}, ${x2 - (x2 - x1) * 0.45} ${y2}, ${x2} ${y2}`;
+          const d = `M${x1} ${y1} C${x1 + (x2 - x1) * 0.6} ${y1}, ${x2 - (x2 - x1) * 0.6} ${y2}, ${x2} ${y2}`;
           t.p.setAttribute("d", d);
           t.c.setAttribute("cx", x2); t.c.setAttribute("cy", y2);
         }
@@ -974,24 +1114,125 @@
         state[step] = "done";
         if (current === step) { light(CHAPTERS[step].lit); drawThreads(root, CHAPTERS[step].threads || []); }
       }
-      let current = null;
+      let current = null, inStory = false;
+      const stagesBar = document.querySelector(".stages");
       async function enter(step) {
         current = step;
         rail.dataset.step = step;
         const keys = ["lab", "pilot", "team"], at = keys.indexOf(step);
-        document.querySelectorAll(".stages a").forEach((a, i) => { a.classList.toggle("now", i === at); a.classList.toggle("done", i < at); });
-        document.querySelectorAll(".stages i").forEach((l, i) => l.classList.toggle("done", i < at));
+        stagesBar.classList.toggle("on", at >= 0 && inStory);
+        stagesBar.querySelectorAll("a").forEach((a, i) => { a.classList.toggle("now", i === at); a.classList.toggle("done", i < at); });
+        stagesBar.querySelectorAll("i").forEach((l, i) => l.classList.toggle("done", i < at));
         // a chapter reached by a jump finishes the ones before it at once, so memory is never behind
         for (const s of order.slice(0, order.indexOf(step))) if (!state[s]) await run(s, false);
         if (!state[step]) { run(step, !still); return; }
         if (state[step] === "done") { light(CHAPTERS[step].lit); drawThreads(document.querySelector(`.chapter[data-step="${step}"]`), CHAPTERS[step].threads || []); }
       }
+      // while the web is still travelling to the rail, the lab waits; it plays as the web comes to rest
+      let pending = null;
+      const resting = () => !docking() || dockProgress() >= 0.67;
       const io = new IntersectionObserver((entries) => {
-        for (const e of entries) if (e.isIntersecting) enter(e.target.dataset.step);
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const s = e.target.dataset.step;
+          if (s === "lab" && !resting()) pending = s; else { pending = null; enter(s); }
+        }
       }, { rootMargin: "-42% 0px -42% 0px" });
+      addEventListener("scroll", () => { if (pending && resting()) { const s = pending; pending = null; enter(s); } }, { passive: true });
       document.querySelectorAll(".chapter").forEach((c) => io.observe(c));
+      // ---- The dock. The memory's resting place is the rail; measure it, then tell the CSS how far the
+      // centred, enlarged web sits from there (--dx, --dy, --s), where the papers' funnel ends (--mx, --my,
+      // --rim), and where chapter 01's words sit under the web (--copy-top). All scrubbing is the CSS's.
+      const docking = () => wide.matches && !still && CSS.supports("animation-timeline: view()");
+      const hero = document.querySelector(".hero"), papers = document.querySelector(".papers");
+      const memory = document.querySelector(".memory"), story = document.querySelector(".story");
+      const intro = document.querySelector(".intro"), copy = document.querySelector(".intro-copy");
+      const docsCount = document.querySelector('[data-count="docs"]');
+      const chapters = document.querySelector(".chapters"), lab = document.getElementById("lab");
+      const DOCK_END = 0.7; // where the .memory dock animation ends, as a share of the intro's cover range
+      function dockProgress() { const r = intro.getBoundingClientRect(); return (innerHeight - r.top) / (r.height + innerHeight); }
+      function measure() {
+        const root = document.documentElement.style;
+        if (!docking()) { docsCount.textContent = "1,284"; root.removeProperty("--pull"); return; }
+        const W = innerWidth, H = innerHeight;
+        const rail0 = rail.getBoundingClientRect();
+        const w = memory.offsetWidth, h = memory.offsetHeight;
+        const bar = parseFloat(getComputedStyle(rail).top) || 0;
+        const nl = rail0.left + memory.offsetLeft, nt = bar + memory.offsetTop; // where it rests once the rail is stuck
+        const mr = memory.getBoundingClientRect(), wr = web.getBoundingClientRect(), k = mr.width / w;
+        const webTop = (wr.top - mr.top) / k, webH = wr.height / k;
+        const copyH = copy.offsetHeight, gap = 14;
+        const s = Math.max(1, Math.min(0.58 * H / webH, (H - 48 - gap - copyH) / (h - webTop), (0.8 * W) / w));
+        const block = s * (h - webTop) + gap + copyH;
+        const m = Math.max(16, (H - block) / 2);
+        const left = W / 2 - (s * w) / 2, top = m - s * webTop;
+        root.setProperty("--dx", (left - nl).toFixed(1) + "px");
+        root.setProperty("--dy", (top - nt).toFixed(1) + "px");
+        root.setProperty("--s", s.toFixed(4));
+        root.setProperty("--copy-top", (m + s * (h - webTop) + gap).toFixed(1) + "px");
+        // the lab chapter rises with the dock: when the web comes to rest, the lab's words sit level with the card
+        const eyebrow = lab.querySelector(".eyebrow"), para = lab.querySelector("h2 + p");
+        const off = eyebrow.offsetTop - lab.offsetTop, copyLen = para.offsetTop + para.offsetHeight - eyebrow.offsetTop;
+        const pull = parseFloat(getComputedStyle(chapters).marginTop) || 0;
+        const naturalGap = chapters.offsetTop - pull - (intro.offsetTop + intro.offsetHeight);
+        const introBottomAtRest = H - DOCK_END * (intro.offsetHeight + H) + intro.offsetHeight;
+        const cardMid = nt + h / 2; // the rail is stuck at the top of the screen by then
+        root.setProperty("--pull", (cardMid - copyLen / 2 - off - introBottomAtRest - naturalGap).toFixed(1) + "px");
+        // the funnel's mouth is the top of the web as it forms, in the hero's own coordinates
+        const heroTop = hero.getBoundingClientRect().top + scrollY, storyTop = story.getBoundingClientRect().top + scrollY;
+        const hc = hero.querySelector(".hero-copy"), acts = hc.querySelector(".actions");
+        const mx = W / 2, my = storyTop - heroTop + m + s * 10, rim = hc.offsetTop + acts.offsetTop + acts.offsetHeight + 56, half = Math.min(300, 0.22 * W);
+        papers.style.setProperty("--mx", mx + "px"); papers.style.setProperty("--my", my + "px"); papers.style.setProperty("--rim", rim + "px");
+        papers.style.setProperty("--hw", hero.offsetWidth + "px"); papers.style.setProperty("--hh", hero.offsetHeight + "px");
+        const fl = papers.querySelector(".fl"), fr = papers.querySelector(".fr");
+        const neck = my - rim;
+        fl.setAttribute("d", `M${mx - half} ${rim} C${mx - half * 0.3} ${rim + 0.35 * neck}, ${mx - 14} ${my - 0.4 * neck}, ${mx - 10} ${my - 6}`);
+        fr.setAttribute("d", `M${mx + half} ${rim} C${mx + half * 0.3} ${rim + 0.35 * neck}, ${mx + 14} ${my - 0.4 * neck}, ${mx + 10} ${my - 6}`);
+        count();
+      }
+      // the documents counter follows the web as it forms, and runs back when you scroll up
+      function count() {
+        if (!docking()) return;
+        const r = intro.getBoundingClientRect(), p = (innerHeight - r.top) / (r.height + innerHeight);
+        const n = 1278 + Math.round(6 * Math.min(1, Math.max(0, (p - 0.19) / 0.22)));
+        docsCount.textContent = n.toLocaleString("en-US");
+      }
+      measure();
+      addEventListener("resize", measure);
+      document.fonts?.ready.then(measure);
+      addEventListener("scroll", () => requestAnimationFrame(count), { passive: true });
+
+      // ---- The phone: three records rest above the web, each with one fine line into the node it became.
+      const feed = document.createElementNS(NS, "svg");
+      feed.setAttribute("class", "feed"); feed.setAttribute("aria-hidden", "true");
+      document.body.append(feed);
+      const FEED = [[".paper:nth-child(5)", "review"], [".paper:nth-child(3)", "notebook"], [".paper:nth-child(6)", "maint"]];
+      function drawFeed() {
+        feed.replaceChildren();
+        if (wide.matches) return;
+        const ctm = web.getScreenCTM();
+        for (const [sel, id] of FEED) {
+          const card = papers.querySelector(sel).getBoundingClientRect();
+          const [x, y] = NODES[id], c = el[id].querySelector("circle:last-child");
+          const n = new DOMPoint(x, y).matrixTransform(ctm), rr = (+c.getAttribute("r") + 3) * ctm.a;
+          const sx = card.left + card.width / 2, sy = card.bottom + scrollY - 3, ex = n.x, ey = n.y + scrollY - rr;
+          mk("path", { pathLength: 1, d: `M${sx} ${sy} C${sx} ${sy + (ey - sy) * 0.55}, ${ex} ${ey - (ey - sy) * 0.45}, ${ex} ${ey}` }, feed);
+          mk("circle", { cx: sx, cy: sy, r: 1.8 }, feed);
+        }
+      }
+      drawFeed();
+      addEventListener("resize", drawFeed); addEventListener("load", drawFeed);
+      document.fonts?.ready.then(drawFeed);
+      setTimeout(drawFeed, 1600); // after the records have settled into place
+      if (still) feed.classList.add("in");
+      else new IntersectionObserver(([e], o) => { if (e.isIntersecting) { feed.classList.add("in"); o.disconnect(); } }, { threshold: 0.35 }).observe(memory);
+
       // leaving the story clears the threads
-      new IntersectionObserver(([e]) => { if (!e.isIntersecting) { threads.replaceChildren(); live = []; } }, { threshold: 0 })
+      new IntersectionObserver(([e]) => {
+        inStory = e.isIntersecting;
+        stagesBar.classList.toggle("on", inStory && ["lab", "pilot", "team"].includes(current));
+        if (!e.isIntersecting) { threads.replaceChildren(); gThr.replaceChildren(); live = []; }
+      }, { threshold: 0 })
         .observe(document.querySelector(".chapters"));
     })();
   </script>
