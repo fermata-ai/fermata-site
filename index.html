@@ -180,6 +180,8 @@
     .hchip i { font-style: normal; color: var(--ink-3); }
     .hchip i::before { content: "· "; }
     .hchip[hidden] { display: none; }
+    .hchip.auto { opacity: 0; transition: opacity 0.6s var(--ease); }
+    .hchip.auto.on { opacity: 1; }
     .web { position: relative; z-index: 1; }
     .web .node .hit { fill: transparent !important; stroke: none; cursor: default; }
     .web .node.hover circle:not(.halo):not(.hit) { fill: var(--violet); }
@@ -996,6 +998,10 @@
       // ---- where things are
       const born = new Set(), lit = new Set(), bornAt = {}, proj = {};
       let hover = null, e = 0, L = 0, w = 1, S = null, timeS = 0, paused = false, busy = false;
+      // what invites a hand to the wide map: it sways slowly on its own until the pointer takes over, a record names
+      // itself now and then, and the records near the pointer wake up
+      const sway = { amt: 0, ph: 0 }, ptr = { x: 0, y: 0, on: false }, auto = { id: null, last: null, until: 0, next: 0 };
+      let lastMove = -1e9, lastFrame = performance.now();
       const t0 = performance.now();
       const view = { yaw: -0.2, pitch: 0.09, vy: 0, vp: 0, hy: 0, hp: 0, ty: 0, tp: 0, wy: 0, wp: 0 }; // hy, hp: the lean toward the cursor; wy, wp: how far the wide map was spun
       let cyw = 1, syw = 0, cp = 1, sp = 0;
@@ -1103,6 +1109,14 @@
       const chip = document.createElement("span");
       chip.className = "hchip"; chip.setAttribute("role", "tooltip"); chip.hidden = true;
       layer.append(chip);
+      const autoChip = document.createElement("span");
+      autoChip.className = "hchip auto";
+      layer.append(autoChip);
+      const fillChip = (el, id) => {
+        const [type, name, team] = DOCS[id];
+        el.innerHTML = `<span class="t ${T[type]}">${type}</span><b></b><i></i>`;
+        el.querySelector("b").textContent = name; el.querySelector("i").textContent = team;
+      };
 
       // ---- drawing
       let dpr = 1;
@@ -1142,10 +1156,15 @@
         const sx = (VW * 0.47) / 188, sy = (H * 0.44) / 140;
         S = { VW, H, hr, wr, dock, dp, sx, sy, zs: Math.min(sx, sy), bs: wr.width / 400, wcx: VW / 2, wcy: H / 2,
           bcx: wr.left + wr.width / 2, bcy: wr.top + wr.height / 2, pa: Math.min(VW * 0.27, 400), pb: copy.offsetHeight / 2 + 64 };
+        const wideNow = dock && L >= 1 && w < 0.5, idle = wideNow && !drag && now - lastMove > 2200;
+        const dt = Math.min(0.05, (now - lastFrame) / 1000); lastFrame = now;
+        sway.amt += ((idle ? 1 : 0) - sway.amt) * Math.min(1, dt * 1.5); sway.ph += dt * sway.amt;
+        const swayYaw = 0.24 * Math.sin((sway.ph * 6.283) / 16) * sway.amt * (1 - w), swayPitch = 0.045 * Math.sin((sway.ph * 6.283) / 27) * sway.amt * (1 - w);
+        S.wideNow = wideNow; S.idle = idle;
         view.hy += (view.ty - view.hy) * 0.09; view.hp += (view.tp - view.hp) * 0.09;
         const leaning = Math.abs(view.ty - view.hy) > 0.002 || Math.abs(view.tp - view.hp) > 0.002;
         // a spin given to the wide map unwinds as it folds into its card, so the card always starts the right way round
-        const yaw = view.yaw + view.wy * (1 - w) + view.hy + (1 - ease(L)) * 0.3 + scrollYaw(), pitch = view.pitch + view.wp * (1 - w) + view.hp;
+        const yaw = view.yaw + view.wy * (1 - w) + view.hy + swayYaw + (1 - ease(L)) * 0.3 + scrollYaw(), pitch = view.pitch + view.wp * (1 - w) + view.hp + swayPitch;
         cyw = Math.cos(yaw); syw = Math.sin(yaw); cp = Math.cos(pitch); sp = Math.sin(pitch);
         for (const hub of HUBS) hub.at = place3(hub.uv[0] * 188 * sx, hub.uv[1] * 140 * sy, 0, ...hub.corner);
         for (const tm of TEAM_EL) tm.at = nodeTarget(tm);
@@ -1205,6 +1224,8 @@
             if (f < 0.02) continue;
             proj[id] = p; fadeOf[id] = f;
           }
+          const proxR = w < 0.5 ? 170 : 64;
+          const ptrOn = ptr.on && (wideNow || (ptr.x > wr.left && ptr.x < wr.right && ptr.y > wr.top && ptr.y < wr.bottom));
           if (L > 0) {
             EDGES.forEach(([a, b, dash], n) => {
               const A = proj[a], B = proj[b];
@@ -1212,8 +1233,9 @@
               const on = lit.has(a) && lit.has(b), grow = clamp(L * 1.6 - ((n % 17) / 17) * 0.6);
               if (grow <= 0) return;
               const near = clamp(0.5 + (A[2] + B[2]) * 0.25);
-              ctx.strokeStyle = on ? `rgba(106, 92, 196, ${0.9 * L})` : `rgba(112, 104, 160, ${((0.12 + 0.3 * near) * (1 + 0.5 * (1 - w)) * L).toFixed(3)})`;
-              ctx.lineWidth = on ? 1.3 : 0.6 + 0.35 * (1 - w);
+              const prox = ptrOn ? clamp(1 - Math.hypot((A[0] + B[0]) / 2 - ptr.x, (A[1] + B[1]) / 2 - ptr.y) / proxR) ** 2 : 0;
+              ctx.strokeStyle = on ? `rgba(106, 92, 196, ${0.9 * L})` : `rgba(${112 - 30 * prox}, ${104 - 40 * prox}, ${160 + 20 * prox}, ${Math.min(0.95, ((0.12 + 0.3 * near) * (1 + 0.5 * (1 - w)) + 0.55 * prox) * L).toFixed(3)})`;
+              ctx.lineWidth = on ? 1.3 : 0.6 + 0.35 * (1 - w) + 0.5 * prox;
               ctx.setLineDash(dash ? [3, 3] : []);
               ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.lineTo(mix(A[0], B[0], grow), mix(A[1], B[1], grow)); ctx.stroke();
             });
@@ -1240,15 +1262,16 @@
             const n = N[id], [x, y, zn, k] = proj[id], near = clamp(0.5 + zn * 0.5);
             let s = 1;
             if (bornAt[id]) { const t = (now - bornAt[id]) / 700; if (t < 1) { s = ease(clamp(t)); busy = true; } }
-            const on = lit.has(id) || hover === id, fade = fadeOf[id];
-            const r = n.r * k * s * (on ? 1.25 : 1);
-            if (n.kind !== "bg" || on) {
+            const on = lit.has(id) || hover === id || auto.id === id, fade = fadeOf[id];
+            const prox = ptrOn ? clamp(1 - Math.hypot(x - ptr.x, y - ptr.y) / proxR) ** 2 : 0;
+            const r = n.r * k * s * (on ? 1.25 : 1) * (1 + 0.6 * prox);
+            if (n.kind !== "bg" || on || prox > 0.2) {
               const g = (on ? 7.5 : 5.2) * r;
-              ctx.globalAlpha = fade * (0.55 + 0.45 * near) * (n.kind === "bg" ? 0.6 : 1);
+              ctx.globalAlpha = fade * (0.55 + 0.45 * near) * (n.kind === "bg" ? (on ? 0.6 : Math.max(0, prox - 0.2) * 0.9) : 1);
               ctx.drawImage(glow[n.kind === "bg" ? "bg" : n.st], x - g, y - g, g * 2, g * 2);
             }
-            const [cr, cg, cb] = n.kind === "bg" ? [128, 122, 165] : RGB[n.st];
-            ctx.globalAlpha = fade * (n.kind === "bg" ? 0.35 + 0.55 * near : 0.7 + 0.3 * near);
+            const [cr, cg, cb] = n.kind === "bg" ? [128 - 44 * prox, 122 - 54 * prox, 165 + 6 * prox] : RGB[n.st];
+            ctx.globalAlpha = fade * Math.min(1, (n.kind === "bg" ? 0.35 + 0.55 * near : 0.7 + 0.3 * near) + 0.5 * prox);
             ctx.fillStyle = `rgb(${cr}, ${cg}, ${cb})`;
             ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill();
             if (on) { ctx.globalAlpha = 0.5; ctx.strokeStyle = `rgb(${cr}, ${cg}, ${cb})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, r + 4, 0, 6.283); ctx.stroke(); }
@@ -1258,6 +1281,15 @@
         // 5. room for the words in front
         if (heroOn) clearing(heroCopy.getBoundingClientRect(), parseFloat(getComputedStyle(heroCopy).opacity), 0.6, 0.78);
         if (dock && w < 1 && e > 0.3) clearing(copy.getBoundingClientRect(), parseFloat(getComputedStyle(copy).opacity), 0.72, 0.95);
+        // now and then, while nobody is touching it, one record shows its chip for a moment
+        if (auto.id && (now > auto.until || !idle || hover || pinned || !proj[auto.id])) { auto.id = null; auto.next = now + 1500; autoChip.classList.remove("on"); }
+        if (!auto.id && idle && !hover && !pinned && sway.amt > 0.5 && now > auto.next) {
+          const pool = Object.keys(proj).filter((id) => {
+            const [x, y, zn] = proj[id];
+            return id !== auto.last && zn > -0.3 && x > 150 && x < VW - 150 && y > 90 && y < H - 70 && ((x - VW / 2) / (S.pa * 1.25)) ** 2 + ((y - H / 2) / (S.pb * 1.2)) ** 2 > 1;
+          });
+          if (pool.length) { auto.id = auto.last = pool[Math.floor(Math.random() * pool.length)]; auto.until = now + 2600; fillChip(autoChip, auto.id); autoChip.classList.add("on"); }
+        }
         syncLayer();
         place();
       }
@@ -1289,12 +1321,13 @@
           taken.push([...box(side), tw, th]);
           t.style.transform = `translate(${p[0].toFixed(1)}px, ${p[1].toFixed(1)}px) ${OFFSET[side]}`;
         }
+        if (auto.id && proj[auto.id]) autoChip.style.transform = `translate(${proj[auto.id][0].toFixed(1)}px, ${proj[auto.id][1].toFixed(1)}px) translate(-50%, calc(-100% - 10px))`;
         if (hover && proj[hover]) chip.style.transform = `translate(${proj[hover][0].toFixed(1)}px, ${proj[hover][1].toFixed(1)}px) translate(-50%, calc(-100% - 10px))`;
         else if (!chip.hidden) { chip.hidden = true; hover = null; }
       }
       // the documents behind the hero keep drifting while it is on screen; everything else is drawn on demand
       let rafId = 0, lastNow = performance.now();
-      const wantsLoop = () => !still && !paused && S && S.hr.bottom > -40 && e < 1 && document.visibilityState === "visible";
+      const wantsLoop = () => !still && !paused && S && document.visibilityState === "visible" && ((S.hr.bottom > -40 && e < 1) || S.wideNow || sway.amt > 0.01);
       function loop(now) {
         rafId = 0;
         if (!paused) timeS += Math.min(0.05, (now - lastNow) / 1000);
@@ -1322,9 +1355,7 @@
         if (id === hover) return;
         hover = id;
         if (!id) { chip.hidden = true; requestRender(); return; }
-        const [type, name, team] = DOCS[id];
-        chip.innerHTML = `<span class="t ${T[type]}">${type}</span><b></b><i></i>`;
-        chip.querySelector("b").textContent = name; chip.querySelector("i").textContent = team;
+        fillChip(chip, id);
         chip.hidden = false;
         requestRender();
       };
@@ -1347,16 +1378,18 @@
           // the map is held like an object: pull it down and its top comes toward you, pull it right and its left does
           view.vy = (dx / span) * 3.2; view.vp = drag.touch ? 0 : -(dy / span) * 2.4;
           turn(drag.wide);
-          document.body.classList.add("turning"); pinned = null; showChip(null);
+          document.body.classList.add("turning"); pinned = null; showChip(null); lastMove = performance.now();
           requestRender();
           return;
         }
         if (ev.pointerType === "touch" || !S || still) return;
+        lastMove = performance.now(); ptr.x = ev.clientX; ptr.y = ev.clientY;
         // the map leans toward the cursor: across the whole screen while it is wide, over its card once it is there
         const wideNow = mapWide(), box = !wideNow && overBox(ev) && L >= 1;
         if (wideNow) { view.ty = (ev.clientX / S.VW - 0.5) * 0.7; view.tp = -(ev.clientY / S.H - 0.5) * 0.42; }
         else if (box) { view.ty = ((ev.clientX - S.wr.left) / S.wr.width - 0.5) * 0.8; view.tp = -((ev.clientY - S.wr.top) / S.wr.height - 0.5) * 0.5; }
         else { view.ty = 0; view.tp = 0; }
+        ptr.on = wideNow || box;
         showChip(wideNow || box ? nearest(ev) || pinned : pinned);
         requestRender();
       });
@@ -1381,7 +1414,7 @@
       };
       document.addEventListener("pointerup", release);
       document.addEventListener("pointercancel", release);
-      document.addEventListener("mouseleave", () => { view.ty = 0; view.tp = 0; requestRender(); });
+      document.addEventListener("mouseleave", () => { view.ty = 0; view.tp = 0; ptr.on = false; requestRender(); });
       addEventListener("scroll", () => { pinned = null; if (hover && !drag) showChip(null); requestRender(); }, { passive: true });
       addEventListener("resize", requestRender);
 
