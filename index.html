@@ -154,8 +154,20 @@
     }
 
     /* ---------- the story: memory stays on the left, one stage at a time on the right ---------- */
-    .story { position: relative; display: grid; grid-template-columns: minmax(300px, 5fr) 7fr; gap: clamp(24px, 4vw, 64px); max-width: 1280px; margin: 0 auto; padding-inline: 32px; }
-    .rail { position: sticky; top: 0; height: 100svh; display: grid; place-items: center; z-index: 4; }
+    .story { --bar: 60px; position: relative; display: grid; grid-template-columns: minmax(300px, 5fr) 7fr; gap: clamp(24px, 4vw, 64px); max-width: 1280px; margin: 0 auto; padding-inline: 32px; }
+    /* the stage bar: R&D, pilot, production, held at the top while the story is on screen */
+    .stages { grid-column: 1 / -1; position: sticky; top: 0; z-index: 7; height: var(--bar); display: grid; place-items: center; }
+    /* a full-width band, so the words scroll under it rather than into it */
+    .stages::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 100vw; translate: -50% 0; background: rgba(244, 244, 241, 0.86); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+    .stages .pill { position: relative; display: flex; align-items: center; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
+    .stages a { display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; border-radius: 999px; font-size: 13.5px; font-weight: 600; color: var(--ink-3); text-decoration: none; transition: color 0.4s, background 0.4s; }
+    .stages a svg { width: 16px; height: 16px; }
+    .stages i { width: 34px; height: 2px; border-radius: 2px; background: var(--line); position: relative; overflow: hidden; }
+    .stages i::after { content: ""; position: absolute; inset: 0; background: var(--violet-2); transform: scaleX(0); transform-origin: left; transition: transform 0.7s var(--ease); }
+    .stages a.done { color: var(--violet); }
+    .stages a.now { color: var(--violet); background: var(--violet-soft); }
+    .stages i.done::after { transform: scaleX(1); }
+    .rail { position: sticky; top: var(--bar); height: calc(100svh - var(--bar)); display: grid; place-items: center; z-index: 4; }
     .memory {
       width: min(100%, 440px); background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
       box-shadow: var(--shadow); padding: 18px 18px 14px; transition: scale 0.9s var(--ease); transform-origin: left center;
@@ -181,15 +193,20 @@
     .web .node.lit .halo { opacity: 0.45; }
     .web .node.lit circle:not(.halo) { fill: var(--violet); }
     .web .node.decision.lit circle:not(.halo) { fill: var(--green-2); }
-    .web .lbl { font-size: 10.5px; font-family: var(--sans); font-weight: 600; fill: var(--ink); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; opacity: 0; transition: opacity 0.5s; pointer-events: none; }
+    .web .lbl { opacity: 0; transition: opacity 0.5s; pointer-events: none; }
     .web .lbl.lit { opacity: 1; }
+    .web .lbl rect { fill: var(--white); stroke: var(--line); }
+    .web .lbl text { font-size: 10.5px; font-family: var(--sans); font-weight: 500; fill: var(--ink); }
+    .web .lbl .stg { font-weight: 700; }
+    .web .lbl.rnd { color: var(--violet); } .web .lbl.pilot { color: #1f5fa8; } .web .lbl.prod { color: #8a5a00; } .web .lbl.dec { color: var(--green); }
+    .web .lbl .stg { fill: currentColor; }
     .stats { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); padding-top: 10px; }
     .stats div { font-size: 11.5px; color: var(--ink-3); }
     .stats b { display: block; font-family: var(--serif); font-weight: 500; font-size: 20px; color: var(--ink); font-variant-numeric: tabular-nums; transition: color 0.4s; }
     .stats b.bump { color: var(--violet); }
     .stats .dec b.bump { color: var(--green); }
 
-    .chapter { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-block: 12vh; }
+    .chapter { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-block: calc(12vh + var(--bar)) 12vh; scroll-margin-top: var(--bar); }
     .chapter h2 { font-size: clamp(30px, 3.4vw, 46px); line-height: 1.08; margin-bottom: 14px; }
     .chapter > p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: clamp(17px, 1.5vw, 19px); color: var(--ink-2); max-width: 560px; margin: 0 0 28px; }
     .chapter .eyebrow .n { font-family: var(--mono); letter-spacing: 0; margin-right: 6px; }
@@ -293,18 +310,16 @@
     section.block { padding-block: clamp(80px, 14vh, 150px) 0; }
     .block-head { max-width: 720px; margin-bottom: 40px; }
     .block-head h2 { font-size: clamp(32px, 3.8vw, 50px); line-height: 1.06; margin-bottom: 14px; }
-    .block-head p { font-family: var(--serif); font-weight: 300; font-size: 19px; color: var(--ink-2); margin: 0; }
+    .block-head p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: 19px; color: var(--ink-2); margin: 0; }
 
     .inds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-    .ind { background: var(--white); border: 1px solid var(--line); border-radius: 18px; padding: 22px; box-shadow: var(--shadow); display: flex; flex-direction: column; }
-    .ind svg.art { width: 64px; height: 64px; color: var(--violet); margin-bottom: 18px; }
-    .ind h3 { font-size: 24px; line-height: 1.15; margin-bottom: 6px; }
-    .ind > p { margin: 0 0 18px; color: var(--ink-2); font-size: 15px; }
-    .flow { list-style: none; margin: auto 0 0; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--line); }
-    .flow li { display: grid; grid-template-columns: 64px 1fr; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--sunk); font-size: 13.5px; }
-    .flow li:last-child { border-bottom: 0; padding-bottom: 0; }
-    .flow b { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); padding-top: 2px; }
-
+    .ind { position: relative; margin: 0; border-radius: 20px; overflow: hidden; background: var(--ink); aspect-ratio: 4 / 5; box-shadow: var(--shadow); }
+    .ind img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 1.2s var(--ease); }
+    .ind:hover img { scale: 1.04; }
+    .ind::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(12, 12, 16, 0.78) 0%, rgba(12, 12, 16, 0.18) 45%, transparent 70%); }
+    .ind-text { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 24px; color: var(--white); }
+    .ind h3 { font-size: clamp(24px, 2.2vw, 30px); line-height: 1.1; margin-bottom: 6px; }
+    .ind p { margin: 0; font-size: 15px; color: rgba(255, 255, 255, 0.82); }
     .film-block { text-align: center; }
     .film-block .block-head { margin-inline: auto; }
     .player { position: relative; max-width: 1040px; margin: 0 auto; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #0b0b0d; border: 1px solid var(--line); box-shadow: 0 40px 90px -40px rgba(26, 26, 31, 0.55); }
@@ -344,7 +359,10 @@
       .hero { align-content: start; padding-top: 28px; }
       .stats div { display: flex; justify-content: space-between; gap: 8px; }
       .story { display: block; padding-inline: 16px; }
-      .rail { height: auto; top: 0; padding: 8px 0; place-items: stretch; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(8px); }
+      .story { --bar: 52px; }
+      .stages a { padding: 6px 10px; font-size: 12.5px; }
+      .stages i { width: 16px; }
+      .rail { height: auto; top: var(--bar); padding: 8px 0; place-items: stretch; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(8px); }
       .memory { width: 100%; padding: 10px 12px 8px; display: grid; grid-template-columns: 1fr 120px; grid-template-areas: "head head" "web stats"; gap: 2px 12px; }
       .rail[data-step="memory"] .memory { scale: 1; }
       .memory-head { grid-area: head; } .memory-head b { font-size: 15px; }
@@ -355,6 +373,7 @@
       .chapter { min-height: 0; padding-block: 56px; }
       .note-fiction { margin-bottom: 0; }
       .inds { grid-template-columns: 1fr; }
+      .ind { aspect-ratio: 4 / 3; }
     }
     @media (max-width: 560px) {
       .wrap { padding-inline: 16px; }
@@ -399,6 +418,10 @@
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="apple" viewBox="0 0 24 24"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.97-3.46-1.07-1.57-2.74-1.78-3.33-1.8-1.42-.15-2.77.83-3.49.83-.72 0-1.83-.81-3.01-.79-1.55.02-2.98.9-3.78 2.29-1.61 2.8-.41 6.94 1.16 9.21.77 1.11 1.68 2.36 2.88 2.31 1.16-.05 1.59-.75 2.99-.75 1.4 0 1.79.75 3.01.72 1.24-.02 2.03-1.13 2.79-2.25.88-1.29 1.24-2.54 1.26-2.6-.03-.01-2.42-.93-2.45-3.71zM14.08 5.84c.64-.77 1.07-1.85.95-2.92-.92.04-2.03.61-2.69 1.38-.59.68-1.1 1.78-.97 2.83 1.03.08 2.07-.52 2.71-1.29z"/></symbol>
     <symbol id="mark" viewBox="0 0 48 48"><path d="M6 28 A18 18 0 0 1 42 28" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><circle cx="13" cy="28" r="3.4" fill="currentColor"/><circle cx="24" cy="28" r="3.4" fill="currentColor"/><circle cx="35" cy="28" r="3.4" fill="currentColor"/></symbol>
+    <symbol id="i-rnd" viewBox="0 0 16 16"><path d="M6 1.8h4M7 2v4.2L3.2 12.8a1 1 0 0 0 .9 1.5h7.8a1 1 0 0 0 .9-1.5L9 6.2V2M4.6 10.2h6.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-pilot" viewBox="0 0 16 16"><path d="M3 5.5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2V12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 7h3.5V14M11 14h3M6 1.5v2M3 9h6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-prod" viewBox="0 0 16 16"><path d="M1.8 14.2V8.4l3.6 2V8.4l3.6 2V3h3.4v11.2zM1 14.2h14M12.2 6h.01" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-dec" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5.4 8.2l1.8 1.8 3.4-3.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   </svg>
 
@@ -421,7 +444,7 @@
     <section class="hero" aria-labelledby="hero-title">
       <div class="papers" aria-hidden="true">
         <div class="paper near" style="--x:3;--y:10;--r:-6deg;--d:.1"><span class="t pdf">PDF</span><span class="nm">Plant report · Oct 2025</span><i></i><i></i></div>
-        <div class="paper" style="--x:5;--y:36;--r:4deg;--d:.3;--o:.8"><span class="t nb">NOTEBOOK</span><span class="nm">Maya, pages 38–42</span><i></i><i></i></div>
+        <div class="paper" style="--x:5;--y:36;--r:4deg;--d:.3;--o:.8"><span class="t nb">NOTEBOOK</span><span class="nm">Lab notebook, p. 38–42</span><i></i><i></i></div>
         <div class="paper far" style="--x:2;--y:58;--r:-3deg;--d:.5;--o:.6"><span class="t csv">CSV</span><span class="nm">Moisture QC log 2026</span><i></i><i></i></div>
         <div class="paper near" style="--x:6;--y:76;--r:5deg;--d:.2"><span class="t ppt">SLIDES</span><span class="nm">Drying review · Mar 2026</span><i></i><i></i></div>
         <div class="paper far" style="--x:85;--y:8;--r:5deg;--d:.4;--o:.6"><span class="t log">LOG</span><span class="nm">Pilot line maintenance</span><i></i><i></i></div>
@@ -444,16 +467,23 @@
       </div>
       <ol class="strip">
         <li><a href="#memory"><span class="n">01</span><b>One memory</b><span>Reports, notebooks and data, read and linked.</span></a></li>
-        <li><a href="#lab"><span class="n">02</span><b>Every stage</b><span>Lab, pilot line and plant start from what is known.</span></a></li>
+        <li><a href="#lab"><span class="n">02</span><b>Every stage</b><span>R&amp;D, pilot and production start from what is known.</span></a></li>
         <li><a href="#team"><span class="n">03</span><b>Clear decisions</b><span>Push here, stop there, and keep the reasons.</span></a></li>
       </ol>
     </section>
 
     <!-- 2. The story: memory on the left stays put; the stages pass on the right -->
     <section class="story" id="story" aria-label="How Fermata works, from lab to team">
+      <nav class="stages" aria-label="From R&amp;D to production"><div class="pill">
+        <a href="#lab" data-key="lab"><svg aria-hidden="true"><use href="#i-rnd"/></svg>R&amp;D</a>
+        <i aria-hidden="true"></i>
+        <a href="#pilot" data-key="pilot"><svg aria-hidden="true"><use href="#i-pilot"/></svg>Pilot</a>
+        <i aria-hidden="true"></i>
+        <a href="#team" data-key="team"><svg aria-hidden="true"><use href="#i-prod"/></svg>Production</a>
+      </div></nav>
       <aside class="rail" data-step="memory" aria-label="Company memory">
         <div class="memory">
-          <div class="memory-head"><b>Company memory</b><span>Northfield Materials</span></div>
+          <div class="memory-head"><b>Company memory</b><span>Acme Labs</span></div>
           <svg class="web" viewBox="0 0 400 340" role="img" aria-label="A web of linked documents, findings and decisions, grouped by lab, pilot line and plant."></svg>
           <div class="stats">
             <div>Documents<b data-count="docs">1,278</b></div>
@@ -472,19 +502,19 @@
             <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="title">Reading the company’s records</span></div>
             <div class="win-body">
               <ul class="files">
-                <li data-node="review"><span class="t ppt">SLIDES</span><span class="nm">Drying review · Mar 2026<span class="meta">Lab · 24 slides</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 6</span></span></li>
-                <li data-node="notebook"><span class="t nb">NOTEBOOK</span><span class="nm">Maya, pages 38–42<span class="meta">Lab · notebook</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 4</span></span></li>
-                <li data-node="bench"><span class="t csv">CSV</span><span class="nm">Bench cycling results 2026<span class="meta">Lab · 1,840 rows</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 5</span></span></li>
-                <li data-node="maint"><span class="t log">LOG</span><span class="nm">Pilot line maintenance 2026<span class="meta">Pilot line · 212 entries</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 9</span></span></li>
-                <li data-node="qc"><span class="t csv">CSV</span><span class="nm">Moisture QC log 2026<span class="meta">Plant · 3,107 rows</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 7</span></span></li>
-                <li data-node="report"><span class="t pdf">PDF</span><span class="nm">Drying line upgrade report<span class="meta">Plant · Oct 2025 · 38 pages</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 11</span></span></li>
+                <li data-node="review"><span class="t ppt">SLIDES</span><span class="nm">Drying review · Mar 2026<span class="meta">R&amp;D · 24 slides</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 6</span></span></li>
+                <li data-node="notebook"><span class="t nb">NOTEBOOK</span><span class="nm">Lab notebook, p. 38–42<span class="meta">R&amp;D · notebook</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 4</span></span></li>
+                <li data-node="bench"><span class="t csv">CSV</span><span class="nm">Bench cycling results 2026<span class="meta">R&amp;D · 1,840 rows</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 5</span></span></li>
+                <li data-node="maint"><span class="t log">LOG</span><span class="nm">Pilot line maintenance 2026<span class="meta">Pilot · 212 entries</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 9</span></span></li>
+                <li data-node="qc"><span class="t csv">CSV</span><span class="nm">Moisture QC log 2026<span class="meta">Production · 3,107 rows</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 7</span></span></li>
+                <li data-node="report"><span class="t pdf">PDF</span><span class="nm">Drying line upgrade report<span class="meta">Production · Oct 2025 · 38 pages</span></span><span class="st"><span class="wait">Reading…</span><span class="yes">Linked to 11</span></span></li>
               </ul>
             </div>
           </div>
         </article>
 
         <article class="chapter" id="lab" data-step="lab">
-          <p class="eyebrow"><span class="n">02</span>Lab</p>
+          <p class="eyebrow"><span class="n">02</span>R&amp;D</p>
           <h2>In the lab, Maya starts where the last team stopped.</h2>
           <p>Her project is a faster drying step. Before she plans a test, Fermata brings up last year’s plant trial, so she skips what already failed. Her result goes back into memory.</p>
           <div class="win" data-stage="win">
@@ -512,7 +542,7 @@
         </article>
 
         <article class="chapter" id="pilot" data-step="pilot">
-          <p class="eyebrow"><span class="n">03</span>Pilot line</p>
+          <p class="eyebrow"><span class="n">03</span>Pilot</p>
           <h2>On the pilot line, the result arrives with its history.</h2>
           <p>Tom’s output fell after the switch to 8-hour drying. Fermata reads Maya’s result, the maintenance log and the plant report together, and finds why the lab and the line disagree. An independent check works it out again before anyone acts on it.</p>
           <div class="win" data-stage="win">
@@ -522,7 +552,7 @@
               <div class="msg fermata" data-stage="answer">
                 <span class="from"><svg width="16" height="16" aria-hidden="true"><use href="#mark"/></svg>Fermata</span>
                 <p>The bench test stopped at cycle 50. The loss starts later: the 8-hour rolls fall behind near cycle 245.</p>
-                <div class="sources"><span>Read with</span><span class="chip vi" data-thread="mayaF">Maya’s bench result</span><span class="chip vi" data-thread="report">Plant report 2025 · 81% kept</span><span class="chip vi" data-thread="maint">Maintenance log</span></div>
+                <div class="sources"><span>Read with</span><span class="chip vi" data-thread="mayaF">R&amp;D bench result</span><span class="chip vi" data-thread="report">Plant report 2025 · 81% kept</span><span class="chip vi" data-thread="maint">Maintenance log</span></div>
                 <svg class="chart" viewBox="0 0 340 150" role="img" aria-label="Output kept against cycles. The bench test covers cycles 0 to 50, where 8-hour drying is slightly ahead. Near cycle 245 the 8-hour line falls behind and ends at 79 percent, against 90 percent for 12-hour drying.">
                   <rect x="30" y="10" width="46.7" height="120" fill="#ece8f9"/>
                   <text x="34" y="24">Bench test</text>
@@ -546,9 +576,9 @@
         </article>
 
         <article class="chapter" id="team" data-step="team">
-          <p class="eyebrow"><span class="n">04</span>Team</p>
+          <p class="eyebrow"><span class="n">04</span>Production</p>
           <h2>Push here. Stop there.</h2>
-          <p>Daniel hears before his coating reaches the pilot line. The team sees every direction with its evidence, and decides. The reasons go back into memory.</p>
+          <p>Before anything is scaled up, the team sees every direction with its evidence, and decides. Daniel hears before his coating reaches the pilot line. The reasons go back into memory.</p>
           <div class="win" data-stage="win">
             <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="title">Electrodes team</span><span class="who"><span class="av d">D</span>Daniel · Lab</span></div>
             <div class="win-body">
@@ -572,7 +602,7 @@
           </div>
           <p class="after">The next project starts where this one ended.</p>
         </article>
-        <p class="note-fiction">Northfield Materials, Maya, Tom and Daniel are made up. The pilot line story follows a real Fermata session on sample records.</p>
+        <p class="note-fiction">Acme Labs, Maya, Tom and Daniel are made up. The pilot line story follows a real Fermata session on sample records.</p>
       </div>
     </section>
 
@@ -581,38 +611,20 @@
       <div class="block-head">
         <p class="eyebrow">Industries</p>
         <h2 id="ind-title">For teams that take chemistry from the bench to the plant.</h2>
-        <p>Each industry keeps its own records and asks its own questions. The way from lab to plant is the same.</p>
+        <p>Each industry keeps its own records and asks its own questions. The way from R&amp;D to production is the same.</p>
       </div>
       <div class="inds">
         <article class="ind">
-          <svg class="art" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2"><path d="M32 8l17 10v20L32 48 15 38V18z"/><path d="M32 8v10M49 18l-9 5M49 38l-9-5M32 48V38M15 38l9-5M15 18l9 5"/><path d="M24 23l8-5 8 5v10l-8 5-8-5z" stroke-opacity=".5"/></g><circle cx="52" cy="50" r="4" fill="currentColor" fill-opacity=".25"/></svg>
-          <h3>Chemicals and process</h3>
-          <p>Catalysts, formulations and scale-up.</p>
-          <ul class="flow">
-            <li><b>Lab</b><span>A new catalyst ink beats the old one.</span></li>
-            <li><b>Pilot</b><span>Yield falls at 50 litres. Which step changed?</span></li>
-            <li><b>Plant</b><span>Which raw-material batch caused the drift?</span></li>
-          </ul>
+          <img src="assets/industries/chemicals.jpg" alt="A refinery's storage tanks and columns under a golden evening sky" width="1400" height="1050" loading="lazy" decoding="async">
+          <div class="ind-text"><h3>Chemicals and process</h3><p>Catalysts, formulations and scale-up.</p></div>
         </article>
         <article class="ind">
-          <svg class="art" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="32" cy="32" r="8"/><circle cx="12" cy="32" r="6"/><circle cx="52" cy="32" r="6"/><path d="M18 30h6M18 34h6M40 30h6M40 34h6"/></g><path d="M8 52c8-5 16 5 24 0s16 5 24 0" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="2"/></svg>
-          <h3>Carbon capture and CO₂ conversion</h3>
-          <p>Sorbents, membranes and electrolysers.</p>
-          <ul class="flow">
-            <li><b>Lab</b><span>Does the membrane last at 80 °C?</span></li>
-            <li><b>Pilot</b><span>Capture rate in humid flue gas.</span></li>
-            <li><b>Plant</b><span>What each change does to cost per tonne.</span></li>
-          </ul>
+          <img src="assets/industries/carbon-capture.jpg" alt="Chimneys and cooling towers releasing white plumes above a green forest" width="1400" height="1050" loading="lazy" decoding="async">
+          <div class="ind-text"><h3>Carbon capture and CO₂ conversion</h3><p>Sorbents, membranes and electrolysers.</p></div>
         </article>
         <article class="ind">
-          <svg class="art" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2"><rect x="14" y="12" width="36" height="44" rx="4"/><path d="M26 7h12v5H26z"/><path d="M14 26h36M14 36h36M14 46h36" stroke-opacity=".45"/></g><path d="M30 18l-4 7h6l-4 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-          <h3>Batteries and energy materials</h3>
-          <p>Electrodes, coatings and cells.</p>
-          <ul class="flow">
-            <li><b>Lab</b><span>8-hour drying beats 12 on the bench.</span></li>
-            <li><b>Pilot</b><span>Output falls after cycle 245.</span></li>
-            <li><b>Plant</b><span>Moisture against the QC limit, roll by roll.</span></li>
-          </ul>
+          <img src="assets/industries/batteries.jpg" alt="An automated production line with robots and cable trays in a bright factory" width="1400" height="1050" loading="lazy" decoding="async">
+          <div class="ind-text"><h3>Batteries and energy materials</h3><p>Electrodes, coatings and cells.</p></div>
         </article>
       </div>
     </section>
@@ -758,15 +770,15 @@
         b1: [62, 60, "bg"], b2: [118, 44, "bg"], b3: [40, 118, "bg"], b4: [150, 98, "bg"], b5: [70, 176, "bg"],
         b6: [268, 52, "bg"], b7: [350, 70, "bg"], b8: [372, 140, "bg"], b9: [326, 196, "bg"], b10: [252, 118, "bg"],
         b11: [138, 262, "bg"], b12: [190, 318, "bg"], b13: [262, 308, "bg"], b14: [300, 262, "bg"], b15: [110, 312, "bg"],
-        review: [88, 92, "doc", "Drying review · Mar 2026"],
-        notebook: [134, 66, "doc", "Maya’s notebook, p. 38–42"],
-        bench: [104, 146, "doc", "Bench cycling 2026"],
-        maint: [312, 104, "doc", "Pilot line maintenance"],
-        qc: [236, 280, "doc", "Moisture QC log"],
-        report: [168, 286, "doc", "Plant report · Oct 2025"],
-        mayaF: [160, 140, "finding", "Maya: 8 h better on the bench"],
-        tomF: [318, 186, "finding", "Tom: 11 points less by cycle 300"],
-        decision: [214, 206, "decision", "Week 12: push 12-hour drying"],
+        review: [88, 92, "doc", ["rnd", "R&D", "Drying review, Mar 2026"]],
+        notebook: [134, 66, "doc", ["rnd", "R&D", "Lab notebook, p. 38–42"]],
+        bench: [104, 146, "doc", ["rnd", "R&D", "Bench cycling 2026"]],
+        maint: [312, 104, "doc", ["pilot", "Pilot", "Maintenance log"]],
+        qc: [236, 280, "doc", ["prod", "Production", "Moisture QC log"]],
+        report: [168, 286, "doc", ["prod", "Production", "Plant report, Oct 2025"]],
+        mayaF: [160, 140, "finding", ["rnd", "R&D finding", "8 h better on the bench"]],
+        tomF: [318, 186, "finding", ["pilot", "Pilot finding", "11 points less by cycle 300"]],
+        decision: [214, 206, "decision", ["dec", "Decision", "push 12-hour drying"]],
       };
       const EDGES = [
         ["b1", "b2"], ["b1", "b3"], ["b2", "b4"], ["b3", "b5"], ["b4", "b5"], ["b6", "b7"], ["b7", "b8"], ["b8", "b9"],
@@ -780,7 +792,7 @@
       ];
       const el = {}, lbl = {}, edgeEls = [];
       const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.append(e); return e; };
-      [["LAB", 34, 22], ["PILOT LINE", 300, 26], ["PLANT", 316, 330]].forEach(([t, x, y]) => (mk("text", { x, y, class: "cl" }, web).textContent = t));
+      [["R&D", 34, 22], ["PILOT", 330, 26], ["PRODUCTION", 290, 330]].forEach(([t, x, y]) => (mk("text", { x, y, class: "cl" }, web).textContent = t));
       const gEdges = mk("g", {}, web), gNodes = mk("g", {}, web), gLabels = mk("g", {}, web);
       for (const [a, b, dash] of EDGES) {
         const [x1, y1] = NODES[a], [x2, y2] = NODES[b];
@@ -793,18 +805,35 @@
         mk("circle", { cx: x, cy: y, r }, g);
         el[id] = g;
         if (name) {
-          const right = x < 250;
-          const t = mk("text", { x: right ? x + 12 : x - 12, y: y + 4, "text-anchor": right ? "start" : "end", class: "lbl" }, gLabels);
-          t.textContent = name;
-          lbl[id] = t;
+          // a label is a small card: the stage's icon, the stage, then what it is. No one's name.
+          const [stage, stg, what] = name;
+          const g = mk("g", { class: "lbl " + stage }, gLabels);
+          const box = mk("rect", { rx: 6, height: 20 }, g);
+          const icon = mk("use", { href: "#i-" + stage, width: 11, height: 11 }, g);
+          const t = mk("text", {}, g);
+          mk("tspan", { class: "stg" }, t).textContent = stg + " · ";
+          mk("tspan", {}, t).textContent = what;
+          lbl[id] = { g, box, icon, t, x, y };
         }
       }
+      // place each label card beside its node, on the side with room
+      const placeLabels = () => {
+        for (const { box, icon, t, x, y } of Object.values(lbl)) {
+          const w = t.getComputedTextLength() + 32;
+          const left = x < 250 ? x + 11 : x - 11 - w;
+          box.setAttribute("x", left); box.setAttribute("y", y - 10); box.setAttribute("width", w);
+          icon.setAttribute("x", left + 7); icon.setAttribute("y", y - 5.5);
+          t.setAttribute("x", left + 23); t.setAttribute("y", y + 3.8);
+        }
+      };
+      placeLabels();
+      document.fonts?.ready.then(placeLabels);
       const born = new Set();
       const refreshEdges = () => edgeEls.forEach(({ a, b, e }) => e.classList.toggle("on", born.has(a) && born.has(b)));
       const birth = (id) => { born.add(id); el[id].classList.add("on"); refreshEdges(); };
       Object.keys(NODES).filter((id) => NODES[id][2] === "bg").forEach(birth);
       const light = (ids) => {
-        for (const id in el) { const on = ids.includes(id); el[id].classList.toggle("lit", on); lbl[id]?.classList.toggle("lit", on); }
+        for (const id in el) { const on = ids.includes(id); el[id].classList.toggle("lit", on); lbl[id]?.g.classList.toggle("lit", on); }
         edgeEls.forEach(({ a, b, e }) => e.classList.toggle("lit", ids.includes(a) && ids.includes(b)));
       };
 
@@ -949,6 +978,9 @@
       async function enter(step) {
         current = step;
         rail.dataset.step = step;
+        const keys = ["lab", "pilot", "team"], at = keys.indexOf(step);
+        document.querySelectorAll(".stages a").forEach((a, i) => { a.classList.toggle("now", i === at); a.classList.toggle("done", i < at); });
+        document.querySelectorAll(".stages i").forEach((l, i) => l.classList.toggle("done", i < at));
         // a chapter reached by a jump finishes the ones before it at once, so memory is never behind
         for (const s of order.slice(0, order.indexOf(step))) if (!state[s]) await run(s, false);
         if (!state[step]) { run(step, !still); return; }
