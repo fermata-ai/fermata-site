@@ -20,6 +20,11 @@ The landing page for Fermata: one static page whose call to action is **Download
   plays with sound on its first click, or from the hero's **How it works** button, which scrolls to it and
   starts it. The link to share is `getfermata.app/#how-it-works` (the older `#film` too): it opens the page with
   the film centred and ready to play, and `film_played` then says `from: link`. It loads nothing until then (`preload="none"`).
+- `newsite/index.html` is a preview of the next landing page (the `feature/site-revamp-lab-to-plant` branch), served at
+  `getfermata.app/newsite/` so it can be shared by link while it is being built. It is a copy of that branch's
+  `index.html` with its asset paths pointed at `../assets/`. It is marked `noindex`, nothing links to it, and it sends
+  no analytics. Remove the folder when the new page replaces `index.html`. Its industry photographs are in
+  `assets/industries/` (`SOURCES.md` says where each is from).
 - `archive/films/` keeps films the page no longer plays (`fermata-film-2.mp4`, the 56 s film it showed until
   2026-10-26, and `fermata-film-3.mp4`, the 86 s film it showed until 2026-11-13). The deploy does not publish `archive/`.
 - PostHog records page views, time on page and clicks, plus a `download_clicked` event that says which
