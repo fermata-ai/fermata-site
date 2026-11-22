@@ -1,0 +1,1868 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fermata: the integrated research environment</title>
+  <meta name="description" content="Fermata connects today's result to everything your company already knows, from the lab bench to the pilot line to the plant. For R&D, pilot and production teams. For macOS.">
+  <meta name="theme-color" content="#f4f4f1">
+  <!-- A preview of the new landing page, shared by link while it is being built. Kept out of search results, and it
+       sends no analytics: build.sh leaves __POSTHOG_KEY__ as it is on this page. -->
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/favicon-32.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="../assets/app-icon-180.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f4f1;
+      --surface: #fcfcfb;
+      --white: #ffffff;
+      --sunk: #ecece8;
+      --line: #e1e0d9;
+      --line-2: #c3c2b7;
+      --ink: #1a1a1f;
+      --ink-2: #55555d;
+      --ink-3: #7a7a82;
+      --violet: #4a3aa7;
+      --violet-2: #6a5cc4;
+      --violet-soft: #ece8f9;
+      --violet-line: #d6cff2;
+      --green: #0f6e56;
+      --green-2: #1d9e75;
+      --green-soft: #e3f1ec;
+      --green-line: #c7e3d8;
+      --amber: #7a5200;
+      --amber-soft: #fdf0d2;
+      --red: #a52a2a;
+      --red-soft: #f9e1e1;
+      --serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+      --sans: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+      --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+      --shadow: 0 1px 0 rgba(26, 26, 31, 0.03), 0 18px 48px -22px rgba(26, 26, 31, 0.22);
+      --ease: cubic-bezier(0.22, 0.7, 0.2, 1);
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--bg); scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font-family: var(--sans); font-size: 16px; line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      /* a faint notebook grid behind everything */
+      background-image: radial-gradient(circle at 1px 1px, rgba(26, 26, 31, 0.07) 1px, transparent 0);
+      background-size: 28px 28px;
+    }
+    a { color: inherit; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding-inline: 32px; }
+    .eyebrow {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--violet);
+      margin: 0 0 16px;
+    }
+    h1, h2, h3 { font-family: var(--serif); font-weight: 400; letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
+    em { font-style: italic; color: var(--violet); }
+    :focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; border-radius: 6px; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+    /* ---------- masthead ---------- */
+    .top { position: relative; z-index: 7; }
+    .top .wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--serif); font-size: 21px; }
+    .brand svg { color: var(--violet); }
+    .nav { display: flex; align-items: center; gap: 22px; }
+    .nav a { font-size: 14px; text-decoration: none; color: var(--ink-2); transition: color 0.2s; }
+    .nav a:hover { color: var(--ink); }
+    .header-cta { padding: 8px 16px; border-radius: 999px; background: var(--ink); color: var(--white) !important; font-weight: 500; }
+    .header-cta:hover { background: #2c2c33; }
+
+    /* ---------- buttons ---------- */
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .cta {
+      display: inline-flex; align-items: center; gap: 10px; padding: 15px 28px; border-radius: 999px;
+      background: var(--ink); color: var(--white); font-size: 15px; font-weight: 600; text-decoration: none;
+      box-shadow: 0 12px 30px -14px rgba(26, 26, 31, 0.55); transition: transform 0.2s, background 0.2s;
+    }
+    .cta:hover { transform: translateY(-1px); background: #2c2c33; }
+    .cta svg { width: 16px; height: 16px; margin-top: -2px; }
+    .cta-ghost {
+      display: inline-flex; align-items: center; gap: 9px; padding: 15px 26px; border-radius: 999px;
+      border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); font-size: 15px; font-weight: 500;
+      text-decoration: none; transition: border-color 0.2s, background 0.2s;
+    }
+    .cta-ghost:hover { border-color: var(--violet-2); background: var(--white); }
+    .cta-ghost svg { width: 13px; height: 13px; color: var(--violet); }
+
+    /* ---------- hero: scattered records drift around the promise ---------- */
+    .hero { position: relative; min-height: calc(100svh - 72px); display: grid; align-content: center; padding-block: 24px 40px; overflow: clip; }
+    .hero-copy { position: relative; z-index: 6; text-align: center; max-width: 860px; margin: 0 auto; padding-inline: 24px; }
+    h1 { font-size: clamp(40px, 6.2vw, 80px); line-height: 1.02; letter-spacing: -0.035em; margin-bottom: 22px; }
+    .lede { font-family: var(--serif); font-weight: 300; font-size: clamp(18px, 2vw, 22px); line-height: 1.45; color: var(--ink-2); max-width: 640px; margin: 0 auto 32px; }
+    .hero-copy > * { animation: rise 0.6s var(--ease) backwards; }
+    .hero-copy > :nth-child(2) { animation-delay: 0.05s; }
+    .hero-copy > :nth-child(3) { animation-delay: 0.1s; }
+    .hero-copy > :nth-child(4) { animation-delay: 0.15s; }
+    @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+    /* three small arrows at the foot of the first screen: there is more below */
+    .more { position: absolute; left: 50%; bottom: 14px; z-index: 6; translate: -50% 0; display: grid; place-items: center; width: 84px; height: 84px; border-radius: 50%;
+      background: radial-gradient(closest-side, rgba(244, 244, 241, 0.97) 60%, rgba(244, 244, 241, 0)); color: var(--violet); }
+    .more span { display: block; animation: rise 0.6s 0.6s var(--ease) backwards; }
+    .more svg { display: block; width: 24px; height: 34px; }
+    .more path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: 0.3; animation: descend 1.9s ease-in-out infinite; }
+    .more path:nth-child(2) { animation-delay: 0.22s; }
+    .more path:nth-child(3) { animation-delay: 0.44s; }
+    @keyframes descend { 0%, 70%, 100% { opacity: 0.3; } 28% { opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { .more span { animation: none; opacity: 1; } .more path { animation: none; opacity: 0.55; } }
+    .papers { position: absolute; inset: 0; z-index: 6; pointer-events: none; }
+    /* the canvas that draws the documents behind the hero and the memory they become, and the labels laid over it */
+    .space { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
+    /* the first screen's violet edges, and the soft clearing behind the hero's words: drawn once by the browser and
+       faded from script, never redrawn on the canvas each frame */
+    .vignette, .clearing { position: fixed; z-index: 5; pointer-events: none; opacity: 0; visibility: hidden; }
+    .vignette { inset: 0; background: radial-gradient(70.76% 70.76% at 50% 50%, rgba(74, 58, 167, 0) 40.98%, rgba(74, 58, 167, 0.1) 67.54%, rgba(74, 58, 167, 0.4) 100%); }
+    .clearing { left: 0; top: 0; background: radial-gradient(closest-side, rgba(244, 244, 241, 0.95), rgba(244, 244, 241, 0.9) 58%, rgba(244, 244, 241, 0)); }
+    .space-tags { position: fixed; inset: 0; z-index: 5; pointer-events: none; overflow: clip; }
+    .space-tags > * { position: absolute; left: 0; top: 0; will-change: transform; }
+    body.map-wide { cursor: grab; }
+    body.turning, body.turning * { cursor: grabbing !important; user-select: none; -webkit-user-select: none; }
+    /* a group's name: a hub of the wide map (--w 0), a small caption once the map is in its card (--w 1) */
+    .hub { display: inline-flex; align-items: center; gap: calc(6px * (1 - var(--w, 1))); white-space: nowrap; border-radius: 999px;
+      padding: calc(5px * (1 - var(--w, 1))) calc(12px * (1 - var(--w, 1)));
+      background: rgba(255, 255, 255, calc(0.94 * (1 - var(--w, 1)))); border: 1px solid rgba(225, 224, 217, calc(1 - var(--w, 1)));
+      font-size: calc(13.5px - 4.5px * var(--w, 1)); font-weight: 600; letter-spacing: calc(0.02em + 0.16em * var(--w, 1)); text-transform: uppercase;
+      color: color-mix(in srgb, var(--ink-3) calc(var(--w, 1) * 100%), var(--hub)); opacity: 0; }
+    .hub svg { width: calc(15px * (1 - var(--w, 1))); height: 15px; opacity: calc(1 - var(--w, 1)); }
+    .hub b { font-weight: 600; }
+    .team { white-space: nowrap; padding: 3px 9px; border-radius: 999px; background: rgba(255, 255, 255, 0.88); border: 1px solid var(--line);
+      font-size: 11.5px; font-weight: 600; opacity: 0; box-shadow: 0 4px 12px -9px rgba(26, 26, 31, 0.4); }
+    .team.rnd { color: var(--violet); } .team.pilot { color: #1f5fa8; } .team.prod { color: #8a5a00; }
+    .hub.rnd { --hub: var(--violet); } .hub.pilot { --hub: #1f5fa8; } .hub.prod { --hub: #8a5a00; }
+    .paper {
+      position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%);
+      width: 150px; padding: 10px 11px 12px; border-radius: 9px; background: var(--white); border: 1px solid var(--line);
+      box-shadow: 0 10px 26px -18px rgba(26, 26, 31, 0.35); rotate: var(--r);
+      opacity: 0; animation: settle 1.4s var(--ease) forwards; animation-delay: calc(var(--d) * 1s);
+    }
+    .paper .t { display: inline-block; font-family: var(--mono); font-size: 9.5px; font-weight: 600; letter-spacing: 0.04em; padding: 1px 5px; border-radius: 4px; }
+    .paper .nm { display: block; font-size: 11.5px; font-weight: 600; margin: 6px 0 6px; line-height: 1.25; }
+    .paper i { display: block; height: 5px; border-radius: 3px; background: var(--sunk); margin-top: 5px; }
+    .paper i + i { width: 72%; }
+    .paper.far { scale: 0.82; filter: blur(0.6px); }
+    .paper.near { scale: 1.08; }
+    .t.pdf { background: #fbe4e1; color: #a23b2c; } .t.csv { background: var(--green-soft); color: var(--green); }
+    .t.ppt { background: var(--amber-soft); color: var(--amber); } .t.doc { background: #e1edfa; color: #1f5fa8; }
+    .t.nb { background: var(--violet-soft); color: var(--violet); } .t.log { background: var(--sunk); color: var(--ink-2); }
+    @keyframes settle { from { opacity: 0; translate: 0 18px; } to { opacity: var(--o, 0.92); translate: 0 0; } }
+    .paper > * { opacity: var(--paper-ink, 1); }
+    .paper::after { content: ""; position: absolute; left: 50%; top: 50%; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; background: #9b95c9; opacity: var(--dot, 0); }
+
+    /* ---------- the story: memory stays on the left, one stage at a time on the right ---------- */
+    .story { position: relative; display: grid; grid-template-columns: minmax(300px, 5fr) 7fr; grid-template-rows: auto auto; column-gap: clamp(24px, 4vw, 64px); max-width: 1280px; margin: 0 auto; padding-inline: 32px; }
+    /* a stage and the map beside it stick to the top of the screen */
+    :root { --bar: 0px; }
+    .chapter { scroll-margin-top: var(--bar); }
+    .rail { grid-column: 1; grid-row: 1 / 3; position: sticky; top: var(--bar); height: calc(100svh - var(--bar)); display: grid; place-items: center; z-index: 4; }
+    .intro { grid-column: 2; grid-row: 1; }
+    .chapters { grid-column: 2; grid-row: 2; }
+    .memory { position: relative; width: min(100%, 480px); }
+    /* what the map is, said once above it when it rests on the left */
+    .kb { margin: 0 0 2px; text-align: center; font-size: 11.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
+    /* the memory's place on the left; the canvas draws into it, with no box round it */
+    div.web { position: relative; width: 100%; aspect-ratio: 400 / 340; margin: 6px 0 4px; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+    .tag { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; padding: 3px 8px 3px 6px; border-radius: 999px; background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--line); font-size: 10.5px; color: var(--ink); box-shadow: 0 4px 12px -8px rgba(26, 26, 31, 0.4); opacity: 0; transition: opacity 0.4s; }
+    .tag.on { opacity: 1; }
+    .tag svg { width: 11px; height: 11px; }
+    .tag b { font-weight: 700; }
+    .tag.rnd { color: var(--violet); } .tag.pilot { color: #1f5fa8; } .tag.prod { color: #8a5a00; } .tag.dec { color: var(--green); }
+    .tag span { color: var(--ink); font-weight: 500; }
+    /* the chip a record shows under the pointer: small, like a label on a shelf */
+    .hchip { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; padding: 3px 9px 3px 4px; border-radius: 999px; background: rgba(255, 255, 255, 0.96);
+      border: 1px solid var(--line); box-shadow: 0 6px 18px -10px rgba(26, 26, 31, 0.45); font-size: 11px; z-index: 2; }
+    .hchip .t { font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: 0.04em; padding: 1px 5px; border-radius: 999px; }
+    .hchip b { font-weight: 600; color: var(--ink); }
+    .hchip i { font-style: normal; color: var(--ink-3); }
+    .hchip i::before { content: "· "; }
+    .hchip[hidden] { display: none; }
+    .hchip.auto { opacity: 0; transition: opacity 0.6s var(--ease); }
+    .hchip.auto.on { opacity: 1; }
+    .web { position: relative; z-index: 1; }
+    .web .node .hit { fill: transparent !important; stroke: none; cursor: default; }
+    .web .node.hover circle:not(.halo):not(.hit) { fill: var(--violet); }
+    .web .node.hover .halo { opacity: 0.5; }
+    /* the card a record shows on hover: the hero's paper, upright */
+    .pop {
+      position: fixed; z-index: 20; width: 196px; padding: 10px 11px 12px; border-radius: 9px; background: var(--white);
+      border: 1px solid var(--line); box-shadow: 0 16px 36px -18px rgba(26, 26, 31, 0.45); pointer-events: none;
+    }
+    .pop.in { animation: popIn 0.22s var(--ease); }
+    @keyframes popIn { from { opacity: 0; translate: 0 4px; } }
+    .pop .t { display: inline-block; font-family: var(--mono); font-size: 9.5px; font-weight: 600; letter-spacing: 0.04em; padding: 1px 5px; border-radius: 4px; }
+    .pop .nm { display: block; font-size: 12.5px; font-weight: 600; margin: 6px 0 2px; line-height: 1.3; }
+    .pop .meta { display: block; font-size: 11.5px; color: var(--ink-3); margin-bottom: 4px; }
+    .pop i { display: block; height: 5px; border-radius: 3px; background: var(--sunk); margin-top: 5px; }
+    .pop i + i { width: 72%; }
+    @media (prefers-reduced-motion: reduce) { .pop.in { animation: none; } }
+    .web .ft { font-family: var(--mono); font-size: 8px; font-weight: 600; letter-spacing: 0.04em; fill: var(--ink-3); opacity: 0; }
+    .web { display: block; width: 100%; height: auto; margin: 6px 0 4px; overflow: visible; }
+    .web .cl { font-size: 9px; letter-spacing: 0.16em; fill: var(--ink-3); font-family: var(--sans); font-weight: 600; }
+    .web .edge { fill: none; stroke: var(--line-2); stroke-width: 1; opacity: 0; transition: opacity 0.8s, stroke 0.5s; }
+    .web .edge.dash { stroke-dasharray: 3 3; }
+    .web .edge.on { opacity: 0.9; }
+    .web .edge.lit { stroke: var(--violet-2); opacity: 1; }
+    .web .node circle { fill: var(--line-2); transition: fill 0.5s, r 0.5s; }
+    .web .node { transform-box: fill-box; transform-origin: center; opacity: 0; scale: 0.2; transition: opacity 0.6s var(--ease), scale 0.7s var(--ease); }
+    .web .node.on { opacity: 1; scale: 1; }
+    .web .node.doc circle { fill: #9b95c9; }
+    .web .node.finding circle { fill: var(--violet); }
+    .web .node.decision circle { fill: var(--green-2); }
+    .web .node .halo { fill: none !important; stroke: var(--violet); stroke-width: 1.5; opacity: 0; transition: opacity 0.5s; }
+    .web .node.decision .halo { stroke: var(--green-2); }
+    .web .node.lit .halo { opacity: 0.45; }
+    .web .node.lit circle:not(.halo) { fill: var(--violet); }
+    .web .node.decision.lit circle:not(.halo) { fill: var(--green-2); }
+    .web .lbl { opacity: 0; transition: opacity 0.5s; pointer-events: none; }
+    .web .lbl text { font-size: 10.5px; font-family: var(--sans); font-weight: 500; fill: var(--ink); }
+    .web .lbl .stg { font-weight: 700; fill: currentColor; }
+    .web .lbl.rnd { color: var(--violet); } .web .lbl.pilot { color: #1f5fa8; } .web .lbl.prod { color: #8a5a00; } .web .lbl.dec { color: var(--green); }
+    .web .lbl rect { fill: var(--white); stroke: var(--line); stroke-width: 1; }
+    /* the part of a thread inside the web: straight from its node to the card's right edge, under the nodes */
+    .web .thr { fill: none; stroke: var(--violet-2); stroke-width: 1.3; opacity: 0.7; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.5s var(--ease); }
+    .web .thr.in { stroke-dashoffset: 0; }
+    .web .lbl.lit { opacity: 1; }
+
+    .chapter { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-block: 12vh; }
+    /* wide screens: a stage holds still while the scroll plays its steps, then lets go */
+    @media (min-width: 900px) {
+      .chapters .chapter { display: block; min-height: 0; padding: 0; height: calc(100svh + var(--n) * 27svh); }
+      .chapters .pin { position: sticky; top: var(--bar); min-height: calc(100svh - var(--bar)); display: flex; flex-direction: column; justify-content: center; padding-block: 16px; }
+    }
+    .chapter h2 { font-size: clamp(30px, 3.4vw, 46px); line-height: 1.08; margin-bottom: 14px; }
+    @media (min-width: 900px) and (max-height: 900px) {
+      .chapters .chapter h2 { font-size: clamp(28px, min(2.9vw, 4.6vh), 40px); margin-bottom: 10px; }
+      .chapters .pin > p:not(.eyebrow) { font-size: 17px; margin-bottom: 18px; }
+      .chapters .pin .eyebrow { margin-bottom: 10px; }
+      .chapters .pin { padding-block: 10px; }
+    }
+    .chapters .win { transform-origin: 0 0; }
+    .pin > p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: clamp(17px, 1.5vw, 19px); color: var(--ink-2); max-width: 560px; margin: 0 0 28px; }
+    .chapter .eyebrow .n { font-family: var(--mono); letter-spacing: 0; margin-right: 6px; }
+
+    /* ---------- app windows: the product, drawn ---------- */
+    .win { position: relative; background: var(--white); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; max-width: 640px; }
+    /* the pointer that comes in and presses a button, and the ring its click leaves */
+    .cur { position: absolute; z-index: 5; width: 24px; height: 24px; margin: -3px 0 0 -5px; pointer-events: none; transform-origin: 5px 3px; filter: drop-shadow(0 2px 3px rgba(26, 26, 31, 0.35)); }
+    .cur svg { display: block; width: 100%; height: 100%; }
+    .cur path { fill: var(--ink); stroke: var(--white); stroke-width: 1.4; stroke-linejoin: round; }
+    .tap { position: absolute; z-index: 4; width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--violet-2); background: rgba(106, 92, 196, 0.14); pointer-events: none; }
+    .win-bar { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-bottom: 1px solid var(--line); background: var(--surface); font-size: 13px; }
+    .dots { display: flex; gap: 6px; } .dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+    /* the app the window belongs to: Fermata's own icon and name, then what is open in it */
+    .win-bar .app { display: inline-flex; align-items: center; gap: 7px; font-weight: 600; white-space: nowrap; }
+    .win-bar .app img { display: block; width: 20px; height: 20px; border-radius: 5px; box-shadow: 0 1px 2px rgba(26, 26, 31, 0.18); }
+    .win-bar .title { color: var(--ink-2); padding-left: 12px; border-left: 1px solid var(--line); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .win-bar .who { white-space: nowrap; flex: none; }
+    .win-bar .who { margin-left: auto; display: flex; align-items: center; gap: 7px; color: var(--ink-3); font-size: 12.5px; }
+    .av { width: 22px; height: 22px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 10.5px; font-weight: 700; background: var(--violet-soft); color: var(--violet); flex: none; }
+    .av.t { background: #e1edfa; color: #1f5fa8; } .av.d { background: var(--amber-soft); color: var(--amber); }
+    .win-body { padding: 16px 18px 18px; font-size: 14px; }
+    .k { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; margin: 0 0 8px; }
+    .chip { display: inline-flex; align-items: center; gap: 5px; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 500; white-space: nowrap; background: var(--sunk); color: var(--ink-2); transition: background 0.4s, color 0.4s; }
+    .chip.ok { background: var(--green-soft); color: var(--green); } .chip.vi { background: var(--violet-soft); color: var(--violet); }
+    .chip.am { background: var(--amber-soft); color: var(--amber); } .chip.no { background: var(--red-soft); color: var(--red); }
+    .btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line-2); background: var(--white); border-radius: 8px; padding: 6px 11px; font: 500 13px var(--sans); color: var(--ink); transition: background 0.3s, color 0.3s, border-color 0.3s, scale 0.15s; }
+    .btn.done { background: var(--violet); border-color: var(--violet); color: var(--white); }
+    .btn.green.done { background: var(--green); border-color: var(--green); }
+    .btn.press { scale: 0.96; }
+
+    /* reading */
+    .files { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+    .files li { display: grid; grid-template-columns: 78px 1fr auto; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+    .files .t { justify-self: start; font-family: var(--mono); font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; }
+    .files .nm { font-size: 13.5px; font-weight: 500; }
+    .files .meta { display: block; font-size: 12px; color: var(--ink-3); font-weight: 400; }
+    .files .st { font-size: 12px; color: var(--ink-3); }
+    .files .st .yes { display: none; color: var(--violet); font-weight: 600; }
+    .files li.read .st .wait { display: none; } .files li.read .st .yes { display: inline; }
+
+    /* directions */
+    .dirs { display: grid; gap: 8px; }
+    .dir { border: 1px solid var(--line); border-radius: 11px; padding: 10px 12px; transition: opacity 0.5s, background 0.5s; }
+    .dir-row { display: flex; align-items: center; gap: 9px; }
+    .lt { width: 20px; height: 20px; border-radius: 5px; display: inline-grid; place-items: center; background: var(--sunk); color: var(--ink-2); font-size: 11px; font-weight: 700; flex: none; }
+    .dir-row .st { margin-left: auto; display: inline-grid; align-items: center; justify-items: end; min-width: 22px; min-height: 22px; }
+    .dir-row .st .spin { margin-right: 3px; }
+    .dir-row .st > * { grid-area: 1 / 1; transition: opacity 0.35s var(--ease), scale 0.45s var(--ease); }
+    /* a direction at work: a small ring that turns. When it is settled the ring gives way to its result. */
+    .spin { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--violet-line); border-top-color: var(--violet); animation: turn 0.9s linear infinite; }
+    @keyframes turn { to { rotate: 1turn; } }
+    .st .ck { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--green); color: var(--white); }
+    .st .ck svg { width: 13px; height: 13px; }
+    .st .ck, .st .chip { opacity: 0; scale: 0.6; }
+    .st.done .spin { opacity: 0; scale: 0.4; }
+    .st.done .ck, .st.done .chip { opacity: 1; scale: 1; }
+    html:not(.js) .st .spin { display: none; } html:not(.js) .st .ck, html:not(.js) .st .chip { opacity: 1; scale: 1; }
+    @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+    .dir-name b { font-weight: 600; margin-right: 8px; }
+    .dir-name span { color: var(--ink-3); }
+    /* B's plan changes when the knowledge base speaks: the first value is struck, the better one takes its place */
+    .dir-name .was { text-decoration: line-through; margin-right: 7px; }
+    .dir-name .now { color: var(--ink-2); font-weight: 500; }
+    .js .dir-name .was { text-decoration-color: transparent; transition: text-decoration-color 0.5s; } .js .dir-name .now { opacity: 0; transition: opacity 0.5s 0.2s; }
+    .js .dir.turned .was { text-decoration-color: currentColor; } .js .dir.turned .now { opacity: 1; }
+    .recall { display: flex; gap: 9px; margin-top: 9px; padding: 9px 11px; border-radius: 9px; background: var(--violet-soft); border: 1px solid var(--violet-line); font-size: 13px; }
+    .recall::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--violet); margin-top: 5px; flex: none; }
+    .recall small { display: block; font-size: 11.5px; color: var(--violet); font-weight: 600; }
+    .finding { margin-top: 12px; display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 11px; border: 1px dashed var(--line-2); }
+    .finding p { margin: 0; font-size: 13.5px; }
+    .finding p small { display: block; font-size: 11.5px; color: var(--ink-3); font-weight: 600; letter-spacing: 0.04em; }
+    .finding .btn { margin-left: auto; flex: none; }
+
+    /* conversation */
+    .msg { border-radius: 12px; padding: 10px 12px; font-size: 13.5px; }
+    .msg.you { background: var(--sunk); margin-left: 15%; }
+    .msg.you .att { display: inline-flex; gap: 6px; align-items: center; margin-top: 7px; font-size: 12px; color: var(--ink-2); background: var(--white); border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; }
+    .msg.fermata { margin-top: 10px; padding: 0; }
+    .msg.fermata > p { margin: 0 0 8px; }
+    .msg.fermata .from { font-size: 11.5px; font-weight: 600; color: var(--violet); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .chart { display: block; width: 100%; max-width: 440px; height: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+    .chart .ln { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    .chart .axis { stroke: var(--line); stroke-width: 1; }
+    .chart text { font-size: 10px; fill: var(--ink-3); font-family: var(--sans); }
+    .chart .key { font-weight: 700; font-size: 10.5px; }
+    .sources { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; font-size: 13px; }
+    .sources li { display: flex; align-items: center; gap: 8px; }
+    .sources li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--violet-2); flex: none; }
+    .read { margin: 0 0 6px; font-size: 11.5px; font-weight: 600; color: var(--ink-3); }
+
+    /* team */
+    .board { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+    .board table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 15px; }
+    .board th, .board td { padding: 12px 10px; text-align: center; vertical-align: middle; }
+    .board thead th { background: var(--surface); border-bottom: 1px solid var(--line); font-size: 14px; font-weight: 600; }
+    .board thead .lt { margin-right: 7px; vertical-align: -4px; }
+    .board thead th:first-child, .board tbody th { width: 25%; text-align: left; padding-left: 14px; }
+    .board tbody th { font-weight: 600; }
+    .board tbody th small { display: block; font-size: 11.5px; font-weight: 400; color: var(--ink-3); line-height: 1.3; }
+    .board tbody tr + tr > * { border-top: 1px solid var(--sunk); }
+    .board th + th, .board th + td, .board td + td { border-left: 1px solid var(--sunk); }
+    .val { display: inline-flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .val .m { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+    .val .m svg { width: 12px; height: 12px; }
+    .val.ok .m { background: var(--green); color: var(--white); } .val.no .m { background: var(--red-soft); color: var(--red); }
+    .val.na { font-size: 13.5px; font-weight: 500; color: var(--ink-3); }
+    .board .decide > * { background: var(--surface); }
+    .sig { font-weight: 700; font-size: 13.5px; padding: 5px 0; border-radius: 999px; display: inline-block; width: min(100%, 92px); text-align: center; }
+    .sig.push { background: var(--green); color: var(--white); } .sig.stop { background: var(--red-soft); color: var(--red); } .sig.wait { background: var(--amber-soft); color: var(--amber); }
+    /* the direction the team pushes: its whole column turns green once the decision is made */
+    .board :is(th, td):nth-child(3) { transition: background-color 0.7s var(--ease), box-shadow 0.7s var(--ease); }
+    .board:has(.decide.shown) :is(th, td):nth-child(3), html:not(.js) .board :is(th, td):nth-child(3) { background: var(--green-soft); box-shadow: inset 2px 0 var(--green-line), inset -2px 0 var(--green-line); }
+    .board:has(.decide.shown) thead th:nth-child(3), html:not(.js) .board thead th:nth-child(3) { box-shadow: inset 2px 0 var(--green-line), inset -2px 0 var(--green-line), inset 0 2px var(--green-line); color: var(--green); }
+    .board:has(.decide.shown) .decide td:nth-child(3), html:not(.js) .board .decide td:nth-child(3) { box-shadow: inset 2px 0 var(--green-line), inset -2px 0 var(--green-line), inset 0 -2px var(--green-line); }
+    /* a row's marks land one after the other, left to right */
+    .js .board [data-stage] .m, .js .board [data-stage] .sig { scale: 0; transition: scale 0.5s cubic-bezier(0.3, 1.5, 0.5, 1); }
+    .js .board [data-stage].shown .m, .js .board [data-stage].shown .sig { scale: 1; }
+    .js .board [data-stage].shown td:nth-child(2) > * > .m, .js .board [data-stage].shown td:nth-child(2) > .sig { transition-delay: 0.15s; }
+    .js .board [data-stage].shown td:nth-child(3) > * > .m, .js .board [data-stage].shown td:nth-child(3) > .sig { transition-delay: 0.3s; }
+    .js .board [data-stage].shown td:nth-child(4) > * > .m, .js .board [data-stage].shown td:nth-child(4) > .sig { transition-delay: 0.45s; }
+    @media (prefers-reduced-motion: reduce) { .js .board [data-stage] .m, .js .board [data-stage] .sig { scale: 1; transition: none; } }
+
+    /* staged parts wait for their moment once the script is running; without it, everything shows */
+    .js [data-stage] { opacity: 0; translate: 0 8px; transition: opacity 0.6s var(--ease), translate 0.6s var(--ease); }
+    .js [data-stage].shown { opacity: 1; translate: 0 0; }
+    .js .chart .ln { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.6s var(--ease); }
+    .js .chart.drawn .ln { stroke-dashoffset: 0; }
+    .js .chart .ln.late { transition-delay: 0.25s; }
+
+    /* threads from memory to the moment it is used */
+    .threads { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 5; overflow: visible; }
+    .threads path { fill: none; stroke: var(--violet-2); stroke-width: 1.3; opacity: 0.55; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.9s var(--ease), opacity 0.4s; }
+    .threads path.in { stroke-dashoffset: 0; }
+    .threads path.green { stroke: var(--green-2); }
+    .threads circle { fill: var(--violet-2); }
+    .flyer { position: fixed; z-index: 6; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--violet); box-shadow: 0 0 0 5px rgba(74, 58, 167, 0.16); pointer-events: none; }
+    .flyer.green { background: var(--green-2); box-shadow: 0 0 0 5px rgba(29, 158, 117, 0.18); }
+    .flyer.doc { background: #9b95c9; box-shadow: 0 0 0 4px rgba(74, 58, 167, 0.1); }
+
+    /* ---------- sections after the story ---------- */
+    section.block { padding-block: clamp(80px, 14vh, 150px) 0; }
+    .block-head { max-width: 720px; margin-bottom: 40px; }
+    .block-head h2 { font-size: clamp(32px, 3.8vw, 50px); line-height: 1.06; margin-bottom: 14px; }
+    .block-head p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: 19px; color: var(--ink-2); margin: 0; }
+
+    .inds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .ind { position: relative; margin: 0; border-radius: 20px; overflow: hidden; background: var(--ink); aspect-ratio: 4 / 5; box-shadow: var(--shadow); }
+    .ind img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 1.2s var(--ease); }
+    .ind:hover img { scale: 1.04; }
+    .ind img { filter: saturate(0.88); }
+    .ind::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(18, 14, 48, 0.84) 0%, rgba(40, 31, 100, 0.3) 44%, rgba(74, 58, 167, 0.12) 100%); }
+    .ind-text { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 24px; color: var(--white); }
+    .ind h3 { font-size: clamp(24px, 2.2vw, 30px); line-height: 1.1; margin-bottom: 6px; }
+    .ind p { margin: 0; font-size: 15px; color: rgba(255, 255, 255, 0.82); }
+
+    .sum { text-align: center; padding-block: clamp(110px, 22vh, 240px) clamp(10px, 4vh, 48px); }
+    .sum h2 { font-size: clamp(36px, 5.6vw, 76px); line-height: 1.03; letter-spacing: -0.035em; max-width: 1040px; margin: 0 auto; text-wrap: balance; }
+    .film-block { text-align: center; }
+    .film-block .block-head { margin-inline: auto; }
+    .player { position: relative; max-width: 1040px; margin: 0 auto; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #0b0b0d; border: 1px solid var(--line); box-shadow: 0 40px 90px -40px rgba(26, 26, 31, 0.55); }
+    .player video { display: block; width: 100%; height: 100%; }
+    .play { position: absolute; inset: 0; display: grid; place-items: center; border: 0; padding: 0; cursor: pointer; background: linear-gradient(to top, rgba(11, 11, 13, 0.3), rgba(11, 11, 13, 0.02)); }
+    .play span { width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center; background: var(--white); color: var(--ink); box-shadow: 0 14px 40px -10px rgba(0, 0, 0, 0.5); transition: transform 0.2s; }
+    .play svg { width: 28px; height: 28px; margin-left: 4px; }
+    .play:hover span { transform: scale(1.05); }
+    .player.playing .play { display: none; }
+
+    .faq { max-width: 820px; }
+    .faq details { border-bottom: 1px solid var(--line); }
+    .faq summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; padding: 20px 0; font-family: var(--serif); font-size: 21px; }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after { content: "+"; font-family: var(--sans); font-size: 22px; color: var(--violet); transition: rotate 0.25s; }
+    .faq details[open] summary::after { rotate: 45deg; }
+    .faq details p { margin: 0 0 22px; color: var(--ink-2); max-width: 680px; }
+
+    .close { text-align: center; padding-block: clamp(90px, 16vh, 170px); }
+    .close h2 { font-size: clamp(34px, 4.6vw, 60px); line-height: 1.05; max-width: 900px; margin: 0 auto 18px; }
+    .close p { font-family: var(--serif); font-weight: 300; font-size: 20px; color: var(--ink-2); margin: 0 auto 34px; }
+
+    footer { border-top: 1px solid var(--line); }
+    footer .wrap { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; justify-content: space-between; padding-block: 28px; font-size: 14px; color: var(--ink-3); }
+    footer nav { display: flex; gap: 22px; flex-wrap: wrap; }
+    footer a { text-decoration: none; color: var(--ink-2); }
+    footer a:hover { color: var(--ink); }
+
+    /* chapter 01: the memory's own screen. Without scroll-driven animation it is a plain chapter on the right. */
+    .intro-copy .eyebrow .n { font-family: var(--mono); letter-spacing: 0; margin-right: 6px; }
+    .intro h2 { font-size: clamp(30px, 3.4vw, 46px); line-height: 1.08; margin-bottom: 14px; }
+    .intro-copy > p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: clamp(17px, 1.5vw, 19px); color: var(--ink-2); max-width: 560px; margin: 0; }
+
+    /* the pilot window reads in two columns, so it fits a laptop screen with its headline */
+    .pilot-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 16px; align-items: start; }
+    .pilot-body .msg.you { grid-column: 1 / -1; margin-left: 18%; }
+    .pilot-body .msg.fermata { margin-top: 0; }
+    .pilot-body .sources { margin: 0; }
+    .pilot-body .plot .chart { max-width: none; }
+    .pilot-body .chart text { font-size: 13px; } .pilot-body .chart .key { font-size: 12px; }
+    .pilot-body .finding { grid-column: 1 / -1; margin-top: 0; }
+
+    /* ---------- smaller screens: the memory forms once in the flow, then each stage reads text first ---------- */
+    @media (max-width: 899px) {
+      .nav .hide-s { display: none; }
+      .hero { align-content: start; padding-top: 28px; overflow-x: clip; overflow-y: visible; }
+      .hero-copy { order: 1; }
+      .papers { display: none; }
+      .story { display: flex; flex-direction: column; padding-inline: 16px; }
+      .rail { order: 1; position: static; height: auto; padding: 8px 0 0; display: block; }
+      .intro { order: 2; } .chapters { order: 3; }
+      .memory { width: 100%; }
+      .web .lbl { display: none; }
+      .kb { display: none; }
+      .chapter { min-height: 0; padding-block: 56px; }
+      .intro { padding-top: 40px; padding-bottom: 8px; }
+      .pilot-body { grid-template-columns: minmax(0, 1fr); }
+      .pilot-body .msg.you { margin-left: 0; }
+      .inds { grid-template-columns: 1fr; }
+      .ind { aspect-ratio: 4 / 3; }
+    }
+    @media (max-width: 560px) {
+      .wrap { padding-inline: 16px; }
+      .nav { gap: 14px; }
+      .nav .hide-xs { display: none; }
+      .win-body { padding: 12px; }
+      .win-bar { gap: 9px; padding-inline: 12px; }
+      .win-bar .dots { display: none; }
+      .win-bar .title { padding-left: 9px; }
+      .msg.you { margin-left: 0; }
+      .finding { flex-wrap: wrap; } .finding .btn { margin-left: 0; }
+      .board table { font-size: 13px; } .board th, .board td { padding: 10px 5px; } .board thead th:first-child, .board tbody th { padding-left: 9px; }
+      .board thead th { font-size: 11.5px; padding-inline: 2px; } .board thead .lt { display: none; } .board tbody th small { display: none; }
+      .val { font-size: 13px; gap: 4px; } .val .m { width: 16px; height: 16px; } .val .m svg { width: 10px; height: 10px; } .val.na { font-size: 12px; }
+      .sig { font-size: 12px; }
+      .faq summary { font-size: 18px; }
+    }
+
+    /* ---------- the moment the memory is born: gather, the wide map, the fold. The script moves all of it with the
+       scroll (the hero's words leaving, its twelve records flying to their places, the statement, the lab's words
+       arriving), so every browser shows the same thing. This CSS only lays the wide map out. With reduced motion, on a
+       phone or without the script, the memory simply rests in its place. */
+    @media (prefers-reduced-motion: no-preference) and (min-width: 900px) {
+      .js .hero { overflow-x: clip; overflow-y: visible; }
+      .js .paper { animation: none; opacity: 0; }
+      .js .intro { grid-column: 1 / -1; height: 170vh; min-height: 0; padding: 0; display: block; position: relative; z-index: 6; pointer-events: none; }
+      .js .intro-copy { position: sticky; top: var(--copy-top, 36vh); max-width: 620px; margin: 0 auto; text-align: center; pointer-events: auto; opacity: 0; }
+      .js .intro-copy .eyebrow { margin-bottom: 10px; }
+      .js .intro h2 { font-size: clamp(30px, 2.9vw, 42px); margin-bottom: 10px; }
+      .js .intro-copy > p:not(.eyebrow) { margin: 0 auto; max-width: 620px; }
+      .js .chapters { margin-top: var(--pull, 0px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .hero-copy > *, .paper { animation: none; opacity: var(--o, 0.92); }
+      .hero-copy > * { opacity: 1; }
+      .memory, .web .node, .web .edge { transition: none; }
+      .js [data-stage] { translate: 0 0; transition: opacity 0.2s; }
+      .js .chart .ln { transition: none; }
+      .threads path { transition: none; }
+    }
+  </style>
+  <!-- PostHog: page views, time on page, clicks (autocapture) and download clicks. The key is not in this
+       repo: the deploy workflow puts it in place of __POSTHOG_KEY__ from the POSTHOG_KEY secret. A page
+       that still says __POSTHOG_KEY__ (a plain local preview) loads nothing and sends nothing. -->
+  <script>
+    document.documentElement.classList.add("js");
+    const POSTHOG_KEY = "__POSTHOG_KEY__";
+    if (!POSTHOG_KEY.startsWith("__")) {
+      !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+      posthog.init(POSTHOG_KEY, {
+        api_host: "https://us.i.posthog.com",
+        person_profiles: "identified_only",
+        capture_pageview: true,
+        capture_pageleave: true,
+      });
+      // Every site event says where it came from, so it sits apart from the desktop app's in one project.
+      posthog.register({ surface: "site" });
+    }
+  </script>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="apple" viewBox="0 0 24 24"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.97-3.46-1.07-1.57-2.74-1.78-3.33-1.8-1.42-.15-2.77.83-3.49.83-.72 0-1.83-.81-3.01-.79-1.55.02-2.98.9-3.78 2.29-1.61 2.8-.41 6.94 1.16 9.21.77 1.11 1.68 2.36 2.88 2.31 1.16-.05 1.59-.75 2.99-.75 1.4 0 1.79.75 3.01.72 1.24-.02 2.03-1.13 2.79-2.25.88-1.29 1.24-2.54 1.26-2.6-.03-.01-2.42-.93-2.45-3.71zM14.08 5.84c.64-.77 1.07-1.85.95-2.92-.92.04-2.03.61-2.69 1.38-.59.68-1.1 1.78-.97 2.83 1.03.08 2.07-.52 2.71-1.29z"/></symbol>
+    <symbol id="mark" viewBox="0 0 48 48"><path d="M6 28 A18 18 0 0 1 42 28" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><circle cx="13" cy="28" r="3.4" fill="currentColor"/><circle cx="24" cy="28" r="3.4" fill="currentColor"/><circle cx="35" cy="28" r="3.4" fill="currentColor"/></symbol>
+    <!-- the map's three groups. The script still keys them rnd, pilot and prod: two teams and the company's KPI -->
+    <symbol id="i-rnd" viewBox="0 0 16 16"><path d="M8.2 5.4a2.3 2.3 0 1 1-4.6 0 2.3 2.3 0 0 1 4.6 0zM1.7 13.6c.3-2.5 1.9-3.9 4.2-3.9s3.9 1.4 4.2 3.9M10.6 3.3a2.3 2.3 0 0 1 0 4.2M11.9 9.9c1.4.5 2.2 1.8 2.4 3.7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-pilot" viewBox="0 0 16 16"><path d="M8.2 5.4a2.3 2.3 0 1 1-4.6 0 2.3 2.3 0 0 1 4.6 0zM1.7 13.6c.3-2.5 1.9-3.9 4.2-3.9s3.9 1.4 4.2 3.9M10.6 3.3a2.3 2.3 0 0 1 0 4.2M11.9 9.9c1.4.5 2.2 1.8 2.4 3.7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-prod" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="2.7" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="0.6" fill="currentColor" stroke="currentColor" stroke-width="0.8"/></symbol>
+    <symbol id="i-dec" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5.4 8.2l1.8 1.8 3.4-3.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="cross" viewBox="0 0 16 16"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </svg>
+
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="/newsite/" aria-label="Fermata"><svg width="28" height="28" aria-hidden="true"><use href="#mark"/></svg>Fermata</a>
+      <nav class="nav" aria-label="Main">
+        <a class="hide-xs" href="#story">How it works</a>
+        <a class="hide-s" href="#industries">Industries</a>
+        <a class="hide-s watch" href="#how-it-works">Film</a>
+        <a class="hide-s" href="/guide/">User guide</a>
+        <a class="hide-xs" href="https://web.getfermata.app">Try demo</a>
+        <a class="header-cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest">Download for Mac</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. The promise, with a company's records scattered around it -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="papers" aria-hidden="true">
+        <div class="paper near" style="--x:3;--y:10;--r:-6deg;--d:.1"><span class="t pdf">PDF</span><span class="nm">Quality report · Oct 2025</span><i></i><i></i></div>
+        <div class="paper" style="--x:5;--y:36;--r:4deg;--d:.3;--o:.8"><span class="t nb">NOTEBOOK</span><span class="nm">Lab notebook, <span style="white-space:nowrap">p. 38–42</span></span><i></i><i></i></div>
+        <div class="paper far" style="--x:2;--y:58;--r:-3deg;--d:.5;--o:.6"><span class="t csv">CSV</span><span class="nm">Cost model 2026</span><i></i><i></i></div>
+        <div class="paper near" style="--x:6;--y:76;--r:5deg;--d:.2"><span class="t ppt">SLIDES</span><span class="nm">Drying review · Mar 2026</span><i></i><i></i></div>
+        <div class="paper far" style="--x:85;--y:8;--r:5deg;--d:.4;--o:.6"><span class="t log">LOG</span><span class="nm">Line trial log</span><i></i><i></i></div>
+        <div class="paper near" style="--x:86;--y:32;--r:-4deg;--d:.15"><span class="t csv">CSV</span><span class="nm">Bench test results</span><i></i><i></i></div>
+        <div class="paper" style="--x:88;--y:56;--r:3deg;--d:.35;--o:.8"><span class="t doc">DOC</span><span class="nm">Weekly sync notes</span><i></i><i></i></div>
+        <div class="paper" style="--x:84;--y:76;--r:-5deg;--d:.25;--o:.85"><span class="t csv">CSV</span><span class="nm">Line tests, April</span><i></i><i></i></div>
+        <div class="paper far" style="--x:22;--y:4;--r:-2deg;--d:.6;--o:.5"><span class="t doc">DOC</span><span class="nm">Additive screening</span><i></i><i></i></div>
+        <div class="paper far" style="--x:68;--y:4;--r:3deg;--d:.55;--o:.5"><span class="t pdf">PDF</span><span class="nm">Supplier datasheet</span><i></i><i></i></div>
+        <div class="paper far" style="--x:24;--y:90;--r:4deg;--d:.65;--o:.55"><span class="t pdf">PDF</span><span class="nm">Coating spec, rev C</span><i></i><i></i></div>
+        <div class="paper far" style="--x:66;--y:91;--r:-4deg;--d:.7;--o:.55"><span class="t log">EMAIL</span><span class="nm">RE: roll R-31 results</span><i></i><i></i></div>
+      </div>
+      <div class="hero-copy">
+        <p class="eyebrow">The integrated research environment (IRE)</p>
+        <h1 id="hero-title">From reactive to <em>proactive</em> R&amp;D&nbsp;decisions</h1>
+        <p class="lede">Fermata connects today’s result to everything your company already knows, from the lab bench to the pilot line to the plant.</p>
+        <div class="actions">
+          <a class="cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest"><svg aria-hidden="true"><use href="#apple"/></svg>Download for Mac</a>
+          <a class="cta-ghost" href="https://web.getfermata.app"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>Try demo</a>
+        </div>
+      </div>
+      <a class="more" href="#story" aria-label="Scroll down to see how it works"><span><svg viewBox="0 0 24 34" aria-hidden="true"><path d="M5 4l7 6 7-6"/><path d="M5 14l7 6 7-6"/><path d="M5 24l7 6 7-6"/></svg></span></a>
+    </section>
+
+    <!-- 2. The story: the knowledge base on the left stays put; a project, a second team and the team's decision pass on the right -->
+    <section class="story" id="story" aria-label="How Fermata works">
+      <aside class="rail" data-step="memory" aria-label="Company knowledge base">
+        <div class="memory">
+          <p class="kb">Company knowledge base</p>
+          <div class="web" role="img" aria-label="The company's knowledge base: linked documents, findings and decisions in three groups, Team A, Team B, and KPI. Drag to turn it; hover a record to see what it is."></div>
+        </div>
+      </aside>
+
+      <article class="chapter intro" id="memory" data-step="memory">
+        <div class="intro-copy">
+          <p class="eyebrow"><span class="n">01</span>Knowledge base</p>
+          <h2>Everything your company has learned, in one place.</h2>
+          <p>Fermata reads every record and links them into one knowledge base.</p>
+        </div>
+      </article>
+
+      <div class="chapters">
+        <article class="chapter" id="lab" data-step="lab" style="--n:6">
+          <div class="pin">
+          <p class="eyebrow"><span class="n">02</span>Project and directions</p>
+          <h2>Every project starts from what the company already tried.</h2>
+          <p>Before a test is planned, Fermata brings up what was tried before.</p>
+          <div class="win" data-stage="win">
+            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="../assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Project 1 · Coating drying time</span><span class="who"><span class="av">A</span>Team A</span></div>
+            <div class="win-body">
+              <p class="k">Directions</p>
+              <div class="dirs">
+                <div class="dir" data-dir="a">
+                  <div class="dir-row"><span class="lt">A</span><span class="dir-name"><b>Time</b><span>8 hours instead of 12</span></span><span class="st"><i class="spin" aria-hidden="true"></i><span class="ck"><svg aria-hidden="true"><use href="#tick"/></svg><span class="visually-hidden">Done</span></span></span></div>
+                </div>
+                <div class="dir" data-dir="b">
+                  <div class="dir-row"><span class="lt">B</span><span class="dir-name"><b>Temperature</b><span><span class="was">140 °C</span><span class="now">125 °C</span></span></span><span class="st"><i class="spin" aria-hidden="true"></i><span class="visually-hidden">Running</span></span></div>
+                  <div class="recall" data-stage="recall" data-thread="report"><div><small>From the knowledge base</small>140 °C cracked 4 of 6 samples in 2025.</div></div>
+                </div>
+                <div class="dir" data-dir="c">
+                  <div class="dir-row"><span class="lt">C</span><span class="dir-name"><b>Composition</b><span>New binder</span></span><span class="st"><i class="spin" aria-hidden="true"></i><span class="visually-hidden">Running</span></span></div>
+                </div>
+              </div>
+              <div class="finding" data-stage="finding">
+                <p><small>FINDING</small>8-hour drying kept more output over the first 50 cycles.</p>
+                <span class="btn" data-share="mayaF">Share the finding</span>
+              </div>
+            </div>
+          </div>
+          </div>
+        </article>
+
+        <article class="chapter" id="pilot" data-step="pilot" style="--n:6">
+          <div class="pin">
+          <p class="eyebrow"><span class="n">03</span>Cross-team learning</p>
+          <h2>What one team learns, the next team starts with.</h2>
+          <p>Team B gets a different result. Fermata reads both and finds why.</p>
+          <div class="win" data-stage="win">
+            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="../assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Project 2 · Larger batches</span><span class="who"><span class="av t">B</span>Team B</span></div>
+            <div class="win-body pilot-body">
+              <div class="msg you" data-stage="ask">Output dropped after we moved to 8-hour drying. Why?</div>
+              <div class="msg fermata" data-stage="answer">
+                <span class="from"><svg width="16" height="16" aria-hidden="true"><use href="#mark"/></svg>Fermata</span>
+                <p>Team A’s test stopped at cycle 50. The loss starts later, near cycle 245.</p>
+                <p class="read">Read from the knowledge base</p>
+                <ul class="sources"><li data-thread="mayaF">Team A’s finding</li><li data-thread="report">Quality report, Oct 2025</li><li data-thread="maint">Line trial log</li></ul>
+              </div>
+              <div class="plot">
+                <div data-stage="answer">
+                <svg class="chart" viewBox="0 0 340 150" role="img" aria-label="Output kept against cycles. Team A's test covers cycles 0 to 50, where 8-hour drying is ahead, and it stays ahead until about cycle 200. Near cycle 245 the 8-hour line falls behind and ends at 79 percent, against 90 percent for 12-hour drying.">
+                  <rect x="30" y="10" width="46.7" height="120" fill="#ece8f9"/>
+                  <text x="34" y="124">Team A’s test</text>
+                  <line class="axis" x1="30" y1="130" x2="310" y2="130"/>
+                  <line x1="258.7" y1="10" x2="258.7" y2="130" stroke="#c3c2b7" stroke-dasharray="3 3"/>
+                  <text x="252" y="143" text-anchor="end">cycle 245</text>
+                  <text x="30" y="143">0</text><text x="296" y="143">300</text>
+                  <path class="ln" pathLength="1" stroke="#0f6e56" d="M30 14 L76.7 21.5 L123.3 28 L170 33.6 L216.7 38.8 L258.7 43.2 L310 50"/>
+                  <path class="ln late" pathLength="1" stroke="#a52a2a" d="M30 14 L76.7 15.2 L123.3 20.4 L170 27.4 L216.7 35.6 L258.7 43.2 L286.7 68 L310 94"/>
+                  <text class="key" x="314" y="54" style="fill:#0f6e56">12 h</text>
+                  <text class="key" x="314" y="98" style="fill:#a52a2a">8 h</text>
+                </svg>
+                </div>
+              </div>
+              <div class="finding" data-stage="finding">
+                <p><small>FINDING</small>8-hour drying keeps 11 points less output at cycle 300.</p>
+                <span class="btn" data-share="tomF">Share the finding</span>
+              </div>
+            </div>
+          </div>
+          </div>
+        </article>
+
+        <article class="chapter" id="team" data-step="team" style="--n:7">
+          <div class="pin">
+          <p class="eyebrow"><span class="n">04</span>Team decision</p>
+          <h2>Push here. Stop there.</h2>
+          <p>Every direction against the company’s targets, on one page.</p>
+          <div class="win" data-stage="win">
+            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="../assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Project status · Coating drying time</span><span class="who">Team review</span></div>
+            <div class="win-body">
+              <div class="board">
+                <table>
+                  <thead><tr><th scope="col"><span class="visually-hidden">Measure</span></th><th scope="col"><span class="lt">A</span>Time</th><th scope="col"><span class="lt">B</span>Temperature</th><th scope="col"><span class="lt">C</span>Composition</th></tr></thead>
+                  <tbody>
+                    <tr data-stage="row"><th scope="row" data-thread="qc">Cost<small>change per year</small></th>
+                      <td><span class="val ok"><span class="m"><svg aria-hidden="true"><use href="#tick"/></svg></span>−$1.2M</span></td>
+                      <td><span class="val ok"><span class="m"><svg aria-hidden="true"><use href="#tick"/></svg></span>−$0.8M</span></td>
+                      <td><span class="val no"><span class="m"><svg aria-hidden="true"><use href="#cross"/></svg></span>+$0.4M</span></td></tr>
+                    <tr data-stage="row"><th scope="row" data-thread="tomF">Lifetime<small>kept at cycle 300</small></th>
+                      <td><span class="val no"><span class="m"><svg aria-hidden="true"><use href="#cross"/></svg></span>79%</span></td>
+                      <td><span class="val ok"><span class="m"><svg aria-hidden="true"><use href="#tick"/></svg></span>90%</span></td>
+                      <td><span class="val na">Not tested</span></td></tr>
+                    <tr data-stage="row"><th scope="row" data-thread="maint">Scale-up<small>trial runs passed</small></th>
+                      <td><span class="val no"><span class="m"><svg aria-hidden="true"><use href="#cross"/></svg></span>1 of 3</span></td>
+                      <td><span class="val ok"><span class="m"><svg aria-hidden="true"><use href="#tick"/></svg></span>3 of 3</span></td>
+                      <td><span class="val na">Not tested</span></td></tr>
+                    <tr class="decide" data-stage="row"><th scope="row">Team decision</th>
+                      <td><span class="sig stop">Stop</span></td>
+                      <td><span class="sig push">Push</span></td>
+                      <td><span class="sig wait">Pause</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="finding" data-stage="finding">
+                <p><small>TEAM DECISION</small>Push B. Stop A. Pause C.</p>
+                <span class="btn green" data-share="decision">Save the decision</span>
+              </div>
+            </div>
+          </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 3. The whole of it in one line, before the film -->
+    <section class="sum wrap" aria-labelledby="sum-title">
+      <h2 id="sum-title">One R&amp;D workspace, from the first result to the <em>team’s decision</em>.</h2>
+    </section>
+
+    <!-- 4. The film -->
+    <section class="block wrap film-block" id="film" aria-labelledby="film-title">
+      <div class="block-head">
+        <p class="eyebrow">See it work</p>
+        <h2 id="film-title">Fermata in two minutes.</h2>
+      </div>
+      <div class="player" id="how-it-works">
+        <video src="../assets/fermata-film-4.mp4" poster="../assets/fermata-film-4-poster.jpg" preload="none" playsinline
+               aria-label="Fermata in two minutes: a lab's context is scattered from the bench to the plant; Fermata gathers the evidence from every project, challenges each finding and ties every decision to its evidence."></video>
+        <button class="play" type="button" aria-label="Play the film"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg></span></button>
+      </div>
+    </section>
+
+    <!-- 5. Questions -->
+    <section class="block wrap" aria-labelledby="faq-title">
+      <div class="block-head">
+        <p class="eyebrow">Questions</p>
+        <h2 id="faq-title">Before you start.</h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>Does my team have to change how it works?</summary>
+          <p>No. Fermata sits beside the work you already do. You ask in plain words, attach the files you have, and it reads them where they are.</p>
+        </details>
+        <details>
+          <summary>Where do our files go?</summary>
+          <p>They stay on your Mac. Fermata reads them there and keeps its record of the work beside them. The parts a question needs go to the AI you chose, under your own account.</p>
+        </details>
+        <details>
+          <summary>Which AI does it use?</summary>
+          <p>Fermata works with Claude Code or OpenAI Codex, under your own account. You choose which one in Settings.</p>
+        </details>
+        <details>
+          <summary>Does Fermata make the decisions?</summary>
+          <p>No. People decide. Fermata shows the evidence, says what it assumed, has its findings checked independently, and keeps the reasons for each decision.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- 6. Industries -->
+    <section class="block wrap" id="industries" aria-labelledby="ind-title">
+      <div class="block-head">
+        <p class="eyebrow">Industries</p>
+        <h2 id="ind-title">Built for industrial R&amp;D.</h2>
+        <p>Each industry keeps its own records. The way from a result to a decision is the same.</p>
+      </div>
+      <div class="inds">
+        <article class="ind">
+          <img src="../assets/industries/chemicals.jpg" alt="A refinery's storage tanks and columns under a golden evening sky" width="1400" height="1050" loading="lazy" decoding="async">
+          <div class="ind-text"><h3>Chemicals and process</h3><p>Catalysts, formulations and scale-up.</p></div>
+        </article>
+        <article class="ind">
+          <img src="../assets/industries/carbon-capture.jpg" alt="Chimneys and cooling towers releasing white plumes above a green forest" width="1400" height="1050" loading="lazy" decoding="async">
+          <div class="ind-text"><h3>Carbon capture and CO₂ conversion</h3><p>Sorbents, membranes and electrolysers.</p></div>
+        </article>
+        <article class="ind">
+          <img src="../assets/industries/batteries.jpg" alt="An automated production line with robots and cable trays in a bright factory" width="1400" height="1050" loading="lazy" decoding="async">
+          <div class="ind-text"><h3>Batteries and energy materials</h3><p>Electrodes, coatings and cells.</p></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 7. Close -->
+    <section class="close wrap" id="contact">
+      <h2>Fermata works around your workflow. You don’t work around it.</h2>
+      <p>For macOS. Questions? Write to us.</p>
+      <div class="actions">
+        <a class="cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest"><svg aria-hidden="true"><use href="#apple"/></svg>Download for Mac</a>
+        <a class="cta-ghost mail" href="mailto:hi@getfermata.app">hi@getfermata.app</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <a class="brand" href="/newsite/" aria-label="Fermata"><svg width="22" height="22" aria-hidden="true"><use href="#mark"/></svg>Fermata</a>
+      <nav aria-label="Footer">
+        <a href="#story">How it works</a>
+        <a href="#industries">Industries</a>
+        <a href="/guide/">User guide</a>
+        <a href="https://web.getfermata.app">Try demo</a>
+        <a href="mailto:hi@getfermata.app">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <svg class="threads" aria-hidden="true"></svg>
+  <div class="vignette" aria-hidden="true"></div>
+  <canvas class="space" aria-hidden="true"></canvas>
+  <div class="clearing" aria-hidden="true"></div>
+  <div class="space-tags" aria-hidden="true"></div>
+
+  <script>
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // ---- The arrows under the first screen scroll to the story without changing the address: with #story in it, a
+    // refresh opened the page in the middle of the story instead of at the top.
+    document.querySelector(".more").addEventListener("click", (ev) => {
+      ev.preventDefault();
+      document.getElementById("story").scrollIntoView({ behavior: still ? "auto" : "smooth", block: "start" });
+    });
+
+    // ---- Download: release assets carry the version in their name, so ask GitHub for the newest DMG.
+    // Without JavaScript, or if the call fails, the buttons open the latest release page.
+    fetch("https://api.github.com/repos/fermata-ai/fermata-releases/releases/latest")
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((release) => {
+        const dmg = release.assets.find((a) => a.name.endsWith(".dmg"));
+        if (!dmg) return;
+        document.querySelectorAll(".download").forEach((a) => {
+          a.href = dmg.browser_download_url;
+          a.dataset.version = release.tag_name.replace(/^v/, "");
+        });
+      })
+      .catch(() => {});
+    // ---- Download clicks, by button. The link leaves the page, so the event goes out as a beacon.
+    document.querySelectorAll(".download").forEach((a) =>
+      a.addEventListener("click", () =>
+        window.posthog?.capture(
+          "download_clicked",
+          {
+            button: a.classList.contains("header-cta") ? "header" : a.closest(".close") ? "close" : "hero",
+            target: a.href.endsWith(".dmg") ? "dmg" : "release_page",
+            version: a.dataset.version ?? null,
+          },
+          { transport: "sendBeacon" },
+        ),
+      ),
+    );
+    document.querySelector(".mail").addEventListener("click", () =>
+      window.posthog?.capture("contact_clicked", {}, { transport: "sendBeacon" }),
+    );
+
+    // ---- The film: plays with sound on the first click, then hands over to the native controls.
+    (() => {
+      const player = document.querySelector(".player");
+      const video = player.querySelector("video");
+      let from = "player", reported = false;
+      const start = () => { player.classList.add("playing"); video.controls = true; video.play(); };
+      player.querySelector(".play").addEventListener("click", start);
+      document.querySelector(".watch").addEventListener("click", (e) => {
+        e.preventDefault();
+        from = "header";
+        player.scrollIntoView({ behavior: still ? "auto" : "smooth", block: "center" });
+        start();
+      });
+      video.addEventListener("play", () => {
+        if (reported) return;
+        reported = true;
+        window.posthog?.capture("film_played", { from });
+      });
+      video.addEventListener("ended", () => window.posthog?.capture("film_finished"));
+      // A shared link to the film (#how-it-works, or the older #film) opens the page on it, centred.
+      if (location.hash === "#how-it-works" || location.hash === "#film") {
+        from = "link";
+        const centre = () => player.scrollIntoView({ behavior: "auto", block: "center" });
+        requestAnimationFrame(centre);
+        addEventListener("load", centre, { once: true });
+      }
+    })();
+
+    // ---- The story. Memory is a web on the left that stays put. Each chapter on the right plays once
+    // when it reaches the middle of the screen: what memory gives it is threaded across, and what it
+    // shares flies back and becomes a node. Scrolling back re-lights a chapter but never replays it.
+    (() => {
+      const NS = "http://www.w3.org/2000/svg";
+      const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.append(e); return e; };
+      const web = document.querySelector(".web");
+      const rail = document.querySelector(".rail");
+      const threads = document.querySelector(".threads");
+      const wide = matchMedia("(min-width: 900px)");
+
+      // x, y in the 400×340 web; kind: bg (already known), doc (read in chapter 1), finding, decision
+      const NODES = {
+        b1: [62, 60, "bg"], b2: [118, 44, "bg"], b3: [40, 118, "bg"], b4: [150, 98, "bg"], b5: [70, 176, "bg"],
+        b6: [268, 52, "bg"], b7: [350, 70, "bg"], b8: [372, 140, "bg"], b9: [326, 196, "bg"], b10: [252, 118, "bg"],
+        b11: [138, 262, "bg"], b12: [190, 318, "bg"], b13: [262, 308, "bg"], b14: [300, 262, "bg"], b15: [110, 312, "bg"],
+        review: [88, 92, "doc", ["rnd", "Team A", "Drying review, Mar 2026"]],
+        notebook: [134, 66, "doc", ["rnd", "Team A", "Lab notebook, p. 38–42"]],
+        bench: [104, 146, "doc", ["rnd", "Team A", "Bench test results 2026"]],
+        maint: [312, 104, "doc", ["pilot", "Team B", "Line trial log"]],
+        qc: [236, 280, "doc", ["prod", "Cost", "Cost model 2026"]],
+        report: [168, 286, "doc", ["prod", "Performance", "Quality report, Oct 2025"]],
+        mayaF: [160, 140, "finding", ["rnd", "Team A finding", "8 h better in early tests"]],
+        tomF: [318, 186, "finding", ["pilot", "Team B finding", "11 points less by cycle 300"]],
+        decision: [214, 206, "decision", ["dec", "Team decision", "Push B. Stop A. Pause C."]],
+      };
+      const EDGES = [
+        ["b1", "b2"], ["b1", "b3"], ["b2", "b4"], ["b3", "b5"], ["b4", "b5"], ["b6", "b7"], ["b7", "b8"], ["b8", "b9"],
+        ["b6", "b10"], ["b10", "b9"], ["b11", "b12"], ["b12", "b13"], ["b13", "b14"], ["b11", "b15"], ["b15", "b12"],
+        ["review", "b1"], ["review", "notebook"], ["notebook", "b2"], ["bench", "b3"], ["bench", "review"], ["bench", "b5"],
+        ["maint", "b7"], ["maint", "b10"], ["maint", "b8"], ["qc", "b13"], ["qc", "b14"], ["report", "b11"], ["report", "b12"],
+        ["report", "qc"], ["report", "bench", 1], ["b4", "b10", 1], ["b14", "b9", 1],
+        ["mayaF", "bench"], ["mayaF", "notebook"], ["mayaF", "report", 1],
+        ["tomF", "mayaF"], ["tomF", "maint"], ["tomF", "report"],
+        ["decision", "tomF"], ["decision", "mayaF"], ["decision", "report"], ["decision", "qc", 1],
+      ];
+      // A company's knowledge base holds far more than the story's six records. Fill each group (Team A, Team B, and the
+      // KPI: keyed rnd, pilot and prod) with records of its own
+      // (seeded, so the page is the same on every visit) and link each to its nearest neighbours.
+      const seeded = (a) => () => { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+      const rand = seeded(11);
+      const STAGES = { rnd: [96, 108, 84, 70, 30], pilot: [306, 120, 76, 66, 28], prod: [204, 288, 112, 38, 26] };
+      const stageOf = (x, y) => Object.entries(STAGES).sort((a, b) => Math.hypot(a[1][0] - x, a[1][1] - y) - Math.hypot(b[1][0] - x, b[1][1] - y))[0][0];
+      let made = 0;
+      for (const [stage, [cx, cy, rx, ry, n]] of Object.entries(STAGES)) {
+        for (let i = 0, tries = 0; i < n && tries < 4000; tries++) {
+          const a = rand() * Math.PI * 2, rr = Math.sqrt(rand());
+          const x = Math.round(cx + Math.cos(a) * rx * rr), y = Math.round(cy + Math.sin(a) * ry * rr);
+          if (x < 12 || x > 388 || y < 36 || y > 316) continue;
+          if (Object.values(NODES).some(([nx, ny]) => Math.hypot(nx - x, ny - y) < 13)) continue;
+          NODES["g" + made++] = [x, y, "bg"]; i++;
+        }
+      }
+      {
+        const have = new Set(EDGES.map(([a, b]) => [a, b].sort().join()));
+        const link = (a, b, dash) => { const k = [a, b].sort().join(); if (a !== b && !have.has(k)) { have.add(k); EDGES.push(dash ? [a, b, 1] : [a, b]); } };
+        const known = Object.keys(NODES).filter((id) => NODES[id][2] === "bg" || NODES[id][2] === "doc");
+        const near = (id, pool) => pool.filter((o) => o !== id).sort((p, q) => Math.hypot(NODES[p][0] - NODES[id][0], NODES[p][1] - NODES[id][1]) - Math.hypot(NODES[q][0] - NODES[id][0], NODES[q][1] - NODES[id][1]));
+        for (const id of known.filter((i) => i[0] === "g")) near(id, known).slice(0, 3).forEach((o) => link(id, o));
+        for (const id of known.filter((i) => i[0] !== "g")) near(id, known).slice(0, 2).forEach((o) => link(id, o));
+        // a few long links between stages, dashed: what one stage wrote that another reads
+        const byStage = (st) => known.filter((i) => i[0] === "g" && stageOf(...NODES[i]) === st);
+        [["rnd", "pilot"], ["rnd", "prod"], ["pilot", "prod"]].forEach(([a, b]) => {
+          const A = byStage(a), B = byStage(b);
+          for (let i = 0; i < 2; i++) link(A[Math.floor(rand() * A.length)], B[Math.floor(rand() * B.length)], 1);
+        });
+      }
+      // ---- The memory. One canvas, fixed over the page, draws all of it in screen space: the hundreds of documents
+      // drifting behind the hero; each of them shrinking to a point as the page scrolls and taking its place in a map
+      // that fills the whole screen; and the map folding into its card on the left. Drag turns it; hovering a record
+      // names it. Past the hero it moves only when the scroll, a drag or a new record moves it.
+      const degree = {};
+      for (const [a, b] of EDGES) { degree[a] = (degree[a] || 0) + 1; degree[b] = (degree[b] || 0) + 1; }
+      const formed = (id) => NODES[id][2] === "bg" || NODES[id][2] === "doc";
+      const canvas = document.querySelector(".space"), layer = document.querySelector(".space-tags");
+      const ctx = canvas.getContext("2d");
+      // a browser that will not give a drawing surface gets the page as it is without this script: nothing hidden, nothing moving
+      if (!ctx) { document.documentElement.classList.remove("js"); return; }
+      const hero = document.querySelector(".hero"), heroCopy = hero.querySelector(".hero-copy"), papers = document.querySelector(".papers");
+      const memory = document.querySelector(".memory"), story = document.querySelector(".story");
+      const intro = document.querySelector(".intro"), copy = document.querySelector(".intro-copy");
+      const docking = () => wide.matches && !still;
+      function dockProgress() { const r = intro.getBoundingClientRect(); return (innerHeight - r.top) / (r.height + innerHeight); }
+      const clamp = (v) => Math.max(0, Math.min(1, v));
+      const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+      const mix = (a, b, t) => a + (b - a) * t;
+      const gauss = () => { const u = rand() || 1e-6, v = rand(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+      const RGB = { rnd: [74, 58, 167], pilot: [31, 95, 168], prod: [176, 114, 14], dec: [22, 150, 110] };
+      const Z = { review: 18, notebook: -8, bench: 26, maint: 12, qc: -18, report: 22, mayaF: 40, tomF: 34, decision: 52 };
+      const ZC = { rnd: 18, pilot: -26, prod: 0 };
+      const small = !wide.matches;
+      const ids = Object.keys(NODES);
+      const N = {};
+      for (const id of ids) {
+        const [x, y, kind] = NODES[id];
+        N[id] = {
+          f: [x, y, Z[id] ?? ZC[stageOf(x, y)] + (rand() - 0.5) * 190], st: kind === "decision" ? "dec" : stageOf(x, y), kind,
+          r: kind === "bg" ? Math.min(3.2, 1.4 + (degree[id] || 0) * 0.26) : kind === "doc" ? Math.min(5.2, 3 + (degree[id] || 0) * 0.28) : 5.4,
+        };
+      }
+      // the rest of what the company wrote: fainter points, spread over the whole screen and gathered round the stages
+      const HUB_UV = { rnd: [-0.55, -0.44], pilot: [0.56, -0.36], prod: [0.02, 0.84] };
+      const DUSTN = small ? 300 : 760;
+      const DUST = Array.from({ length: DUSTN }, (_, i) => {
+        let u, v;
+        if (rand() < 0.5) { const [hu, hv] = Object.values(HUB_UV)[i % 3]; u = hu + gauss() * 0.3; v = hv + gauss() * 0.3; }
+        else { u = (rand() * 2 - 1) * 1.2; v = (rand() * 2 - 1) * 1.15; }
+        return { u, v, zn: rand() * 2 - 1, a: 0.3 + rand() * 0.7, out: Math.abs(u) > 1 || Math.abs(v) > 1.04 };
+      });
+      const DLINKS = [];
+      DUST.forEach((p, i) => {
+        let b1 = -1, d1 = 1e9, b2 = -1, d2 = 1e9;
+        for (let j = i + 1; j < DUSTN; j++) {
+          const o = DUST[j], d = (p.u - o.u) ** 2 + (p.v - o.v) ** 2 + ((p.zn - o.zn) * 0.25) ** 2;
+          if (d < d1) { b2 = b1; d2 = d1; b1 = j; d1 = d; } else if (d < d2) { b2 = j; d2 = d; }
+        }
+        if (b1 >= 0 && d1 < 0.02) DLINKS.push([i, b1]);
+        if (b2 >= 0 && d2 < 0.02 && i % 2) DLINKS.push([i, b2]);
+      });
+
+      // the twelve records in front of the hero are real elements; each becomes one record of the map
+      const paperEls = [...papers.querySelectorAll(".paper")];
+      const gOf = (st, n) => ids.filter((id) => id[0] === "g" && N[id].st === st)[n];
+      const PAPER_NODE = ["report", "notebook", "qc", "review", "maint", "bench", gOf("rnd", 0), gOf("pilot", 0), gOf("rnd", 1), gOf("rnd", 2), gOf("prod", 0), gOf("pilot", 1)];
+      const paperD = {};
+      paperEls.forEach((p, i) => { if (PAPER_NODE[i]) paperD[PAPER_NODE[i]] = parseFloat(p.style.getPropertyValue("--d")) || 0.3; });
+      const num = (el, name, d) => { const v = parseFloat(el.style.getPropertyValue(name)); return Number.isFinite(v) ? v : d; };
+      const PAPERS = paperEls.map((el, i) => ({ el, id: PAPER_NODE[i], x: num(el, "--x", 0), y: num(el, "--y", 0), d: num(el, "--d", 0.3), r: num(el, "--r", 0), o: num(el, "--o", 0.92),
+        base: el.classList.contains("far") ? 0.82 : el.classList.contains("near") ? 1.08 : 1 }));
+
+      // the hundreds behind them are drawn: small cards at different depths, each on its way to one record or one point
+      const BADGE = ["#f3c0b7", "#aedbc9", "#f0d792", "#b3cff0", "#c9c1ee", "#d5d4cb"];
+      const CARDN = small ? 84 : 238;
+      const CARDS = [];
+      {
+        const free = ids.filter((id) => formed(id) && !(id in paperD));
+        const rx = small ? 0.62 : 0.33;
+        for (let i = 0, tries = 0; i < CARDN && tries < 40000; tries++) {
+          const hx = -0.03 + rand() * 1.06, hy = 0.01 + rand() * 1.2;
+          let zc = rand() ** 1.5;
+          if (((hx - 0.5) / rx) ** 2 + ((hy - 0.47) / 0.36) ** 2 < 1) { if (rand() > 0.14) continue; zc *= 0.3; }
+          const c = { hx, hy, zc, rot: (rand() - 0.5) * 0.34, type: Math.floor(rand() * 6), d: rand(),
+            ax: 6 + rand() * 16, ay: 5 + rand() * 14, o1: 0.18 + rand() * 0.26, o2: 0.16 + rand() * 0.24, p1: rand() * 6.28, p2: rand() * 6.28,
+            node: free[i] || null, dust: free[i] ? -1 : i - free.length, t: 0, x: 0, y: 0, T: null };
+          if (c.node) N[c.node].card = c; else if (DUST[c.dust]) DUST[c.dust].card = c;
+          CARDS.push(c); i++;
+        }
+        CARDS.sort((a, b) => a.zc - b.zc);
+      }
+
+      // ---- where things are
+      const born = new Set(), lit = new Set(), bornAt = {}, proj = {};
+      let hover = null, e = 0, L = 0, w = 1, S = null, timeS = 0, paused = false, busy = false;
+      // what invites a hand to the wide map: it sways slowly on its own until the pointer takes over, a record names
+      // itself now and then, and the records near the pointer wake up
+      const sway = { amt: 0, ph: 0 }, ptr = { x: 0, y: 0, on: false }, auto = { id: null, last: null, until: 0, next: 0 };
+      let lastMove = -1e9, lastFrame = performance.now();
+      const t0 = performance.now();
+      const view = { yaw: -0.2, pitch: 0.09, vy: 0, vp: 0, hy: 0, hp: 0, ty: 0, tp: 0, wy: 0, wp: 0 }; // hy, hp: the lean toward the cursor; wy, wp: how far the wide map was spun
+      let cyw = 1, syw = 0, cp = 1, sp = 0;
+      const FW = 1500, WS = 2.1;
+      const rot = (x, y, z) => { const x1 = x * cyw + z * syw, z1 = -x * syw + z * cyw; return [x1, y * cp - z1 * sp, y * sp + z1 * cp]; };
+      // the statement sits in the middle of the wide map; records make room for it
+      const pushed = (x, y, a, b) => { const d = Math.hypot(x / a, y / b); if (d >= 1) return [x, y]; const k = (0.62 + 0.38 * d) / Math.max(d, 0.04); return [x * k, y * k]; };
+      const place3 = (wx, wy, wz, fx, fy, fz) => {
+        let X = 0, Y = 0, K = 1, Zn = 0;
+        if (w < 1) {
+          const [a, b, c] = rot(wx, wy, wz), k = FW / (FW - c);
+          X = S.wcx + a * k; Y = S.wcy + b * k; K = k * WS; Zn = c / (120 * S.zs);
+          if (w <= 0) return [X, Y, Zn, K];
+        }
+        const bs = S.bs, [a, b, c] = rot((fx - 200) * bs, (fy - 170) * bs, fz * bs), k = (720 * bs) / (720 * bs - c);
+        const X2 = S.bcx + a * k, Y2 = S.bcy + b * k;
+        if (w >= 1) return [X2, Y2, c / (120 * bs), k * bs];
+        return [mix(X, X2, w), mix(Y, Y2, w), mix(Zn, c / (120 * bs), w), mix(K, k * bs, w)];
+      };
+      const nodeTarget = (n) => {
+        const [x, y] = w < 1 ? pushed((n.f[0] - 200) * S.sx, (n.f[1] - 170) * S.sy, S.pa, S.pb) : [0, 0];
+        return place3(x, y, n.f[2] * S.zs, n.f[0], n.f[1], n.f[2]);
+      };
+      const dustTarget = (d) => place3(d.u * 188 * S.sx, d.v * 140 * S.sy, d.zn * 110 * S.zs, 200 + d.u * 188, 170 + d.v * 140, d.zn * 100);
+      // a document does not leave with the page: as you scroll down it sinks a little, nearer ones faster, toward the map
+      const homeOf = (c) => [
+        S.hr.left + c.hx * S.hr.width + Math.sin(timeS * c.o1 + c.p1) * c.ax * (0.5 + c.zc),
+        S.hr.top + c.hy * S.hr.height + Math.cos(timeS * c.o2 + c.p2) * c.ay * (0.5 + c.zc) + (still ? 0 : scrollY * (1.08 + 0.22 * c.zc)),
+      ];
+      const tOf = (c) => clamp((e - (0.06 + 0.44 * c.d)) / 0.45);
+      const dotA = (t) => clamp((t - 0.45) / 0.45);
+      const scrollYaw = () => (still ? 0 : Math.max(-0.2, Math.min(0.4, (-story.getBoundingClientRect().top / innerHeight) * 0.05)));
+
+      // soft glows, drawn once per colour and stamped
+      const glow = {};
+      for (const [k, [r, g, b]] of Object.entries({ ...RGB, bg: [120, 114, 168] })) {
+        const c = document.createElement("canvas"); c.width = c.height = 64;
+        const x = c.getContext("2d"), gr = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+        gr.addColorStop(0, `rgba(${r},${g},${b},0.55)`); gr.addColorStop(0.35, `rgba(${r},${g},${b},0.18)`); gr.addColorStop(1, `rgba(${r},${g},${b},0)`);
+        x.fillStyle = gr; x.fillRect(0, 0, 64, 64); glow[k] = c;
+      }
+
+      // the tags of lit records: the group's icon, the group, what it is. Never a person's name.
+      const SIDE = { mayaF: "above", tomF: "left", report: "below", maint: "left", qc: "below", decision: "below" };
+      const OFFSET = { above: "translate(-50%, calc(-100% - 11px))", below: "translate(-50%, 11px)", left: "translate(calc(-100% - 11px), -50%)", right: "translate(11px, -50%)" };
+      const TAGS = {};
+      for (const [id, [, , , name]] of Object.entries(NODES)) {
+        if (!name) continue;
+        const [stage, stg, what] = name;
+        const t = document.createElement("span");
+        t.className = "tag " + stage; t.dataset.side = SIDE[id] || "right";
+        t.innerHTML = `<svg aria-hidden="true"><use href="#i-${stage}"/></svg><b></b><span></span>`;
+        t.querySelector("b").textContent = stg + " · "; t.querySelector("span").textContent = what;
+        layer.append(t); TAGS[id] = t;
+      }
+      // the three groups: hubs of the wide map, small captions once it rests on the left
+      const HUBS = [["rnd", "Team A", [-0.6, -0.8], [40, 30, 20]], ["pilot", "Team B", [0.6, -0.74], [338, 34, -26]], ["prod", "KPI", [0.02, 0.56], [204, 334, 0]]].map(([st, text, uv, corner]) => {
+        const h = document.createElement("span");
+        h.className = "hub " + st;
+        h.innerHTML = `<svg aria-hidden="true"><use href="#i-${st}"/></svg><b></b>`;
+        h.querySelector("b").textContent = text;
+        layer.append(h);
+        return { h, st, uv, corner };
+      });
+
+      // what each group holds: labels of the wide map, and where a record's chip says it came from
+      const TEAM_AT = {
+        rnd: [["Project 3", 58, 88], ["Project 4", 134, 60], ["Project 1", 98, 156]],
+        pilot: [["Project 5", 280, 96], ["Project 2", 342, 148]],
+        prod: [["Cost model", 268, 282], ["Performance targets", 144, 294]],
+      };
+      const GROUP = { rnd: "Team A", pilot: "Team B" };
+      const TEAM_EL = Object.entries(TEAM_AT).flatMap(([st, list]) => list.map(([name, x, y]) => {
+        const t = document.createElement("span");
+        t.className = "team " + st; t.textContent = name;
+        layer.append(t);
+        return { t, st, f: [x, y, 30], at: null };
+      }));
+      const teamOf = (id) => { const n = N[id], list = TEAM_AT[n.st]; if (!list) return "Team review"; const at = [...list].sort((a, b) => Math.hypot(a[1] - n.f[0], a[2] - n.f[1]) - Math.hypot(b[1] - n.f[0], b[2] - n.f[1]))[0][0]; return GROUP[n.st] ? `${GROUP[n.st]} · ${at}` : at; };
+
+      // what a record is, for its chip: the type, the name, and the lab or team it came from
+      const T = { PDF: "pdf", CSV: "csv", SLIDES: "ppt", DOC: "doc", NOTEBOOK: "nb", LOG: "log", EMAIL: "log", FINDING: "nb", DECISION: "csv" };
+      const DOCS = {
+        review: ["SLIDES", "Drying review, Mar 2026", "Team A · Project 3"],
+        notebook: ["NOTEBOOK", "Lab notebook, p. 38–42", "Team A · Project 4"],
+        bench: ["CSV", "Bench test results 2026", "Team A · Project 1"],
+        maint: ["LOG", "Line trial log 2026", "Team B · Project 2"],
+        qc: ["CSV", "Cost model 2026", "Cost model"],
+        report: ["PDF", "Quality report, Oct 2025", "Performance targets"],
+        mayaF: ["FINDING", "8 h drying better in early tests", "Team A · Project 1"],
+        tomF: ["FINDING", "8 h keeps 11 points less at cycle 300", "Team B · Project 2"],
+        decision: ["DECISION", "Push B. Stop A. Pause C.", "Team review"],
+      };
+      const POOL = {
+        rnd: [["PDF", "Slurry viscosity study"], ["CSV", "Cycling results, batch 14"], ["NOTEBOOK", "Lab notebook, p. 12–19"], ["SLIDES", "Binder screening review"], ["DOC", "Additive screening notes"], ["CSV", "XRD scans, set B"], ["PDF", "Supplier datasheet, PVDF"], ["NOTEBOOK", "Lab notebook, p. 51–55"], ["CSV", "Moisture uptake at 40 °C"], ["SLIDES", "Quarterly review, Q2"], ["PDF", "Literature review: dry coating"], ["DOC", "Weekly sync notes, Feb"], ["CSV", "Particle size, lot 7"], ["NOTEBOOK", "Lab notebook, p. 60–64"], ["PDF", "Thermal stability, DSC runs"]],
+        pilot: [["LOG", "Line 2 maintenance, Q3"], ["CSV", "Line tests, April"], ["CSV", "Coating thickness, June"], ["PDF", "Line 2 SOP, rev D"], ["SLIDES", "Scale-up review, May"], ["EMAIL", "RE: roll R-31 results"], ["CSV", "Oven profile MC-112"], ["DOC", "Run sheet, Nov"], ["LOG", "Shift handover notes"], ["PDF", "Calendering trial report"], ["CSV", "Slot-die gap settings"], ["SLIDES", "Readiness review"]],
+        prod: [["CSV", "Raw material prices, Q3"], ["PDF", "Performance targets, FY26"], ["PDF", "Customer spec, rev B"], ["CSV", "Energy use by step"], ["SLIDES", "Cost review, Oct"], ["DOC", "Target sheet: cycle life"], ["CSV", "Scrap rate by shift"], ["PDF", "Supplier quotes, binder"], ["SLIDES", "KPI review, Oct"], ["CSV", "Yield by line"], ["PDF", "Annual cost audit"]],
+      };
+      const used = { rnd: 0, pilot: 0, prod: 0 };
+      for (const id of ids) {
+        if (DOCS[id]) continue;
+        const st = N[id].st, pool = POOL[st], n = used[st]++;
+        const [type, name] = pool[n % pool.length], round = Math.floor(n / pool.length);
+        DOCS[id] = [type, round ? `${name}, ${["2025", "2024", "archive", "draft"][(round - 1) % 4]}` : name, teamOf(id)];
+      }
+      const chip = document.createElement("span");
+      chip.className = "hchip"; chip.setAttribute("role", "tooltip"); chip.hidden = true;
+      layer.append(chip);
+      const autoChip = document.createElement("span");
+      autoChip.className = "hchip auto";
+      layer.append(autoChip);
+      const fillChip = (el, id) => {
+        const [type, name, team] = DOCS[id];
+        el.innerHTML = `<span class="t ${T[type]}">${type}</span><b></b><i></i>`;
+        el.querySelector("b").textContent = name; el.querySelector("i").textContent = team;
+      };
+
+      // ---- drawing
+      let dpr = 1;
+      // The bitmap is never larger than a 4K screen's (8.3 million pixels): at 2560×1440 and dpr 2 that is 1.5 pixels
+      // per CSS pixel instead of 2. Every frame is cleared, drawn, uploaded and composited at this size, so it sets the
+      // cost of the hero and the wide map on a big monitor. Laptops (1440×900 at dpr 2 = 5.2 million) keep full resolution.
+      const MAXPX = 3840 * 2160, vw = () => document.documentElement.clientWidth || innerWidth;
+      let box = null; // what the last frame drew, in CSS pixels; null means the whole canvas
+      function sizeCanvas() {
+        const W = vw(), H = innerHeight, k = Math.min(2, devicePixelRatio || 1, Math.max(1, Math.sqrt(MAXPX / (W * H))));
+        if (canvas.width !== Math.round(W * k) || canvas.height !== Math.round(H * k)) { canvas.width = Math.round(W * k); canvas.height = Math.round(H * k); box = null; }
+        dpr = k; ctx.setTransform(k, 0, 0, k, 0, 0);
+      }
+      // the drawn area, grown as things are drawn while only the docked map is on the canvas
+      let bb = null;
+      const grow = (x, y, r) => { if (bb) { if (x - r < bb[0]) bb[0] = x - r; if (y - r < bb[1]) bb[1] = y - r; if (x + r > bb[2]) bb[2] = x + r; if (y + r > bb[3]) bb[3] = y + r; } };
+      const rr = (x, y, ww, hh, r) => { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, ww, hh, r); else ctx.rect(x, y, ww, hh); };
+      function drawCard(c, x, y, t, fade) {
+        const alpha = (0.26 + 0.62 * c.zc) * (1 - clamp((t - 0.5) / 0.35)) * fade;
+        if (alpha < 0.012) return;
+        const s = (0.5 + 1.05 * c.zc) * (small ? 0.78 : 1) * (1 - 0.84 * ease(t)), a = c.rot * (1 - t) + Math.sin(timeS * c.o1 * 0.7 + c.p2) * 0.03, cs = Math.cos(a) * s * dpr, sn = Math.sin(a) * s * dpr;
+        ctx.setTransform(cs, sn, -sn, cs, x * dpr, y * dpr);
+        ctx.globalAlpha = alpha;
+        if (c.zc > 0.55) { ctx.fillStyle = "rgba(26, 26, 31, 0.07)"; rr(-36, -24, 76, 58, 6); ctx.fill(); }
+        ctx.fillStyle = "#ffffff"; rr(-38, -28, 76, 56, 5); ctx.fill();
+        ctx.strokeStyle = "#dedcd3"; ctx.lineWidth = 1 / s; ctx.stroke();
+        ctx.fillStyle = BADGE[c.type]; rr(-31, -21, 20 + (c.type % 3) * 5, 8, 2.5); ctx.fill();
+        // the three grey lines in one fill: they never overlap, so this is the same picture in one call instead of three
+        ctx.fillStyle = "#e9e8e2"; ctx.beginPath(); ctx.rect(-31, -6, 62, 4); ctx.rect(-31, 3, 46 + (c.type % 2) * 10, 4); ctx.rect(-31, 12, 54 - (c.type % 3) * 8, 4); ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+      const dustGroups = new Map();
+      const clearing = (r, op, kx, ky) => {
+        if (op < 0.03 || r.bottom < 0 || r.top > S.H) return;
+        ctx.save(); ctx.translate(r.left + r.width / 2, r.top + r.height / 2); ctx.scale(r.width * kx, r.height * ky);
+        const g = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+        g.addColorStop(0, `rgba(244, 244, 241, ${0.95 * op})`); g.addColorStop(0.58, `rgba(244, 244, 241, ${0.9 * op})`); g.addColorStop(1, "rgba(244, 244, 241, 0)");
+        ctx.fillStyle = g; ctx.fillRect(-1, -1, 2, 2); ctx.restore();
+      };
+      function render() {
+        sizeCanvas();
+        const now = performance.now(), VW = vw(), H = innerHeight;
+        // every read of the page's layout comes first, before this frame writes any style (no forced layouts)
+        const hr = hero.getBoundingClientRect(), wr = web.getBoundingClientRect(), dock = docking(), dp = dock ? dockProgress() : 1;
+        const hcr = heroCopy.getBoundingClientRect(), ccr = copy.getBoundingClientRect(), copyH = copy.offsetHeight, sy0 = scrollYaw();
+        measureThreads();
+        e = still ? 1 : dock ? clamp(1 - hr.bottom / H) : clamp((H * 0.95 - wr.top) / (H * 0.75));
+        L = clamp((e - 0.8) / 0.19);
+        w = dock ? ease(clamp((dp - 0.45) / 0.21)) : 1;
+        const sx = (VW * 0.47) / 188, sy = (H * 0.44) / 140;
+        S = { VW, H, hr, wr, dock, dp, sx, sy, zs: Math.min(sx, sy), bs: wr.width / 400, wcx: VW / 2, wcy: H / 2,
+          bcx: wr.left + wr.width / 2, bcy: wr.top + wr.height / 2, pa: Math.min(VW * 0.27, 400), pb: copyH / 2 + 64 };
+        // the map is already turning while it gathers: the swing starts as the first records land, not once it is complete
+        const wideNow = dock && L >= 1 && w < 0.5, swayOn = dock && e > 0.32 && w < 0.5, idle = swayOn && !drag && now - lastMove > 1500;
+        const dt = Math.min(0.05, (now - lastFrame) / 1000); lastFrame = now;
+        sway.amt += ((idle ? 1 : 0) - sway.amt) * Math.min(1, dt * 2.2); sway.ph += dt * sway.amt;
+        // a wide swing about the map's face-on view: about 24 degrees each way, there and back in 13 seconds
+        const swayYaw = (0.2 + 0.42 * Math.sin((sway.ph * 6.283) / 13)) * sway.amt * (1 - w), swayPitch = 0.06 * Math.sin((sway.ph * 6.283) / 21) * sway.amt * (1 - w);
+        S.wideNow = swayOn; S.idle = idle;
+        view.hy += (view.ty - view.hy) * 0.09; view.hp += (view.tp - view.hp) * 0.09;
+        const leaning = Math.abs(view.ty - view.hy) > 0.002 || Math.abs(view.tp - view.hp) > 0.002;
+        // a spin given to the wide map unwinds as it folds into its card, so the card always starts the right way round
+        const yaw = view.yaw + view.wy * (1 - w) + view.hy + swayYaw + (1 - ease(L)) * 0.3 + sy0, pitch = view.pitch + view.wp * (1 - w) + view.hp + swayPitch;
+        cyw = Math.cos(yaw); syw = Math.sin(yaw); cp = Math.cos(pitch); sp = Math.sin(pitch);
+        for (const hub of HUBS) hub.at = place3(hub.uv[0] * 188 * sx, hub.uv[1] * 140 * sy, 0, ...hub.corner);
+        for (const tm of TEAM_EL) tm.at = nodeTarget(tm);
+        if (!box) ctx.clearRect(0, 0, VW, H);
+        else if (box[2] > box[0]) ctx.clearRect(Math.floor(box[0]) - 2, Math.floor(box[1]) - 2, Math.ceil(box[2] - box[0]) + 4, Math.ceil(box[3] - box[1]) + 4);
+        busy = leaning;
+        hr0 = hr;
+        const xp = dock ? clamp(-hr.top / hr.height) : 0; // how far the hero has left by the top of the screen
+        driveDom(now, dock, dp, xp);
+        // the first screen is lit from the middle: the page's own colour there, violet toward the edges. It goes as the hero does.
+        const vg = clamp((hr.bottom / H - 0.2) / 0.6);
+        layerTo(vignetteEl, vg, null);
+        // the clearing behind the hero's words, where they are this frame
+        const hy = hcr.top + heroTY - hcr0, hop = hcr.bottom + heroTY - hcr0 < 0 || hy > H ? 0 : heroOp;
+        layerTo(clearingEl, hr.bottom > -40 && hop >= 0.03 ? hop : 0, [hcr.left + hcr.width / 2, hy + hcr.height / 2, hcr.width * 1.2, hcr.height * 1.56]);
+        document.body.classList.toggle("map-wide", dock && L > 0.5 && w < 0.5);
+        // the pointer carries a soft light over the map; what is inside it wakes up
+        const proxR = w < 0.5 ? 190 : 70;
+        const ptrOn = ptr.on && e > 0.45 && ((dock && w < 0.5) || (L >= 1 && ptr.x > wr.left && ptr.x < wr.right && ptr.y > wr.top && ptr.y < wr.bottom));
+        const proxAt = (x, y) => (ptrOn ? clamp(1 - Math.hypot(x - ptr.x, y - ptr.y) / proxR) ** 2 : 0);
+        const heroOn = hr.bottom > -40, mapOn = e > 0 && wr.bottom > -120 && (wr.top < H + 120 || w < 1);
+        // while only the docked map is drawn, the next frame clears just the area this one drew
+        bb = !heroOn && e >= 1 && w >= 1 && !still ? [Infinity, Infinity, -Infinity, -Infinity] : null;
+        if (!heroOn && !mapOn) { for (const k in proj) delete proj[k]; box = [0, 0, 0, 0]; syncLayer(); place(false); return; }
+
+        // 1. every drawn document: where it is between its place behind the hero and its place in the map
+        const load = still ? 1 : (now - t0) / 500;
+        if (!still && load < 1.9) busy = true;
+        for (const c of CARDS) {
+          c.t = still ? 1 : tOf(c);
+          if (c.t <= 0 && !still) { [c.x, c.y] = homeOf(c); c.T = null; continue; }
+          c.T = c.node ? nodeTarget(N[c.node]) : dustTarget(DUST[c.dust]);
+          if (c.t >= 1) { c.x = c.T[0]; c.y = c.T[1]; } else { const h = homeOf(c), q = ease(c.t); c.x = mix(h[0], c.T[0], q); c.y = mix(h[1], c.T[1], q); }
+        }
+        // 2. the fainter points and their links
+        if (mapOn && ptrOn) {
+          const g = ctx.createRadialGradient(ptr.x, ptr.y, 0, ptr.x, ptr.y, proxR * 1.15);
+          g.addColorStop(0, "rgba(106, 92, 196, 0.16)"); g.addColorStop(0.5, "rgba(106, 92, 196, 0.06)"); g.addColorStop(1, "rgba(106, 92, 196, 0)");
+          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(ptr.x, ptr.y, proxR * 1.15, 0, 6.283); ctx.fill();
+          grow(ptr.x, ptr.y, proxR * 1.15);
+        }
+        if (mapOn) {
+          const late = clamp((e - 0.45) / 0.4), P = new Array(DUSTN);
+          // The points all share one colour and differ only in alpha, so the order they are drawn in does not change the
+          // picture. They are gathered by alpha (to 1/256) and each group is filled at once: about 60 fills, not 760.
+          for (const g of dustGroups.values()) g.length = 0;
+          for (let i = 0; i < DUSTN; i++) {
+            const d = DUST[i], c = d.card;
+            let x, y, T, a;
+            if (c) { if (!c.T) continue; T = c.T; x = c.x; y = c.y; a = dotA(c.t); } else { T = dustTarget(d); x = T[0]; y = T[1]; a = late; }
+            if (d.out) a *= 1 - w;
+            if (a < 0.02) continue;
+            P[i] = [x, y, a];
+            const near = clamp(0.5 + T[2] * 0.5), px = proxAt(x, y);
+            const al = Math.round(Math.min(0.95, d.a * (0.1 + 0.36 * near) * a * (1 + 2.4 * px)) * 256), rad = (0.45 + 0.95 * near) * T[3] * (1 + 0.7 * px);
+            if (al <= 0) continue;
+            let g = dustGroups.get(al);
+            if (!g) dustGroups.set(al, (g = []));
+            g.push(x, y, rad);
+            grow(x, y, rad + 1);
+          }
+          for (const [al, g] of dustGroups) {
+            if (!g.length) continue;
+            ctx.fillStyle = `rgba(74, 58, 167, ${(al / 256).toFixed(4)})`; ctx.beginPath();
+            for (let j = 0; j < g.length; j += 3) { ctx.moveTo(g[j] + g[j + 2], g[j + 1]); ctx.arc(g[j], g[j + 1], g[j + 2], 0, 6.283); }
+            ctx.fill();
+          }
+          if (L > 0) {
+            ctx.strokeStyle = `rgba(106, 92, 196, ${((0.1 + 0.08 * (1 - w)) * L).toFixed(3)})`; ctx.lineWidth = 0.5 + 0.2 * (1 - w); ctx.beginPath();
+            for (const [i, j] of DLINKS) { const A = P[i], B = P[j]; if (A && B && A[2] > 0.5 && B[2] > 0.5) { ctx.moveTo(A[0], A[1]); ctx.lineTo(B[0], B[1]); } }
+            ctx.stroke();
+          }
+        }
+        // 3. the documents themselves, far ones first
+        if (heroOn || e < 1 || still) {
+          for (const c of CARDS) {
+            if (still) { const h = homeOf(c); drawCard(c, h[0], h[1], 0, 1); }
+            else if (c.t < 0.9) drawCard(c, c.x, c.y, c.t, clamp(load - c.d * 0.9));
+          }
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        // 4. the records and their links
+        for (const k in proj) delete proj[k];
+        if (mapOn) {
+          const fadeOf = {};
+          for (const id of ids) {
+            if (!born.has(id)) continue;
+            const n = N[id], c = n.card;
+            let p, f = 1;
+            if (c) { if (!c.T) continue; p = [c.x, c.y, c.T[2], c.T[3]]; f = dotA(c.t); }
+            else { p = nodeTarget(n); if (formed(id)) f = id in paperD && dock ? clamp((e - (0.48 + 0.32 * paperD[id])) / 0.12) : clamp((e - 0.5) / 0.3); }
+            if (f < 0.02) continue;
+            proj[id] = p; fadeOf[id] = f;
+            grow(p[0], p[1], 2);
+          }
+          if (L > 0) {
+            EDGES.forEach(([a, b, dash], n) => {
+              const A = proj[a], B = proj[b];
+              if (!A || !B) return;
+              const on = lit.has(a) && lit.has(b), grow = clamp(L * 1.6 - ((n % 17) / 17) * 0.6);
+              if (grow <= 0) return;
+              const near = clamp(0.5 + (A[2] + B[2]) * 0.25);
+              const prox = proxAt((A[0] + B[0]) / 2, (A[1] + B[1]) / 2);
+              ctx.strokeStyle = on ? `rgba(106, 92, 196, ${0.9 * L})` : `rgba(${112 - 30 * prox}, ${104 - 40 * prox}, ${160 + 20 * prox}, ${Math.min(0.95, ((0.12 + 0.3 * near) * (1 + 0.5 * (1 - w)) + 0.55 * prox) * L).toFixed(3)})`;
+              ctx.lineWidth = on ? 1.3 : 0.6 + 0.35 * (1 - w) + 0.8 * prox;
+              ctx.setLineDash(dash ? [3, 3] : []);
+              ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.lineTo(mix(A[0], B[0], grow), mix(A[1], B[1], grow)); ctx.stroke();
+            });
+            ctx.setLineDash([]);
+            // the branches of the wide map: from the statement out to each stage
+            if (w < 1) {
+              for (const hub of HUBS) {
+                const [hx2, hy2] = hub.at, [r, g, b] = RGB[hub.st], grow = ease(L);
+                const x0 = S.wcx + (hx2 - S.wcx) * 0.36, y0 = S.wcy + (hy2 - S.wcy) * 0.36;
+                ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(0.5 * (1 - w) * L).toFixed(3)})`; ctx.lineWidth = 1.6;
+                ctx.beginPath(); ctx.moveTo(x0, y0);
+                ctx.quadraticCurveTo(mix(x0, hx2, 0.5), y0, mix(x0, hx2, grow), mix(y0, hy2, grow)); ctx.stroke();
+                // and from each stage on to its labs and teams
+                ctx.lineWidth = 1; ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(0.4 * (1 - w) * L).toFixed(3)})`;
+                for (const tm of TEAM_EL) {
+                  if (tm.st !== hub.st) continue;
+                  ctx.beginPath(); ctx.moveTo(hx2, hy2); ctx.quadraticCurveTo(hx2, mix(hy2, tm.at[1], 0.6), mix(hx2, tm.at[0], grow), mix(hy2, tm.at[1], grow)); ctx.stroke();
+                }
+              }
+            }
+          }
+          const order = Object.keys(proj).sort((a, b) => proj[a][2] - proj[b][2]);
+          for (const id of order) {
+            const n = N[id], [x, y, zn, k] = proj[id], near = clamp(0.5 + zn * 0.5);
+            let s = 1;
+            if (bornAt[id]) { const t = (now - bornAt[id]) / 700; if (t < 1) { s = ease(clamp(t)); busy = true; } }
+            const on = lit.has(id) || hover === id || auto.id === id, fade = fadeOf[id];
+            const prox = proxAt(x, y);
+            const r = n.r * k * s * (on ? 1.25 : 1) * (1 + 0.9 * prox);
+            if (n.kind !== "bg" || on || prox > 0.2) {
+              const g = (on ? 7.5 : 5.2) * r;
+              ctx.globalAlpha = fade * (0.55 + 0.45 * near) * (n.kind === "bg" ? (on ? 0.6 : Math.min(1, Math.max(0, prox - 0.15) * 1.5)) : 1);
+              ctx.drawImage(glow[n.kind === "bg" ? "bg" : n.st], x - g, y - g, g * 2, g * 2);
+              grow(x, y, g);
+            }
+            const [cr, cg, cb] = n.kind === "bg" ? [128 - 44 * prox, 122 - 54 * prox, 165 + 6 * prox] : RGB[n.st];
+            ctx.globalAlpha = fade * Math.min(1, (n.kind === "bg" ? 0.35 + 0.55 * near : 0.7 + 0.3 * near) + 0.5 * prox);
+            ctx.fillStyle = `rgb(${cr}, ${cg}, ${cb})`;
+            ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill();
+            if (on) { ctx.globalAlpha = 0.5; ctx.strokeStyle = `rgb(${cr}, ${cg}, ${cb})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, r + 4, 0, 6.283); ctx.stroke(); }
+            grow(x, y, r + 6);
+            ctx.globalAlpha = 1;
+          }
+        }
+        // 5. room for the words in front
+        if (dock && w < 1 && e > 0.3) { const d = copyTY - ccr0; clearing({ left: ccr.left, width: ccr.width, height: ccr.height, top: ccr.top + d, bottom: ccr.bottom + d }, copyOp, 0.72, 0.95); }
+        box = bb;
+        // now and then, while nobody is touching it, one record shows its chip for a moment
+        if (auto.id && (now > auto.until || !idle || hover || pinned || !proj[auto.id])) { auto.id = null; auto.next = now + 900; autoChip.classList.remove("on"); }
+        if (!auto.id && idle && L >= 1 && !hover && !pinned && sway.amt > 0.5 && now > auto.next) {
+          const pool = Object.keys(proj).filter((id) => {
+            const [x, y, zn] = proj[id];
+            return id !== auto.last && zn > -0.3 && x > 150 && x < VW - 150 && y > 90 && y < H - 70 && ((x - VW / 2) / (S.pa * 1.25)) ** 2 + ((y - H / 2) / (S.pb * 1.2)) ** 2 > 1;
+          });
+          if (pool.length) { auto.id = auto.last = pool[Math.floor(Math.random() * pool.length)]; auto.until = now + 2600; fillChip(autoChip, auto.id); autoChip.classList.add("on"); }
+        }
+        syncLayer();
+        place(false);
+      }
+      // a layer laid over the page: its opacity, and where it sits ([centre x, centre y, width, height]) when it moves
+      const vignetteEl = document.querySelector(".vignette"), clearingEl = document.querySelector(".clearing");
+      const layerTo = (el, o, at) => {
+        const st = el.style, v = o > 0 ? "visible" : "hidden";
+        if (st.visibility !== v) st.visibility = v;
+        if (o <= 0) return;
+        const os = o.toFixed(3);
+        if (st.opacity !== os) st.opacity = os;
+        if (at) {
+          const ws = at[2].toFixed(1) + "px", hs = at[3].toFixed(1) + "px", ts = `translate(${(at[0] - at[2] / 2).toFixed(1)}px, ${(at[1] - at[3] / 2).toFixed(1)}px)`;
+          if (st.width !== ws) st.width = ws;
+          if (st.height !== hs) st.height = hs;
+          if (st.transform !== ts) st.transform = ts;
+        }
+      };
+      // ---- What the scroll moves in the page itself. It is set here, frame by frame, from the same numbers the canvas
+      // uses: no browser's own scroll-linked animation is involved, so Safari and Chrome show the same thing.
+      const sm = (x, a, b) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+      const moreEl = hero.querySelector(".more"), labPin = document.querySelector("#lab .pin"), kbEl = document.querySelector(".kb");
+      let driven = null;
+      // the hero's words and the statement: the opacity and vertical shift driveDom gave them, this frame (heroTY, copyTY)
+      // and when the page was last read (hcr0, ccr0)
+      let heroOp = 1, heroTY = 0, hcr0 = 0, copyOp = 0, copyTY = 0, ccr0 = 0;
+      function driveDom(now, dock, dp, xp) {
+        hcr0 = heroTY; ccr0 = copyTY;
+        if (dock !== driven) {
+          driven = dock;
+          if (!dock) {
+            for (const el of [heroCopy, moreEl, copy, labPin, kbEl]) for (const k of ["opacity", "translate", "visibility"]) el.style[k] = "";
+            for (const P of PAPERS) P.el.removeAttribute("data-driven"), ["opacity", "translate", "rotate", "scale", "visibility", "filter", "backgroundColor", "borderColor", "boxShadow"].forEach((k) => (P.el.style[k] = ""));
+          }
+        }
+        if (!dock) { heroOp = 1; heroTY = 0; copyOp = 0; copyTY = 0; return; }
+        // the hero's words leave, and the arrows with them
+        const k = clamp(xp / 0.18);
+        heroOp = k >= 1 ? 0 : +(1 - k).toFixed(3); heroTY = +(-40 * k).toFixed(1);
+        heroCopy.style.opacity = (1 - k).toFixed(3); heroCopy.style.translate = `0 ${(-40 * k).toFixed(1)}px`; heroCopy.style.visibility = k >= 1 ? "hidden" : "";
+        const mo = 1 - clamp(xp / 0.09);
+        moreEl.style.opacity = mo.toFixed(3); moreEl.style.visibility = mo <= 0 ? "hidden" : "";
+        // the statement of the wide map: in once the map is there, and wholly gone before the map starts to fold
+        const cin = sm(dp, 0.26, 0.32), cout = sm(dp, 0.395, 0.45), co = cin * (1 - cout);
+        copyOp = co <= 0.001 ? 0 : +co.toFixed(3); copyTY = +(14 * (1 - cin) - 14 * cout).toFixed(1);
+        copy.style.opacity = co.toFixed(3); copy.style.translate = `0 ${(14 * (1 - cin) - 14 * cout).toFixed(1)}px`; copy.style.visibility = co <= 0.001 ? "hidden" : "";
+        // the lab's words arrive as the map comes to rest on the left
+        const lp = sm(dp, 0.585, 0.69);
+        labPin.style.opacity = lp.toFixed(3); labPin.style.translate = `0 ${(20 * (1 - lp)).toFixed(1)}px`; labPin.style.visibility = lp <= 0.001 ? "hidden" : "";
+        kbEl.style.opacity = lp.toFixed(3);
+        // the hero's twelve records: they come in, sink a little as the page scrolls, and each flies to its record in the map
+        for (const P of PAPERS) {
+          const t = clamp((xp - (0.21 + 0.18 * P.d)) / (0.39 + 0.14 * P.d)), st = P.el.style;
+          if (t >= 1 || hr0.bottom < -600) { st.visibility = "hidden"; continue; }
+          P.w ||= P.el.offsetWidth; P.h ||= P.el.offsetHeight;
+          const ent = ease(clamp((now - t0) / 600 - P.d * 0.6));
+          const nx = hr0.left + (P.x * hr0.width) / 100 + P.w / 2, ny = hr0.top + (P.y * hr0.height) / 100 + P.h / 2;
+          let x = nx, y = ny + scrollY * 1.1 + 18 * (1 - ent);
+          if (t > 0 && P.id) { const T = nodeTarget(N[P.id]), q = t * t * (3 - 2 * t); x = mix(x, T[0], q); y = mix(y, T[1], q); }
+          const a = 1 - clamp((t - 0.66) / 0.14);
+          st.visibility = "";
+          st.translate = `${(x - nx).toFixed(1)}px ${(y - ny).toFixed(1)}px`;
+          st.rotate = `${(P.r * (1 - t)).toFixed(2)}deg`;
+          st.scale = (t < 0.1 ? mix(P.base, 1, t / 0.1) : mix(1, 0.06, (t - 0.1) / 0.9)).toFixed(3);
+          st.opacity = (ent * (t < 0.1 ? mix(P.o, 1, t / 0.1) : t > 0.92 ? 1 - (t - 0.92) / 0.08 : 1)).toFixed(3);
+          st.filter = t > 0 ? "none" : "";
+          st.backgroundColor = a < 1 ? `rgba(255, 255, 255, ${a.toFixed(3)})` : "";
+          st.borderColor = a < 1 ? `rgba(225, 224, 217, ${a.toFixed(3)})` : "";
+          st.boxShadow = a < 1 ? "none" : "";
+          st.setProperty("--paper-ink", (1 - clamp((t - 0.68) / 0.1)).toFixed(3));
+          st.setProperty("--dot", clamp((t - 0.72) / 0.12).toFixed(3));
+          if (ent < 1) busy = true;
+        }
+      }
+      let hr0 = null;
+      // tags, stage names and the chip are elements laid over the canvas; they follow their records
+      function syncLayer() {
+        const mapOn = S && e > 0 && L > 0;
+        for (const hub of HUBS) {
+          if (!mapOn) { hub.h.style.opacity = "0"; continue; }
+          hub.h.style.transform = `translate(${hub.at[0].toFixed(1)}px, ${hub.at[1].toFixed(1)}px) translate(-50%, -50%)`;
+          hub.h.style.opacity = (L * 0.95 * (1 - 0.92 * Math.sin(Math.PI * w))).toFixed(2);
+          hub.h.style.setProperty("--w", w.toFixed(3));
+        }
+        for (const tm of TEAM_EL) {
+          const o = mapOn && tm.at ? L * (1 - w) : 0;
+          tm.t.style.opacity = o.toFixed(2);
+          if (o > 0) tm.t.style.transform = `translate(${tm.at[0].toFixed(1)}px, ${tm.at[1].toFixed(1)}px) translate(-50%, -50%)`;
+        }
+        // a tag sits beside its record on a side with room: inside the card where it can, and never over another tag
+        const taken = [];
+        for (const [id, t] of Object.entries(TAGS)) {
+          const p = proj[id], show = lit.has(id) && p && L >= 1 && w > 0.9;
+          t.classList.toggle("on", !!show);
+          if (!show) continue;
+          if (!t._w) { t._w = t.offsetWidth; t._h = t.offsetHeight; }
+          const u = (p[0] - S.wr.left) / S.wr.width, tw = t._w, th = t._h;
+          const first = u > 0.62 ? "left" : u < 0.38 ? "right" : t.dataset.side === "left" || t.dataset.side === "right" ? "below" : t.dataset.side;
+          const box = (side) => side === "above" ? [p[0] - tw / 2, p[1] - th - 11] : side === "below" ? [p[0] - tw / 2, p[1] + 11] : side === "left" ? [p[0] - tw - 11, p[1] - th / 2] : [p[0] + 11, p[1] - th / 2];
+          const clear = ([x, y]) => !taken.some(([x2, y2, w2, h2]) => x < x2 + w2 + 4 && x + tw + 4 > x2 && y < y2 + h2 + 3 && y + th + 3 > y2);
+          const side = [first, "below", "above", "left", "right"].find((sd) => clear(box(sd))) || first;
+          taken.push([...box(side), tw, th]);
+          t.style.transform = `translate(${p[0].toFixed(1)}px, ${p[1].toFixed(1)}px) ${OFFSET[side]}`;
+        }
+        if (auto.id && proj[auto.id]) autoChip.style.transform = `translate(${proj[auto.id][0].toFixed(1)}px, ${proj[auto.id][1].toFixed(1)}px) translate(-50%, calc(-100% - 10px))`;
+        if (hover && proj[hover]) chip.style.transform = `translate(${proj[hover][0].toFixed(1)}px, ${proj[hover][1].toFixed(1)}px) translate(-50%, calc(-100% - 10px))`;
+        else if (!chip.hidden) { chip.hidden = true; hover = null; }
+      }
+      // the documents behind the hero keep drifting while it is on screen; everything else is drawn on demand
+      let rafId = 0, lastNow = performance.now(), lastInput = -1e9, lastDrawn = -1e9, pendingUpdate = false;
+      const wantsLoop = () => !still && !paused && S && document.visibilityState === "visible" && ((S.hr.bottom > -40 && e < 1) || S.wideNow || sway.amt > 0.01);
+      function loop(now) {
+        rafId = 0;
+        // the stage steps first, while the page's layout is still clean from the last frame
+        if (pendingUpdate) { pendingUpdate = false; update(); }
+        // ambient motion alone (the hero's slow drift, the wide map's sway: nothing scrolled, pointed or arriving) is drawn
+        // at 30 frames a second. Nothing in it moves more than a pixel a frame at that rate, and it halves the cost of
+        // the two screens a visitor rests on.
+        const ambient = !busy && S && now - lastInput > 250;
+        if (ambient && now - lastDrawn < 30) { if (!rafId) rafId = requestAnimationFrame(loop); return; }
+        lastDrawn = now;
+        if (!paused) timeS += Math.min(0.05, (now - lastNow) / 1000);
+        lastNow = now;
+        render();
+        // update() or render() may already have asked for the next frame: never start a second chain of frames
+        if ((wantsLoop() || busy) && !rafId) rafId = requestAnimationFrame(loop);
+      }
+      const requestRender = () => { if (!rafId) rafId = requestAnimationFrame(loop); };
+      const input = () => { lastInput = performance.now(); requestRender(); };
+      // a page coming back (another tab, or Safari's back-forward cache) may have lost the frame it asked for: ask again
+      const wake = () => { if (document.visibilityState !== "visible") return; cancelAnimationFrame(rafId); rafId = 0; box = null; pendingUpdate = true; requestRender(); };
+      document.addEventListener("visibilitychange", wake);
+      addEventListener("pageshow", (ev) => { if (ev.persisted) { measure(); fitPins(); } wake(); });
+
+      // where a record is on the screen, for the dots that fly to it and the threads that leave it
+      const screenPos = (id) => { const p = proj[id] || (S ? nodeTarget(N[id]) : [0, 0]); return [p[0], p[1]]; };
+
+      // ---- drag to turn it, hover to read it
+      const overBox = (ev) => { const r = web.getBoundingClientRect(); return ev.clientX >= r.left && ev.clientX <= r.right && ev.clientY >= r.top && ev.clientY <= r.bottom; };
+      const mapWide = () => document.body.classList.contains("map-wide");
+      const nearest = (ev, reach = 16) => {
+        if (L < 1) return null;
+        let best = null, bd = reach;
+        for (const id in proj) { const d = Math.hypot(proj[id][0] - ev.clientX, proj[id][1] - ev.clientY); if (d < bd) { bd = d; best = id; } }
+        return best;
+      };
+      let pinned = null; // the record a click named; its chip stays until the next click or scroll
+      const showChip = (id) => {
+        if (id === hover) return;
+        hover = id;
+        if (!id) { chip.hidden = true; requestRender(); return; }
+        fillChip(chip, id);
+        chip.hidden = false;
+        requestRender();
+      };
+      let drag = null;
+      document.addEventListener("pointerdown", (ev) => {
+        if (ev.button || L < 1) return;
+        const touch = ev.pointerType === "touch";
+        const inBox = overBox(ev) && w > 0.5, inWide = mapWide() && !touch && !ev.target.closest("a, button, header");
+        if (!inBox && !inWide) return;
+        if (!touch) ev.preventDefault();
+        drag = { x: ev.clientX, y: ev.clientY, moved: false, touch, wide: !inBox };
+        view.vy = view.vp = 0;
+      });
+      document.addEventListener("pointermove", (ev) => {
+        if (drag) {
+          const dx = ev.clientX - drag.x, dy = ev.clientY - drag.y, span = Math.max(360, w > 0.5 ? S.wr.width : S.VW * 0.5);
+          if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
+          drag.x = ev.clientX; drag.y = ev.clientY;
+          if (!drag.moved) return;
+          // the map is held like an object: pull it down and its top comes toward you, pull it right and its left does
+          view.vy = (dx / span) * 3.2; view.vp = drag.touch ? 0 : -(dy / span) * 2.4;
+          turn(drag.wide);
+          document.body.classList.add("turning"); pinned = null; showChip(null); lastMove = lastInput = performance.now();
+          requestRender();
+          return;
+        }
+        if (ev.pointerType === "touch" || !S || still) return;
+        if (ev.clientX === ptr.x && ev.clientY === ptr.y) return; // the page moved under a resting pointer; nobody touched anything
+        lastMove = lastInput = performance.now(); ptr.x = ev.clientX; ptr.y = ev.clientY;
+        // the map leans toward the cursor: across the whole screen while it is wide, over its card once it is there
+        const wideNow = mapWide(), box = !wideNow && overBox(ev) && L >= 1;
+        if (wideNow) { view.ty = (ev.clientX / S.VW - 0.5) * 0.7; view.tp = -(ev.clientY / S.H - 0.5) * 0.42; }
+        else if (box) { view.ty = ((ev.clientX - S.wr.left) / S.wr.width - 0.5) * 0.8; view.tp = -((ev.clientY - S.wr.top) / S.wr.height - 0.5) * 0.5; }
+        else { view.ty = 0; view.tp = 0; }
+        ptr.on = true;
+        // on the wide map a record answers from a little way off, so a passing cursor keeps turning up names
+        showChip(wideNow || box ? nearest(ev, wideNow ? 46 : 16) || pinned : pinned);
+        requestRender();
+      });
+      const turn = (wideMap) => {
+        if (wideMap) { view.wy += view.vy; view.wp = Math.max(-0.8, Math.min(0.8, view.wp + view.vp)); }
+        else { view.yaw += view.vy; view.pitch = Math.max(-0.9, Math.min(0.9, view.pitch + view.vp)); }
+      };
+      let coasting = false;
+      const coast = () => {
+        if (still || drag || (Math.abs(view.vy) < 0.0004 && Math.abs(view.vp) < 0.0004)) return;
+        turn(coasting);
+        view.vy *= 0.93; view.vp *= 0.93;
+        input(); requestAnimationFrame(coast);
+      };
+      const release = (ev) => {
+        if (!drag) return;
+        const moved = drag.moved; coasting = drag.wide; drag = null; document.body.classList.remove("turning");
+        if (moved) { requestAnimationFrame(coast); return; }
+        // a click, not a drag: name the nearest record
+        pinned = ev.type === "pointerup" ? nearest(ev, w < 0.5 ? 120 : 44) : null;
+        hover = null; showChip(pinned);
+      };
+      document.addEventListener("pointerup", release);
+      document.addEventListener("pointercancel", release);
+      document.documentElement.addEventListener("mouseleave", () => { view.ty = 0; view.tp = 0; ptr.on = false; requestRender(); });
+      addEventListener("scroll", () => { pinned = null; if (hover && !drag) showChip(null); pendingUpdate = true; input(); }, { passive: true });
+      addEventListener("resize", () => { box = null; for (const t of Object.values(TAGS)) t._w = 0; pendingUpdate = true; input(); });
+
+      Object.keys(NODES).filter(formed).forEach((id) => born.add(id));
+      let birth = (id) => { born.add(id); if (!formed(id)) bornAt[id] = performance.now(); requestRender(); };
+      const unbirth = (id) => { born.delete(id); delete bornAt[id]; requestRender(); };
+      const light = (ids2) => { lit.clear(); ids2.forEach((i) => lit.add(i)); requestRender(); };
+
+      // a dot leaves something on the page and lands on a node of the web
+      const go_duration = 950;
+      const fly = (from, id, kind, animate) => new Promise((done) => {
+        if (!animate || !wide.matches) return done();
+        const a = from.getBoundingClientRect(), [bx, by] = screenPos(id), b = { left: bx, top: by, width: 0, height: 0 };
+        const dot = document.createElement("span");
+        dot.className = "flyer " + kind;
+        dot.style.left = a.left + a.width / 2 + "px";
+        dot.style.top = a.top + a.height / 2 + "px";
+        document.body.append(dot);
+        const dx = b.left + b.width / 2 - (a.left + a.width / 2), dy = b.top + b.height / 2 - (a.top + a.height / 2);
+        dot.animate(
+          [{ transform: "translate(0,0) scale(.4)", opacity: 0 }, { transform: "translate(0,0) scale(1)", opacity: 1, offset: 0.12 },
+           { transform: `translate(${dx * 0.55}px, ${dy * 0.55 - 40}px) scale(1)`, offset: 0.6 },
+           { transform: `translate(${dx}px, ${dy}px) scale(.6)`, opacity: 1 }],
+          { duration: go_duration, easing: "cubic-bezier(.45,.05,.25,1)" },
+        ).finished.then(() => { dot.remove(); done(); });
+      });
+      const show = (root, name) => root.querySelectorAll(`[data-stage="${name}"]`).forEach((n) => n.classList.add("shown"));
+      const press = (btn, text, cls) => { btn.classList.add("press"); setTimeout(() => { btn.classList.remove("press"); btn.classList.add("done", ...(cls ? [cls] : [])); btn.textContent = text; }, 160); };
+      const settle = (chip) => { chip.textContent = chip.dataset.finalText; if (chip.dataset.final) chip.classList.add(chip.dataset.final); };
+
+      // Each stage is a list of steps the scroll plays forward and back. A step has `on` and `off`; `focus` is what
+      // memory lights once it is reached (a step without one keeps the last), `threads` what it threads across.
+      const q = (root, sel) => root.querySelector(sel);
+      const stageTo = (root, name, on) => root.querySelectorAll(`[data-stage="${name}"]`).forEach((n) => n.classList.toggle("shown", on));
+      const pressTo = (btn, on, text, cls) => {
+        btn.dataset.idle ??= btn.textContent;
+        btn.classList.toggle("done", on);
+        if (cls) btn.classList.toggle(cls, on);
+        btn.textContent = on ? text : btn.dataset.idle;
+        if (on && !still) { btn.classList.add("press"); setTimeout(() => btn.classList.remove("press"), 160); }
+      };
+      // a share: the button is pressed, a dot flies to memory, and a node is born there. Back, and it is undone.
+      const inFlight = {};
+      // A press is shown being made: a pointer glides to the button inside the window and clicks it. The promise
+      // settles at the click, with false if the step was undone on the way.
+      const clicks = new WeakMap();
+      const clickOn = (btn, animate) => {
+        const token = {};
+        clicks.set(btn, token);
+        const live = () => clicks.get(btn) === token;
+        if (!animate) return Promise.resolve(true);
+        const win = btn.closest(".win"), wr2 = win.getBoundingClientRect(), br = btn.getBoundingClientRect();
+        // the window may be scaled to fit a short screen: places inside it are in its own units
+        const k = wr2.width / win.offsetWidth || 1;
+        const tx = (br.left - wr2.left + Math.min(br.width * 0.62, br.width - 14 * k)) / k, ty = (br.top - wr2.top + br.height * 0.55) / k;
+        // it comes across the window from the left, far enough to be seen arriving
+        const sx = Math.max(20, tx - 230), sy = Math.max(60, ty - 70);
+        const cur = document.createElement("span");
+        cur.className = "cur";
+        cur.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l14 8.2-6.3 1.5 3.6 6.6-2.6 1.4-3.6-6.7L5 18.8z"/></svg>';
+        cur.style.left = tx + "px"; cur.style.top = ty + "px";
+        win.append(cur);
+        const glide = cur.animate(
+          [{ transform: `translate(${sx - tx}px, ${sy - ty}px)`, opacity: 0 }, { opacity: 1, offset: 0.25 }, { transform: "translate(0, 0)", opacity: 1 }],
+          { duration: 900, easing: "cubic-bezier(.3, .1, .2, 1)", fill: "forwards" },
+        );
+        const leave = () => cur.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, fill: "forwards" }).finished.then(() => cur.remove());
+        return glide.finished.then(() => wait(140)).then(() => {
+          if (!live()) { leave(); return false; }
+          cur.animate([{ transform: "scale(1)" }, { transform: "scale(.84)" }, { transform: "scale(1)" }], { duration: 240 });
+          const tap = document.createElement("span");
+          tap.className = "tap"; tap.style.left = tx + "px"; tap.style.top = ty + "px";
+          win.append(tap);
+          tap.animate([{ transform: "translate(-50%, -50%) scale(.25)", opacity: 0.55 }, { transform: "translate(-50%, -50%) scale(1)", opacity: 0 }], { duration: 520, easing: "ease-out" }).finished.then(() => tap.remove());
+          setTimeout(leave, 650);
+          return true;
+        });
+      };
+      const unclick = (btn) => clicks.delete(btn);
+      const wait = (ms) => new Promise((res) => setTimeout(res, ms));
+      const share = (sel, id, kind, text, key) => ({
+        on(r, animate) {
+          const btn = q(r, sel);
+          inFlight[id] = true;
+          (text ? clickOn(btn, animate) : Promise.resolve(true)).then((ok) => {
+            if (!ok || !inFlight[id]) return;
+            if (text) pressTo(btn, true, text);
+            return fly(btn, id, kind, animate).then(() => { if (inFlight[id]) { delete inFlight[id]; birth(id); } });
+          });
+        },
+        off(r) {
+          const btn = q(r, sel);
+          unclick(btn);
+          if (text) pressTo(btn, false);
+          if (inFlight[id]) delete inFlight[id]; else unbirth(id);
+        },
+      });
+      const shown = (name) => ({ on: (r) => stageTo(r, name, true), off: (r) => stageTo(r, name, false) });
+      const settled = (dir) => ({ on: (r) => q(r, `[data-dir="${dir}"] .st`).classList.add("done"), off: (r) => q(r, `[data-dir="${dir}"] .st`).classList.remove("done") });
+      const rest = { on() {}, off() {} }; // a stretch of scroll where nothing new happens, so the next thing is seen to start
+      const row = (i) => ({ on: (r) => r.querySelectorAll('[data-stage="row"]')[i].classList.add("shown"), off: (r) => r.querySelectorAll('[data-stage="row"]')[i].classList.remove("shown") });
+      const STEPS = {
+        lab: [
+          // the window opens on three directions, all at work
+          { focus: [], ...shown("win") },
+          // A is done: its ring becomes a check
+          { ...settled("a") },
+          // B: the knowledge base brings up what was tried before, so B starts somewhere better. B and C go on working.
+          { focus: ["report"], on: (r) => { stageTo(r, "recall", true); q(r, '[data-dir="b"]').classList.add("turned"); },
+            off: (r) => { stageTo(r, "recall", false); q(r, '[data-dir="b"]').classList.remove("turned"); } },
+          // the finding is written
+          { ...shown("finding") },
+          rest,
+          // and only then is it shared
+          { focus: ["mayaF", "report"], threads: ["report"], ...share("[data-share]", "mayaF", "", "Shared", "findings") },
+        ],
+        pilot: [
+          { focus: [], ...shown("win") },
+          { ...shown("ask") },
+          { focus: ["mayaF", "report", "maint"],
+            on: (r) => { stageTo(r, "answer", true); q(r, ".chart").classList.add("drawn"); },
+            off: (r) => { stageTo(r, "answer", false); q(r, ".chart").classList.remove("drawn"); } },
+          { ...shown("finding") },
+          rest,
+          { focus: ["tomF", "mayaF", "report", "maint"], threads: ["mayaF", "report", "maint"], ...share("[data-share]", "tomF", "", "Shared", "findings") },
+        ],
+        team: [
+          // the page opens on the three directions; each row then arrives with the record it is read from
+          { focus: [], ...shown("win") },
+          { focus: ["qc"], ...row(0) },
+          { focus: ["qc", "tomF"], ...row(1) },
+          { focus: ["qc", "tomF", "maint"], ...row(2) },
+          // the decision is the team's: no record feeds it
+          { ...row(3) },
+          { ...shown("finding") },
+          // and it goes back into the knowledge base
+          { focus: ["decision", "qc", "tomF", "maint"], threads: [], ...share("[data-share]", "decision", "green", "Saved", "decisions") },
+        ],
+      };
+      // what a step lights: its own focus, or the last one before it
+      const focusAt = (s, k) => { for (let i = k; i >= 0; i--) if (STEPS[s][i].focus) return [STEPS[s][i].focus, STEPS[s][i].threads ?? STEPS[s][i].focus]; return [[], []]; };
+
+      // threads: one curve from a lit node to the place on the page that uses it, kept true while scrolling
+      let live = [];
+      function drawThreads(root, ids) {
+        if (!wide.matches) { threads.replaceChildren(); live = []; return; }
+        const old = new Map(live.map((t) => [t.id, t]));
+        live = ids.map((id) => {
+          const target = root.querySelector(`[data-thread="${id}"]`), was = old.get(id);
+          if (was && was.target === target) { old.delete(id); return was; }
+          if (!target) return null;
+          return { id, target, p: mk("path", { pathLength: 1, class: id === "decision" ? "green" : "" }, threads), c: mk("circle", { r: 2.5 }, threads) };
+        }).filter(Boolean);
+        for (const t of old.values()) { t.p.remove(); t.c.remove(); }
+        place();
+        requestAnimationFrame(() => requestAnimationFrame(() => live.forEach((t) => t.p.classList.add("in"))));
+      }
+      function measureThreads() { for (const t of live) { t.b = t.target.getBoundingClientRect(); t.wb = t.target.closest(".win").getBoundingClientRect(); } }
+      function place(fresh = true) {
+        if (fresh) measureThreads();
+        for (const t of live) {
+          if (!t.b) continue;
+          const b = t.b;
+          const visible = b.bottom > 0 && b.top < innerHeight;
+          for (const e of [t.p, t.c]) e.style.opacity = visible ? "" : "0";
+          const [x1, y1] = screenPos(t.id);
+          // to the window's edge, level with what it feeds, so it never crosses the words
+          const win = t.wb;
+          const x2 = win.left, y2 = Math.max(win.top + 24, Math.min(win.bottom - 24, b.top + b.height / 2));
+          t.p.setAttribute("d", `M${x1.toFixed(1)} ${y1.toFixed(1)} C${x1 + (x2 - x1) * 0.55} ${y1}, ${x2 - (x2 - x1) * 0.45} ${y2}, ${x2} ${y2}`);
+          t.c.setAttribute("cx", x2); t.c.setAttribute("cy", y2);
+        }
+      }
+
+      // ---- The scroll plays the stages. On a wide screen a stage holds (its pin) while its steps play; on a phone
+      // the steps follow the stage up the screen. Scrolling back undoes them, step by step.
+      const ORDER = ["lab", "pilot", "team"];
+      const roots = Object.fromEntries(ORDER.map((s) => [s, document.querySelector(`.chapter[data-step="${s}"]`)]));
+      const at = { lab: -1, pilot: -1, team: -1 };
+      let current = null, inStory = false, lastFocus = "";
+      const resting = () => !docking() || dockProgress() >= 0.67;
+      // where the rail and every pin stick; it changes only with the window's width
+      let barTop = null;
+      const railTop = () => (barTop ??= parseFloat(getComputedStyle(rail).top) || 0);
+      addEventListener("resize", () => (barTop = null));
+      const stepFor = (s) => {
+        const r = roots[s].getBoundingClientRect(), H = innerHeight, n = STEPS[s].length;
+        if (r.top > H * 0.72) return -1;
+        if (s === "lab" && !resting()) return -1;
+        let p;
+        if (wide.matches) { const bar = railTop(); p = (bar - r.top) / Math.max(1, r.height - (H - bar)); }
+        else p = (H * 0.72 - r.top) / Math.max(1, r.height);
+        // the first step as the stage arrives; the rest across the hold, with the last reached a little before it lets go
+        return Math.min(n - 1, Math.max(0, Math.floor(Math.max(0, p) / 0.82 * (n - 1)) + (p > 0 ? 1 : 0) - (p > 0 ? 1 : 0)));
+      };
+      function setStep(s, k, animate) {
+        const r = roots[s];
+        while (at[s] < k) { at[s]++; STEPS[s][at[s]].on(r, animate && at[s] === k); }
+        while (at[s] > k) { STEPS[s][at[s]].off(r); at[s]--; }
+      }
+      function update() {
+        const H = innerHeight;
+        for (const s of ORDER) {
+          const k = stepFor(s);
+          // a step is played only when its stage is on screen; one passed in a jump simply takes effect
+          if (k !== at[s]) { const rr2 = roots[s].getBoundingClientRect(); setStep(s, k, !still && k === at[s] + 1 && rr2.top < H * 0.9 && rr2.bottom > H * 0.75); }
+        }
+        const mid = ORDER.find((s) => { const r = roots[s].getBoundingClientRect(); return r.top <= H * 0.5 && r.bottom > H * 0.5; }) || (dockProgress() > 0 && dockProgress() < 1 ? "memory" : null);
+        if (mid !== current) {
+          current = mid;
+          if (mid) rail.dataset.step = mid;
+        }
+        const [lit, thr] = ORDER.includes(current) && at[current] >= 0 ? focusAt(current, at[current]) : [[], []];
+        const key = current + lit.join() + "|" + thr.join();
+        if (key !== lastFocus) { lastFocus = key; light(lit); drawThreads(roots[current] || document.body, thr); }
+      }
+
+      // On a short screen a stage's words and window can be taller than the screen. The window is scaled down
+      // by what is over, so the whole of it is always in view while its steps play.
+      function fitPins() {
+        for (const s of ORDER) {
+          const pin = roots[s].querySelector(".pin"), win = pin.querySelector(".win");
+          win.style.transform = ""; win.style.marginBottom = "";
+          if (!wide.matches) continue;
+          const bar = parseFloat(getComputedStyle(pin).top) || 0, over = pin.offsetHeight - (innerHeight - bar);
+          if (over <= 0) continue;
+          const h = win.offsetHeight, k = Math.max(0.6, (h - over) / h);
+          win.style.transform = `scale(${k.toFixed(4)})`; win.style.marginBottom = (-(1 - k) * h).toFixed(1) + "px";
+        }
+      }
+      fitPins();
+      addEventListener("resize", fitPins); addEventListener("load", fitPins);
+      document.fonts?.ready.then(fitPins);
+      // ---- Measures the CSS needs: where the statement sits in the wide map, how far the lab's words rise as the
+      // map folds into its card, and where each of the hero's twelve records lands in the map.
+      const chapters = document.querySelector(".chapters"), lab = document.getElementById("lab");
+      const DOCK_END = 0.7; // where the map has come to rest in its card, as a share of the intro's cover range
+      function measure() {
+        const root = document.documentElement.style;
+        if (!docking()) { root.removeProperty("--pull"); requestRender(); return; }
+        const VW = innerWidth, H = innerHeight;
+        root.setProperty("--copy-top", ((H - copy.offsetHeight) / 2).toFixed(1) + "px");
+        // the lab chapter rises as the map folds away: when the map is at rest, the lab's words sit level with the card
+        const h = memory.offsetHeight, bar = parseFloat(getComputedStyle(rail).top) || 0, nt = bar + memory.offsetTop;
+        const eyebrow = lab.querySelector(".eyebrow"), para = lab.querySelector("h2 + p");
+        const eb = eyebrow.getBoundingClientRect(), off = eb.top - lab.getBoundingClientRect().top, copyLen = para.getBoundingClientRect().bottom - eb.top;
+        const pull = parseFloat(getComputedStyle(chapters).marginTop) || 0;
+        const naturalGap = chapters.offsetTop - pull - (intro.offsetTop + intro.offsetHeight);
+        const introBottomAtRest = H - DOCK_END * (intro.offsetHeight + H) + intro.offsetHeight;
+        root.setProperty("--pull", (nt + h / 2 - copyLen / 2 - off - introBottomAtRest - naturalGap).toFixed(1) + "px");
+        requestRender();
+      }
+      measure();
+      addEventListener("resize", measure);
+      document.fonts?.ready.then(measure);
+
+      requestRender();
+      addEventListener("load", requestRender);
+      document.fonts?.ready.then(() => { for (const t of Object.values(TAGS)) t._w = 0; requestRender(); });
+      // The hero's words are visible by default and only fade in from below. If a browser never runs that entrance (a
+      // stalled animation timeline), finish it, so the first screen can never stay blank.
+      setTimeout(() => {
+        for (const el of [...heroCopy.children, moreEl.firstElementChild]) for (const a of el?.getAnimations?.() || []) {
+          try { if (a.animationName === "rise" && a.playState !== "finished") a.finish(); } catch {}
+        }
+      }, 2500);
+
+      update();
+      addEventListener("load", update);
+      // leaving the story clears the threads
+      new IntersectionObserver(([e]) => {
+        inStory = e.isIntersecting;
+        if (!e.isIntersecting) { threads.replaceChildren(); live = []; }
+      }, { threshold: 0 })
+        .observe(document.querySelector(".chapters"));
+    })();
+  </script>
+</body>
+</html>
