@@ -353,6 +353,11 @@
     .board .decide > * { background: var(--surface); }
     .sig { font-weight: 700; font-size: 13.5px; padding: 5px 0; border-radius: 999px; display: inline-block; width: min(100%, 92px); text-align: center; }
     .sig.push { background: var(--green); color: var(--white); } .sig.stop { background: var(--red-soft); color: var(--red); } .sig.wait { background: var(--amber-soft); color: var(--amber); }
+    /* the direction the team pushes: its whole column turns green once the decision is made */
+    .board :is(th, td):nth-child(3) { transition: background-color 0.7s var(--ease), box-shadow 0.7s var(--ease); }
+    .board:has(.decide.shown) :is(th, td):nth-child(3), html:not(.js) .board :is(th, td):nth-child(3) { background: var(--green-soft); box-shadow: inset 2px 0 var(--green-line), inset -2px 0 var(--green-line); }
+    .board:has(.decide.shown) thead th:nth-child(3), html:not(.js) .board thead th:nth-child(3) { box-shadow: inset 2px 0 var(--green-line), inset -2px 0 var(--green-line), inset 0 2px var(--green-line); color: var(--green); }
+    .board:has(.decide.shown) .decide td:nth-child(3), html:not(.js) .board .decide td:nth-child(3) { box-shadow: inset 2px 0 var(--green-line), inset -2px 0 var(--green-line), inset 0 -2px var(--green-line); }
     /* a row's marks land one after the other, left to right */
     .js .board [data-stage] .m, .js .board [data-stage] .sig { scale: 0; transition: scale 0.5s cubic-bezier(0.3, 1.5, 0.5, 1); }
     .js .board [data-stage].shown .m, .js .board [data-stage].shown .sig { scale: 1; }
@@ -388,8 +393,8 @@
     .ind { position: relative; margin: 0; border-radius: 20px; overflow: hidden; background: var(--ink); aspect-ratio: 4 / 5; box-shadow: var(--shadow); }
     .ind img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 1.2s var(--ease); }
     .ind:hover img { scale: 1.04; }
-    .ind img { filter: saturate(0.72) contrast(0.96); }
-    .ind::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(22, 15, 62, 0.9) 0%, rgba(52, 40, 128, 0.5) 46%, rgba(74, 58, 167, 0.3) 100%); }
+    .ind img { filter: saturate(0.88); }
+    .ind::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(18, 14, 48, 0.84) 0%, rgba(40, 31, 100, 0.3) 44%, rgba(74, 58, 167, 0.12) 100%); }
     .ind-text { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 24px; color: var(--white); }
     .ind h3 { font-size: clamp(24px, 2.2vw, 30px); line-height: 1.1; margin-bottom: 6px; }
     .ind p { margin: 0; font-size: 15px; color: rgba(255, 255, 255, 0.82); }
@@ -521,7 +526,7 @@
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="apple" viewBox="0 0 24 24"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.97-3.46-1.07-1.57-2.74-1.78-3.33-1.8-1.42-.15-2.77.83-3.49.83-.72 0-1.83-.81-3.01-.79-1.55.02-2.98.9-3.78 2.29-1.61 2.8-.41 6.94 1.16 9.21.77 1.11 1.68 2.36 2.88 2.31 1.16-.05 1.59-.75 2.99-.75 1.4 0 1.79.75 3.01.72 1.24-.02 2.03-1.13 2.79-2.25.88-1.29 1.24-2.54 1.26-2.6-.03-.01-2.42-.93-2.45-3.71zM14.08 5.84c.64-.77 1.07-1.85.95-2.92-.92.04-2.03.61-2.69 1.38-.59.68-1.1 1.78-.97 2.83 1.03.08 2.07-.52 2.71-1.29z"/></symbol>
     <symbol id="mark" viewBox="0 0 48 48"><path d="M6 28 A18 18 0 0 1 42 28" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><circle cx="13" cy="28" r="3.4" fill="currentColor"/><circle cx="24" cy="28" r="3.4" fill="currentColor"/><circle cx="35" cy="28" r="3.4" fill="currentColor"/></symbol>
-    <!-- the map's three groups. The script still keys them rnd, pilot and prod: two teams and the company's targets -->
+    <!-- the map's three groups. The script still keys them rnd, pilot and prod: two teams and the company's KPI -->
     <symbol id="i-rnd" viewBox="0 0 16 16"><path d="M8.2 5.4a2.3 2.3 0 1 1-4.6 0 2.3 2.3 0 0 1 4.6 0zM1.7 13.6c.3-2.5 1.9-3.9 4.2-3.9s3.9 1.4 4.2 3.9M10.6 3.3a2.3 2.3 0 0 1 0 4.2M11.9 9.9c1.4.5 2.2 1.8 2.4 3.7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-pilot" viewBox="0 0 16 16"><path d="M8.2 5.4a2.3 2.3 0 1 1-4.6 0 2.3 2.3 0 0 1 4.6 0zM1.7 13.6c.3-2.5 1.9-3.9 4.2-3.9s3.9 1.4 4.2 3.9M10.6 3.3a2.3 2.3 0 0 1 0 4.2M11.9 9.9c1.4.5 2.2 1.8 2.4 3.7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-prod" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="2.7" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="0.6" fill="currentColor" stroke="currentColor" stroke-width="0.8"/></symbol>
@@ -578,7 +583,7 @@
       <aside class="rail" data-step="memory" aria-label="Company knowledge base">
         <div class="memory">
           <p class="kb">Company knowledge base</p>
-          <div class="web" role="img" aria-label="The company's knowledge base: linked documents, findings and decisions in three groups, Team A, Team B, and cost and performance targets. Drag to turn it; hover a record to see what it is."></div>
+          <div class="web" role="img" aria-label="The company's knowledge base: linked documents, findings and decisions in three groups, Team A, Team B, and KPI. Drag to turn it; hover a record to see what it is."></div>
         </div>
       </aside>
 
@@ -906,7 +911,7 @@
         ["decision", "tomF"], ["decision", "mayaF"], ["decision", "report"], ["decision", "qc", 1],
       ];
       // A company's knowledge base holds far more than the story's six records. Fill each group (Team A, Team B, and the
-      // cost and performance targets: keyed rnd, pilot and prod) with records of its own
+      // KPI: keyed rnd, pilot and prod) with records of its own
       // (seeded, so the page is the same on every visit) and link each to its nearest neighbours.
       const seeded = (a) => () => { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
       const rand = seeded(11);
@@ -1082,7 +1087,7 @@
         layer.append(t); TAGS[id] = t;
       }
       // the three groups: hubs of the wide map, small captions once it rests on the left
-      const HUBS = [["rnd", "Team A", [-0.6, -0.8], [40, 30, 20]], ["pilot", "Team B", [0.6, -0.74], [338, 34, -26]], ["prod", "Cost and performance targets", [0.02, 0.56], [204, 334, 0]]].map(([st, text, uv, corner]) => {
+      const HUBS = [["rnd", "Team A", [-0.6, -0.8], [40, 30, 20]], ["pilot", "Team B", [0.6, -0.74], [338, 34, -26]], ["prod", "KPI", [0.02, 0.56], [204, 334, 0]]].map(([st, text, uv, corner]) => {
         const h = document.createElement("span");
         h.className = "hub " + st;
         h.innerHTML = `<svg aria-hidden="true"><use href="#i-${st}"/></svg><b></b>`;
