@@ -96,16 +96,16 @@
     .hero-copy { position: relative; z-index: 6; text-align: center; max-width: 860px; margin: 0 auto; padding-inline: 24px; }
     h1 { font-size: clamp(40px, 6.2vw, 80px); line-height: 1.02; letter-spacing: -0.035em; margin-bottom: 22px; }
     .lede { font-family: var(--serif); font-weight: 300; font-size: clamp(18px, 2vw, 22px); line-height: 1.45; color: var(--ink-2); max-width: 640px; margin: 0 auto 32px; }
-    .hero-copy > * { opacity: 0; animation: rise 0.9s var(--ease) forwards; }
-    .hero-copy > :nth-child(2) { animation-delay: 0.12s; }
-    .hero-copy > :nth-child(3) { animation-delay: 0.24s; }
-    .hero-copy > :nth-child(4) { animation-delay: 0.36s; }
+    .hero-copy > * { opacity: 0; animation: rise 0.6s var(--ease) forwards; }
+    .hero-copy > :nth-child(2) { animation-delay: 0.05s; }
+    .hero-copy > :nth-child(3) { animation-delay: 0.1s; }
+    .hero-copy > :nth-child(4) { animation-delay: 0.15s; }
     @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
     /* three small arrows at the foot of the first screen: there is more below */
     .more { position: absolute; left: 50%; bottom: 14px; z-index: 6; translate: -50% 0; display: grid; place-items: center; width: 84px; height: 84px; border-radius: 50%;
       background: radial-gradient(closest-side, rgba(244, 244, 241, 0.97) 60%, rgba(244, 244, 241, 0)); color: var(--violet); }
-    .more span { display: block; opacity: 0; animation: rise 0.9s 1.1s var(--ease) forwards; }
+    .more span { display: block; opacity: 0; animation: rise 0.6s 0.6s var(--ease) forwards; }
     .more svg { display: block; width: 24px; height: 34px; }
     .more path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: 0.3; animation: descend 1.9s ease-in-out infinite; }
     .more path:nth-child(2) { animation-delay: 0.22s; }
@@ -147,7 +147,8 @@
     .t.ppt { background: var(--amber-soft); color: var(--amber); } .t.doc { background: #e1edfa; color: #1f5fa8; }
     .t.nb { background: var(--violet-soft); color: var(--violet); } .t.log { background: var(--sunk); color: var(--ink-2); }
     @keyframes settle { from { opacity: 0; translate: 0 18px; } to { opacity: var(--o, 0.92); translate: 0 0; } }
-    .paper::after { content: ""; position: absolute; left: 50%; top: 50%; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; background: #9b95c9; opacity: 0; }
+    .paper > * { opacity: var(--ink, 1); }
+    .paper::after { content: ""; position: absolute; left: 50%; top: 50%; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; background: #9b95c9; opacity: var(--dot, 0); }
 
     /* ---------- the story: memory stays on the left, one stage at a time on the right ---------- */
     .story { position: relative; display: grid; grid-template-columns: minmax(300px, 5fr) 7fr; grid-template-rows: auto auto; column-gap: clamp(24px, 4vw, 64px); max-width: 1280px; margin: 0 auto; padding-inline: 32px; }
@@ -458,65 +459,19 @@
       .faq summary { font-size: 18px; }
     }
 
-    /* ---------- the moment the memory is born: gather, the wide map, the fold. Scrubbed by scroll, so it reverses.
-       The canvas draws the documents and the map; this CSS moves the hero's twelve records, places the statement,
-       and brings the card in. Without support, or with reduced motion, the memory simply rests in its card. */
-    @keyframes leave { to { opacity: 0; translate: 0 -40px; } }
-    @keyframes appear { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes ink { 0%, 68% { opacity: 1; } 78%, 100% { opacity: 0; } }
-    @keyframes dot { 0%, 72% { opacity: 0; } 84%, 100% { opacity: 1; } }
-    @keyframes nodeIn { from { opacity: 0; scale: 0.15; translate: var(--fx, 0px) var(--fy, 0px); } to { opacity: 1; scale: 1; translate: 0 0; } }
-    @keyframes edgeIn { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-    @keyframes edgeFade { from { opacity: 0; } }
-    @supports ((animation-timeline: view()) and (animation-range: entry)) {
-      @media (prefers-reduced-motion: no-preference) and (min-width: 900px) {
-        body { timeline-scope: --intro; }
-        .hero { view-timeline: --hero block; overflow-x: clip; overflow-y: visible; }
-        .hero-copy { animation: leave linear both; animation-timeline: --hero; animation-range: exit 0% exit 18%; }
-        .more { animation: appear linear both reverse; animation-timeline: --hero; animation-range: exit 0% exit 9%; }
-        /* 1. GATHER: the records in front of the hero do not leave with the page; they sink a little as you scroll down,
-           and each flies to its own place in the map */
-        .papers { animation: sink linear both; animation-timeline: --hero; animation-range: exit 0% exit 100%; }
-        @keyframes sink { to { translate: 0 108vh; } }
-        .paper {
-          --cx: calc(var(--x) * var(--hw, 1440px) / 100 + 75px);
-          --cy: calc(var(--y) * var(--hh, 828px) / 100 + 36px);
-          --range: exit calc(21% + var(--d) * 18%) exit calc(60% + var(--d) * 32%);
-          animation: settle 1.4s var(--ease) forwards, pour linear both;
-          animation-delay: calc(var(--d) * 1s), 0s;
-          animation-timeline: auto, --hero;
-          animation-range: normal, var(--range);
-        }
-        .paper > * { animation: ink linear both; animation-timeline: --hero; animation-range: var(--range); }
-        .paper::after { animation: dot linear both; animation-timeline: --hero; animation-range: var(--range); }
-        /* a record stays a crisp white card for most of the way, then is a dot, and the map takes it from there */
-        @keyframes pour {
-          10% { opacity: 1; scale: 1; filter: none; }
-          66% { opacity: 1; background-color: #fff; border-color: var(--line); filter: none; }
-          80% { background-color: rgba(255, 255, 255, 0); border-color: transparent; box-shadow: none; }
-          92% { opacity: 1; }
-          100% { translate: calc(var(--mx, 50vw) - var(--cx)) calc(var(--my, 120vh) - var(--cy)); rotate: 0deg; scale: 0.06; opacity: 0;
-                 background-color: rgba(255, 255, 255, 0); border-color: transparent; box-shadow: none; filter: none; }
-        }
-
-        /* 2. THE WIDE MAP: the memory fills the screen, with its statement in the middle */
-        .intro { grid-column: 1 / -1; height: 170vh; min-height: 0; padding: 0; display: block; view-timeline: --intro block; position: relative; z-index: 6; pointer-events: none; }
-        .intro-copy {
-          position: sticky; top: var(--copy-top, 36vh); max-width: 620px; margin: 0 auto; text-align: center; pointer-events: auto;
-          animation: introCopy linear both; animation-timeline: --intro; animation-range: cover 28% cover 52%;
-        }
-        @keyframes introCopy { 0% { opacity: 0; translate: 0 14px; } 22%, 80% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 -14px; } }
-        .intro-copy .eyebrow { margin-bottom: 10px; }
-        .intro h2 { font-size: clamp(30px, 2.9vw, 42px); margin-bottom: 10px; }
-        .intro-copy > p:not(.eyebrow) { margin: 0 auto; max-width: 620px; }
-
-        /* 3. THE FOLD: the map draws into its place on the left, and its card appears round it */
-        .memory { animation: appear linear both; animation-timeline: --intro; animation-range: cover 56% cover 66%; }
-        /* the lab's words wait until the map has folded out of their way */
-        #lab .pin { animation: appear linear both; animation-timeline: --intro; animation-range: cover 60% cover 70%; }
-        .chapters { margin-top: var(--pull, 0px); }
-      }
-
+    /* ---------- the moment the memory is born: gather, the wide map, the fold. The script moves all of it with the
+       scroll (the hero's words leaving, its twelve records flying to their places, the statement, the lab's words
+       arriving), so every browser shows the same thing. This CSS only lays the wide map out. With reduced motion, on a
+       phone or without the script, the memory simply rests in its place. */
+    @media (prefers-reduced-motion: no-preference) and (min-width: 900px) {
+      .js .hero { overflow-x: clip; overflow-y: visible; }
+      .js .paper { animation: none; opacity: 0; }
+      .js .intro { grid-column: 1 / -1; height: 170vh; min-height: 0; padding: 0; display: block; position: relative; z-index: 6; pointer-events: none; }
+      .js .intro-copy { position: sticky; top: var(--copy-top, 36vh); max-width: 620px; margin: 0 auto; text-align: center; pointer-events: auto; opacity: 0; }
+      .js .intro-copy .eyebrow { margin-bottom: 10px; }
+      .js .intro h2 { font-size: clamp(30px, 2.9vw, 42px); margin-bottom: 10px; }
+      .js .intro-copy > p:not(.eyebrow) { margin: 0 auto; max-width: 620px; }
+      .js .chapters { margin-top: var(--pull, 0px); }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -956,7 +911,7 @@
       const hero = document.querySelector(".hero"), heroCopy = hero.querySelector(".hero-copy"), papers = document.querySelector(".papers");
       const memory = document.querySelector(".memory"), story = document.querySelector(".story");
       const intro = document.querySelector(".intro"), copy = document.querySelector(".intro-copy");
-      const docking = () => wide.matches && !still && CSS.supports("animation-timeline: view()");
+      const docking = () => wide.matches && !still;
       function dockProgress() { const r = intro.getBoundingClientRect(); return (innerHeight - r.top) / (r.height + innerHeight); }
       const clamp = (v) => Math.max(0, Math.min(1, v));
       const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
@@ -1001,6 +956,9 @@
       const PAPER_NODE = ["report", "notebook", "qc", "review", "maint", "bench", gOf("rnd", 0), gOf("pilot", 0), gOf("rnd", 1), gOf("rnd", 2), gOf("prod", 0), gOf("pilot", 1)];
       const paperD = {};
       paperEls.forEach((p, i) => { if (PAPER_NODE[i]) paperD[PAPER_NODE[i]] = parseFloat(p.style.getPropertyValue("--d")) || 0.3; });
+      const num = (el, name, d) => { const v = parseFloat(el.style.getPropertyValue(name)); return Number.isFinite(v) ? v : d; };
+      const PAPERS = paperEls.map((el, i) => ({ el, id: PAPER_NODE[i], x: num(el, "--x", 0), y: num(el, "--y", 0), d: num(el, "--d", 0.3), r: num(el, "--r", 0), o: num(el, "--o", 0.92),
+        base: el.classList.contains("far") ? 0.82 : el.classList.contains("near") ? 1.08 : 1 }));
 
       // the hundreds behind them are drawn: small cards at different depths, each on its way to one record or one point
       const BADGE = ["#f3c0b7", "#aedbc9", "#f0d792", "#b3cff0", "#c9c1ee", "#d5d4cb"];
@@ -1179,7 +1137,7 @@
         const hr = hero.getBoundingClientRect(), wr = web.getBoundingClientRect(), dock = docking(), dp = dock ? dockProgress() : 1;
         e = still ? 1 : dock ? clamp(1 - hr.bottom / H) : clamp((H * 0.95 - wr.top) / (H * 0.75));
         L = clamp((e - 0.8) / 0.19);
-        w = dock ? ease(clamp((dp - 0.46) / 0.18)) : 1;
+        w = dock ? ease(clamp((dp - 0.45) / 0.21)) : 1;
         const sx = (VW * 0.47) / 188, sy = (H * 0.44) / 140;
         S = { VW, H, hr, wr, dock, dp, sx, sy, zs: Math.min(sx, sy), bs: wr.width / 400, wcx: VW / 2, wcy: H / 2,
           bcx: wr.left + wr.width / 2, bcy: wr.top + wr.height / 2, pa: Math.min(VW * 0.27, 400), pb: copy.offsetHeight / 2 + 64 };
@@ -1199,6 +1157,9 @@
         for (const tm of TEAM_EL) tm.at = nodeTarget(tm);
         ctx.clearRect(0, 0, VW, H);
         busy = leaning;
+        hr0 = hr;
+        const xp = dock ? clamp(-hr.top / hr.height) : 0; // how far the hero has left by the top of the screen
+        driveDom(now, dock, dp, xp);
         // the first screen is lit from the middle: the page's own colour there, violet toward the edges. It goes as the hero does.
         const vg = clamp((hr.bottom / H - 0.2) / 0.6);
         if (vg > 0) {
@@ -1216,7 +1177,7 @@
         if (!heroOn && !mapOn) { for (const k in proj) delete proj[k]; syncLayer(); return; }
 
         // 1. every drawn document: where it is between its place behind the hero and its place in the map
-        const load = still ? 1 : (now - t0) / 900;
+        const load = still ? 1 : (now - t0) / 500;
         if (load < 1.9) busy = true;
         for (const c of CARDS) {
           c.t = still ? 1 : tOf(c);
@@ -1337,6 +1298,56 @@
         syncLayer();
         place();
       }
+      // ---- What the scroll moves in the page itself. It is set here, frame by frame, from the same numbers the canvas
+      // uses: no browser's own scroll-linked animation is involved, so Safari and Chrome show the same thing.
+      const sm = (x, a, b) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+      const moreEl = hero.querySelector(".more"), labPin = document.querySelector("#lab .pin");
+      let driven = null;
+      function driveDom(now, dock, dp, xp) {
+        if (dock !== driven) {
+          driven = dock;
+          if (!dock) {
+            for (const el of [heroCopy, moreEl, copy, labPin]) for (const k of ["opacity", "translate", "visibility"]) el.style[k] = "";
+            for (const P of PAPERS) P.el.removeAttribute("data-driven"), ["opacity", "translate", "rotate", "scale", "visibility", "filter", "backgroundColor", "borderColor", "boxShadow"].forEach((k) => (P.el.style[k] = ""));
+          }
+        }
+        if (!dock) return;
+        // the hero's words leave, and the arrows with them
+        const k = clamp(xp / 0.18);
+        heroCopy.style.opacity = (1 - k).toFixed(3); heroCopy.style.translate = `0 ${(-40 * k).toFixed(1)}px`; heroCopy.style.visibility = k >= 1 ? "hidden" : "";
+        const mo = 1 - clamp(xp / 0.09);
+        moreEl.style.opacity = mo.toFixed(3); moreEl.style.visibility = mo <= 0 ? "hidden" : "";
+        // the statement of the wide map: in once the map is there, and wholly gone before the map starts to fold
+        const cin = sm(dp, 0.26, 0.32), cout = sm(dp, 0.395, 0.45), co = cin * (1 - cout);
+        copy.style.opacity = co.toFixed(3); copy.style.translate = `0 ${(14 * (1 - cin) - 14 * cout).toFixed(1)}px`; copy.style.visibility = co <= 0.001 ? "hidden" : "";
+        // the lab's words arrive as the map comes to rest on the left
+        const lp = sm(dp, 0.585, 0.69);
+        labPin.style.opacity = lp.toFixed(3); labPin.style.translate = `0 ${(20 * (1 - lp)).toFixed(1)}px`; labPin.style.visibility = lp <= 0.001 ? "hidden" : "";
+        // the hero's twelve records: they come in, sink a little as the page scrolls, and each flies to its record in the map
+        for (const P of PAPERS) {
+          const t = clamp((xp - (0.21 + 0.18 * P.d)) / (0.39 + 0.14 * P.d)), st = P.el.style;
+          if (t >= 1 || hr0.bottom < -600) { st.visibility = "hidden"; continue; }
+          P.w ||= P.el.offsetWidth; P.h ||= P.el.offsetHeight;
+          const ent = ease(clamp((now - t0) / 600 - P.d * 0.6));
+          const nx = hr0.left + (P.x * hr0.width) / 100 + P.w / 2, ny = hr0.top + (P.y * hr0.height) / 100 + P.h / 2;
+          let x = nx, y = ny + scrollY * 1.1 + 18 * (1 - ent);
+          if (t > 0 && P.id) { const T = nodeTarget(N[P.id]), q = t * t * (3 - 2 * t); x = mix(x, T[0], q); y = mix(y, T[1], q); }
+          const a = 1 - clamp((t - 0.66) / 0.14);
+          st.visibility = "";
+          st.translate = `${(x - nx).toFixed(1)}px ${(y - ny).toFixed(1)}px`;
+          st.rotate = `${(P.r * (1 - t)).toFixed(2)}deg`;
+          st.scale = (t < 0.1 ? mix(P.base, 1, t / 0.1) : mix(1, 0.06, (t - 0.1) / 0.9)).toFixed(3);
+          st.opacity = (ent * (t < 0.1 ? mix(P.o, 1, t / 0.1) : t > 0.92 ? 1 - (t - 0.92) / 0.08 : 1)).toFixed(3);
+          st.filter = t > 0 ? "none" : "";
+          st.backgroundColor = a < 1 ? `rgba(255, 255, 255, ${a.toFixed(3)})` : "";
+          st.borderColor = a < 1 ? `rgba(225, 224, 217, ${a.toFixed(3)})` : "";
+          st.boxShadow = a < 1 ? "none" : "";
+          st.setProperty("--ink", (1 - clamp((t - 0.68) / 0.1)).toFixed(3));
+          st.setProperty("--dot", clamp((t - 0.72) / 0.12).toFixed(3));
+          if (ent < 1) busy = true;
+        }
+      }
+      let hr0 = null;
       // tags, stage names and the chip are elements laid over the canvas; they follow their records
       function syncLayer() {
         const mapOn = S && e > 0 && L > 0;
@@ -1718,20 +1729,6 @@
         const naturalGap = chapters.offsetTop - pull - (intro.offsetTop + intro.offsetHeight);
         const introBottomAtRest = H - DOCK_END * (intro.offsetHeight + H) + intro.offsetHeight;
         root.setProperty("--pull", (nt + h / 2 - copyLen / 2 - off - introBottomAtRest - naturalGap).toFixed(1) + "px");
-        // each record in front of the hero flies to its own place in the wide map
-        const hr = hero.getBoundingClientRect();
-        const sx = (VW * 0.47) / 188, sy = (H * 0.44) / 140, zs = Math.min(sx, sy), pa = Math.min(VW * 0.27, 400), pb = copy.offsetHeight / 2 + 64;
-        const y0 = view.yaw + 0.1, c1 = Math.cos(y0), s1 = Math.sin(y0), c2 = Math.cos(view.pitch), s2 = Math.sin(view.pitch);
-        papers.style.setProperty("--hw", hero.offsetWidth + "px"); papers.style.setProperty("--hh", hero.offsetHeight + "px");
-        paperEls.forEach((p, i) => {
-          const id = PAPER_NODE[i];
-          if (!id) return;
-          const f = N[id].f, [x, y] = pushed((f[0] - 200) * sx, (f[1] - 170) * sy, pa, pb), z = f[2] * zs;
-          const x1 = x * c1 + z * s1, z1 = -x * s1 + z * c1, y1 = y * c2 - z1 * s2, k = FW / (FW - (y * s2 + z1 * c2));
-          // where the map's record is on the page when this one arrives (the map stays put on screen), less how far the records have sunk by then
-          const end = 0.6 + 0.32 * (paperD[id] || 0), base = hr.height - H + end * H * (1 - 1.08) + H / 2;
-          p.style.setProperty("--mx", (VW / 2 + x1 * k - hr.left).toFixed(1) + "px"); p.style.setProperty("--my", (base + y1 * k).toFixed(1) + "px");
-        });
         requestRender();
       }
       measure();
