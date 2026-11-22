@@ -389,16 +389,6 @@
     .block-head h2 { font-size: clamp(32px, 3.8vw, 50px); line-height: 1.06; margin-bottom: 14px; }
     .block-head p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: 19px; color: var(--ink-2); margin: 0; }
 
-    .inds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-    .ind { position: relative; margin: 0; border-radius: 20px; overflow: hidden; background: var(--ink); aspect-ratio: 4 / 5; box-shadow: var(--shadow); }
-    .ind img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 1.2s var(--ease); }
-    .ind:hover img { scale: 1.04; }
-    .ind img { filter: saturate(0.88); }
-    .ind::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(18, 14, 48, 0.84) 0%, rgba(40, 31, 100, 0.3) 44%, rgba(74, 58, 167, 0.12) 100%); }
-    .ind-text { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 24px; color: var(--white); }
-    .ind h3 { font-size: clamp(24px, 2.2vw, 30px); line-height: 1.1; margin-bottom: 6px; }
-    .ind p { margin: 0; font-size: 15px; color: rgba(255, 255, 255, 0.82); }
-
     .sum { text-align: center; padding-block: clamp(110px, 22vh, 240px) clamp(10px, 4vh, 48px); }
     .sum h2 { font-size: clamp(36px, 5.6vw, 76px); line-height: 1.03; letter-spacing: -0.035em; max-width: 1040px; margin: 0 auto; text-wrap: balance; }
     .film-block { text-align: center; }
@@ -459,8 +449,6 @@
       .intro { padding-top: 40px; padding-bottom: 8px; }
       .pilot-body { grid-template-columns: minmax(0, 1fr); }
       .pilot-body .msg.you { margin-left: 0; }
-      .inds { grid-template-columns: 1fr; }
-      .ind { aspect-ratio: 4 / 3; }
     }
     @media (max-width: 560px) {
       .wrap { padding-inline: 16px; }
@@ -540,7 +528,7 @@
       <a class="brand" href="/" aria-label="Fermata"><svg width="28" height="28" aria-hidden="true"><use href="#mark"/></svg>Fermata</a>
       <nav class="nav" aria-label="Main">
         <a class="hide-xs" href="#story">How it works</a>
-        <a class="hide-s" href="#industries">Industries</a>
+        <a class="hide-s" href="/industries/">Industries</a>
         <a class="hide-s watch" href="#how-it-works">Film</a>
         <a class="hide-s" href="/guide/">User guide</a>
         <a class="hide-xs" href="https://web.getfermata.app">Try demo</a>
@@ -752,30 +740,7 @@
       </div>
     </section>
 
-    <!-- 6. Industries -->
-    <section class="block wrap" id="industries" aria-labelledby="ind-title">
-      <div class="block-head">
-        <p class="eyebrow">Industries</p>
-        <h2 id="ind-title">Built for industrial R&amp;D.</h2>
-        <p>Each industry keeps its own records. The way from a result to a decision is the same.</p>
-      </div>
-      <div class="inds">
-        <article class="ind">
-          <img src="assets/industries/chemicals.jpg" alt="A refinery's storage tanks and columns under a golden evening sky" width="1400" height="1050" loading="lazy" decoding="async">
-          <div class="ind-text"><h3>Chemicals and process</h3><p>Catalysts, formulations and scale-up.</p></div>
-        </article>
-        <article class="ind">
-          <img src="assets/industries/carbon-capture.jpg" alt="Chimneys and cooling towers releasing white plumes above a green forest" width="1400" height="1050" loading="lazy" decoding="async">
-          <div class="ind-text"><h3>Carbon capture and CO₂ conversion</h3><p>Sorbents, membranes and electrolysers.</p></div>
-        </article>
-        <article class="ind">
-          <img src="assets/industries/batteries.jpg" alt="An automated production line with robots and cable trays in a bright factory" width="1400" height="1050" loading="lazy" decoding="async">
-          <div class="ind-text"><h3>Batteries and energy materials</h3><p>Electrodes, coatings and cells.</p></div>
-        </article>
-      </div>
-    </section>
-
-    <!-- 7. Close -->
+    <!-- 6. Close -->
     <section class="close wrap" id="contact">
       <h2>Fermata works around your workflow. You don’t work around it.</h2>
       <p>For macOS. Questions? Write to us.</p>
@@ -791,7 +756,7 @@
       <a class="brand" href="/" aria-label="Fermata"><svg width="22" height="22" aria-hidden="true"><use href="#mark"/></svg>Fermata</a>
       <nav aria-label="Footer">
         <a href="#story">How it works</a>
-        <a href="#industries">Industries</a>
+        <a href="/industries/">Industries</a>
         <a href="/guide/">User guide</a>
         <a href="https://web.getfermata.app">Try demo</a>
         <a href="mailto:hi@getfermata.app">Contact</a>
