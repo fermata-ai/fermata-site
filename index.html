@@ -96,7 +96,7 @@
     .hero-copy { position: relative; z-index: 6; text-align: center; max-width: 860px; margin: 0 auto; padding-inline: 24px; }
     h1 { font-size: clamp(40px, 6.2vw, 80px); line-height: 1.02; letter-spacing: -0.035em; margin-bottom: 22px; }
     .lede { font-family: var(--serif); font-weight: 300; font-size: clamp(18px, 2vw, 22px); line-height: 1.45; color: var(--ink-2); max-width: 640px; margin: 0 auto 32px; }
-    .hero-copy > * { opacity: 0; animation: rise 0.6s var(--ease) forwards; }
+    .hero-copy > * { animation: rise 0.6s var(--ease) backwards; }
     .hero-copy > :nth-child(2) { animation-delay: 0.05s; }
     .hero-copy > :nth-child(3) { animation-delay: 0.1s; }
     .hero-copy > :nth-child(4) { animation-delay: 0.15s; }
@@ -105,7 +105,7 @@
     /* three small arrows at the foot of the first screen: there is more below */
     .more { position: absolute; left: 50%; bottom: 14px; z-index: 6; translate: -50% 0; display: grid; place-items: center; width: 84px; height: 84px; border-radius: 50%;
       background: radial-gradient(closest-side, rgba(244, 244, 241, 0.97) 60%, rgba(244, 244, 241, 0)); color: var(--violet); }
-    .more span { display: block; opacity: 0; animation: rise 0.6s 0.6s var(--ease) forwards; }
+    .more span { display: block; animation: rise 0.6s 0.6s var(--ease) backwards; }
     .more svg { display: block; width: 24px; height: 34px; }
     .more path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: 0.3; animation: descend 1.9s ease-in-out infinite; }
     .more path:nth-child(2) { animation-delay: 0.22s; }
@@ -114,7 +114,12 @@
     @media (prefers-reduced-motion: reduce) { .more span { animation: none; opacity: 1; } .more path { animation: none; opacity: 0.55; } }
     .papers { position: absolute; inset: 0; z-index: 6; pointer-events: none; }
     /* the canvas that draws the documents behind the hero and the memory they become, and the labels laid over it */
-    .space { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 5; pointer-events: none; }
+    .space { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
+    /* the first screen's violet edges, and the soft clearing behind the hero's words: drawn once by the browser and
+       faded from script, never redrawn on the canvas each frame */
+    .vignette, .clearing { position: fixed; z-index: 5; pointer-events: none; opacity: 0; visibility: hidden; }
+    .vignette { inset: 0; background: radial-gradient(70.76% 70.76% at 50% 50%, rgba(74, 58, 167, 0) 40.98%, rgba(74, 58, 167, 0.1) 67.54%, rgba(74, 58, 167, 0.4) 100%); }
+    .clearing { left: 0; top: 0; background: radial-gradient(closest-side, rgba(244, 244, 241, 0.95), rgba(244, 244, 241, 0.9) 58%, rgba(244, 244, 241, 0)); }
     .space-tags { position: fixed; inset: 0; z-index: 5; pointer-events: none; overflow: clip; }
     .space-tags > * { position: absolute; left: 0; top: 0; will-change: transform; }
     body.map-wide { cursor: grab; }
@@ -147,7 +152,7 @@
     .t.ppt { background: var(--amber-soft); color: var(--amber); } .t.doc { background: #e1edfa; color: #1f5fa8; }
     .t.nb { background: var(--violet-soft); color: var(--violet); } .t.log { background: var(--sunk); color: var(--ink-2); }
     @keyframes settle { from { opacity: 0; translate: 0 18px; } to { opacity: var(--o, 0.92); translate: 0 0; } }
-    .paper > * { opacity: var(--ink, 1); }
+    .paper > * { opacity: var(--paper-ink, 1); }
     .paper::after { content: ""; position: absolute; left: 50%; top: 50%; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; background: #9b95c9; opacity: var(--dot, 0); }
 
     /* ---------- the story: memory stays on the left, one stage at a time on the right ---------- */
@@ -155,7 +160,7 @@
     /* the stage bar: R&D, pilot, production. A full-width band fixed at the top while a stage is on screen */
     :root { --bar: 60px; }
     .stages { position: fixed; top: 0; left: 0; right: 0; z-index: 8; height: var(--bar); display: grid; place-items: center;
-      background: rgba(244, 244, 241, 0.86); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line);
+      background: rgba(244, 244, 241, 0.86); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line);
       opacity: 0; translate: 0 -100%; visibility: hidden; transition: opacity 0.45s var(--ease), translate 0.45s var(--ease), visibility 0s 0.45s; }
     .stages.on { opacity: 1; translate: 0 0; visibility: visible; transition: opacity 0.45s var(--ease), translate 0.45s var(--ease); }
     .stages .pill { display: flex; align-items: center; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
@@ -768,7 +773,9 @@
     <a href="#team" data-key="team"><svg aria-hidden="true"><use href="#i-prod"/></svg>Production</a>
   </div></nav>
   <svg class="threads" aria-hidden="true"></svg>
+  <div class="vignette" aria-hidden="true"></div>
   <canvas class="space" aria-hidden="true"></canvas>
+  <div class="clearing" aria-hidden="true"></div>
   <div class="space-tags" aria-hidden="true"></div>
 
   <script>
@@ -908,6 +915,8 @@
       const formed = (id) => NODES[id][2] === "bg" || NODES[id][2] === "doc";
       const canvas = document.querySelector(".space"), layer = document.querySelector(".space-tags");
       const ctx = canvas.getContext("2d");
+      // a browser that will not give a drawing surface gets the page as it is without this script: nothing hidden, nothing moving
+      if (!ctx) { document.documentElement.classList.remove("js"); return; }
       const hero = document.querySelector(".hero"), heroCopy = hero.querySelector(".hero-copy"), papers = document.querySelector(".papers");
       const memory = document.querySelector(".memory"), story = document.querySelector(".story");
       const intro = document.querySelector(".intro"), copy = document.querySelector(".intro-copy");
@@ -1105,11 +1114,19 @@
 
       // ---- drawing
       let dpr = 1;
+      // The bitmap is never larger than a 4K screen's (8.3 million pixels): at 2560×1440 and dpr 2 that is 1.5 pixels
+      // per CSS pixel instead of 2. Every frame is cleared, drawn, uploaded and composited at this size, so it sets the
+      // cost of the hero and the wide map on a big monitor. Laptops (1440×900 at dpr 2 = 5.2 million) keep full resolution.
+      const MAXPX = 3840 * 2160, vw = () => document.documentElement.clientWidth || innerWidth;
+      let box = null; // what the last frame drew, in CSS pixels; null means the whole canvas
       function sizeCanvas() {
-        const k = Math.min(2, devicePixelRatio || 1), W = innerWidth, H = innerHeight;
-        if (canvas.width !== Math.round(W * k) || canvas.height !== Math.round(H * k)) { canvas.width = Math.round(W * k); canvas.height = Math.round(H * k); }
+        const W = vw(), H = innerHeight, k = Math.min(2, devicePixelRatio || 1, Math.max(1, Math.sqrt(MAXPX / (W * H))));
+        if (canvas.width !== Math.round(W * k) || canvas.height !== Math.round(H * k)) { canvas.width = Math.round(W * k); canvas.height = Math.round(H * k); box = null; }
         dpr = k; ctx.setTransform(k, 0, 0, k, 0, 0);
       }
+      // the drawn area, grown as things are drawn while only the docked map is on the canvas
+      let bb = null;
+      const grow = (x, y, r) => { if (bb) { if (x - r < bb[0]) bb[0] = x - r; if (y - r < bb[1]) bb[1] = y - r; if (x + r > bb[2]) bb[2] = x + r; if (y + r > bb[3]) bb[3] = y + r; } };
       const rr = (x, y, ww, hh, r) => { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, ww, hh, r); else ctx.rect(x, y, ww, hh); };
       function drawCard(c, x, y, t, fade) {
         const alpha = (0.26 + 0.62 * c.zc) * (1 - clamp((t - 0.5) / 0.35)) * fade;
@@ -1121,9 +1138,11 @@
         ctx.fillStyle = "#ffffff"; rr(-38, -28, 76, 56, 5); ctx.fill();
         ctx.strokeStyle = "#dedcd3"; ctx.lineWidth = 1 / s; ctx.stroke();
         ctx.fillStyle = BADGE[c.type]; rr(-31, -21, 20 + (c.type % 3) * 5, 8, 2.5); ctx.fill();
-        ctx.fillStyle = "#e9e8e2"; ctx.fillRect(-31, -6, 62, 4); ctx.fillRect(-31, 3, 46 + (c.type % 2) * 10, 4); ctx.fillRect(-31, 12, 54 - (c.type % 3) * 8, 4);
+        // the three grey lines in one fill: they never overlap, so this is the same picture in one call instead of three
+        ctx.fillStyle = "#e9e8e2"; ctx.beginPath(); ctx.rect(-31, -6, 62, 4); ctx.rect(-31, 3, 46 + (c.type % 2) * 10, 4); ctx.rect(-31, 12, 54 - (c.type % 3) * 8, 4); ctx.fill();
         ctx.globalAlpha = 1;
       }
+      const dustGroups = new Map();
       const clearing = (r, op, kx, ky) => {
         if (op < 0.03 || r.bottom < 0 || r.top > S.H) return;
         ctx.save(); ctx.translate(r.left + r.width / 2, r.top + r.height / 2); ctx.scale(r.width * kx, r.height * ky);
@@ -1133,14 +1152,17 @@
       };
       function render() {
         sizeCanvas();
-        const now = performance.now(), VW = innerWidth, H = innerHeight;
+        const now = performance.now(), VW = vw(), H = innerHeight;
+        // every read of the page's layout comes first, before this frame writes any style (no forced layouts)
         const hr = hero.getBoundingClientRect(), wr = web.getBoundingClientRect(), dock = docking(), dp = dock ? dockProgress() : 1;
+        const hcr = heroCopy.getBoundingClientRect(), ccr = copy.getBoundingClientRect(), copyH = copy.offsetHeight, sy0 = scrollYaw();
+        measureThreads();
         e = still ? 1 : dock ? clamp(1 - hr.bottom / H) : clamp((H * 0.95 - wr.top) / (H * 0.75));
         L = clamp((e - 0.8) / 0.19);
         w = dock ? ease(clamp((dp - 0.45) / 0.21)) : 1;
         const sx = (VW * 0.47) / 188, sy = (H * 0.44) / 140;
         S = { VW, H, hr, wr, dock, dp, sx, sy, zs: Math.min(sx, sy), bs: wr.width / 400, wcx: VW / 2, wcy: H / 2,
-          bcx: wr.left + wr.width / 2, bcy: wr.top + wr.height / 2, pa: Math.min(VW * 0.27, 400), pb: copy.offsetHeight / 2 + 64 };
+          bcx: wr.left + wr.width / 2, bcy: wr.top + wr.height / 2, pa: Math.min(VW * 0.27, 400), pb: copyH / 2 + 64 };
         // the map is already turning while it gathers: the swing starts as the first records land, not once it is complete
         const wideNow = dock && L >= 1 && w < 0.5, swayOn = dock && e > 0.32 && w < 0.5, idle = swayOn && !drag && now - lastMove > 1500;
         const dt = Math.min(0.05, (now - lastFrame) / 1000); lastFrame = now;
@@ -1151,34 +1173,35 @@
         view.hy += (view.ty - view.hy) * 0.09; view.hp += (view.tp - view.hp) * 0.09;
         const leaning = Math.abs(view.ty - view.hy) > 0.002 || Math.abs(view.tp - view.hp) > 0.002;
         // a spin given to the wide map unwinds as it folds into its card, so the card always starts the right way round
-        const yaw = view.yaw + view.wy * (1 - w) + view.hy + swayYaw + (1 - ease(L)) * 0.3 + scrollYaw(), pitch = view.pitch + view.wp * (1 - w) + view.hp + swayPitch;
+        const yaw = view.yaw + view.wy * (1 - w) + view.hy + swayYaw + (1 - ease(L)) * 0.3 + sy0, pitch = view.pitch + view.wp * (1 - w) + view.hp + swayPitch;
         cyw = Math.cos(yaw); syw = Math.sin(yaw); cp = Math.cos(pitch); sp = Math.sin(pitch);
         for (const hub of HUBS) hub.at = place3(hub.uv[0] * 188 * sx, hub.uv[1] * 140 * sy, 0, ...hub.corner);
         for (const tm of TEAM_EL) tm.at = nodeTarget(tm);
-        ctx.clearRect(0, 0, VW, H);
+        if (!box) ctx.clearRect(0, 0, VW, H);
+        else if (box[2] > box[0]) ctx.clearRect(Math.floor(box[0]) - 2, Math.floor(box[1]) - 2, Math.ceil(box[2] - box[0]) + 4, Math.ceil(box[3] - box[1]) + 4);
         busy = leaning;
         hr0 = hr;
         const xp = dock ? clamp(-hr.top / hr.height) : 0; // how far the hero has left by the top of the screen
         driveDom(now, dock, dp, xp);
         // the first screen is lit from the middle: the page's own colour there, violet toward the edges. It goes as the hero does.
         const vg = clamp((hr.bottom / H - 0.2) / 0.6);
-        if (vg > 0) {
-          ctx.save(); ctx.translate(VW / 2, H / 2); ctx.scale(VW * 0.58, H * 0.58);
-          const g = ctx.createRadialGradient(0, 0, 0.5, 0, 0, 1.22);
-          g.addColorStop(0, "rgba(74, 58, 167, 0)"); g.addColorStop(0.45, `rgba(74, 58, 167, ${0.1 * vg})`); g.addColorStop(1, `rgba(74, 58, 167, ${0.4 * vg})`);
-          ctx.fillStyle = g; ctx.fillRect(-1, -1, 2, 2); ctx.restore();
-        }
+        layerTo(vignetteEl, vg, null);
+        // the clearing behind the hero's words, where they are this frame
+        const hy = hcr.top + heroTY - hcr0, hop = hcr.bottom + heroTY - hcr0 < 0 || hy > H ? 0 : heroOp;
+        layerTo(clearingEl, hr.bottom > -40 && hop >= 0.03 ? hop : 0, [hcr.left + hcr.width / 2, hy + hcr.height / 2, hcr.width * 1.2, hcr.height * 1.56]);
         document.body.classList.toggle("map-wide", dock && L > 0.5 && w < 0.5);
         // the pointer carries a soft light over the map; what is inside it wakes up
         const proxR = w < 0.5 ? 190 : 70;
         const ptrOn = ptr.on && e > 0.45 && ((dock && w < 0.5) || (L >= 1 && ptr.x > wr.left && ptr.x < wr.right && ptr.y > wr.top && ptr.y < wr.bottom));
         const proxAt = (x, y) => (ptrOn ? clamp(1 - Math.hypot(x - ptr.x, y - ptr.y) / proxR) ** 2 : 0);
         const heroOn = hr.bottom > -40, mapOn = e > 0 && wr.bottom > -120 && (wr.top < H + 120 || w < 1);
-        if (!heroOn && !mapOn) { for (const k in proj) delete proj[k]; syncLayer(); return; }
+        // while only the docked map is drawn, the next frame clears just the area this one drew
+        bb = !heroOn && e >= 1 && w >= 1 && !still ? [Infinity, Infinity, -Infinity, -Infinity] : null;
+        if (!heroOn && !mapOn) { for (const k in proj) delete proj[k]; box = [0, 0, 0, 0]; syncLayer(); place(false); return; }
 
         // 1. every drawn document: where it is between its place behind the hero and its place in the map
         const load = still ? 1 : (now - t0) / 500;
-        if (load < 1.9) busy = true;
+        if (!still && load < 1.9) busy = true;
         for (const c of CARDS) {
           c.t = still ? 1 : tOf(c);
           if (c.t <= 0 && !still) { [c.x, c.y] = homeOf(c); c.T = null; continue; }
@@ -1190,9 +1213,13 @@
           const g = ctx.createRadialGradient(ptr.x, ptr.y, 0, ptr.x, ptr.y, proxR * 1.15);
           g.addColorStop(0, "rgba(106, 92, 196, 0.16)"); g.addColorStop(0.5, "rgba(106, 92, 196, 0.06)"); g.addColorStop(1, "rgba(106, 92, 196, 0)");
           ctx.fillStyle = g; ctx.beginPath(); ctx.arc(ptr.x, ptr.y, proxR * 1.15, 0, 6.283); ctx.fill();
+          grow(ptr.x, ptr.y, proxR * 1.15);
         }
         if (mapOn) {
           const late = clamp((e - 0.45) / 0.4), P = new Array(DUSTN);
+          // The points all share one colour and differ only in alpha, so the order they are drawn in does not change the
+          // picture. They are gathered by alpha (to 1/256) and each group is filled at once: about 60 fills, not 760.
+          for (const g of dustGroups.values()) g.length = 0;
           for (let i = 0; i < DUSTN; i++) {
             const d = DUST[i], c = d.card;
             let x, y, T, a;
@@ -1201,8 +1228,18 @@
             if (a < 0.02) continue;
             P[i] = [x, y, a];
             const near = clamp(0.5 + T[2] * 0.5), px = proxAt(x, y);
-            ctx.fillStyle = `rgba(74, 58, 167, ${Math.min(0.95, d.a * (0.1 + 0.36 * near) * a * (1 + 2.4 * px)).toFixed(3)})`;
-            ctx.beginPath(); ctx.arc(x, y, (0.45 + 0.95 * near) * T[3] * (1 + 0.7 * px), 0, 6.283); ctx.fill();
+            const al = Math.round(Math.min(0.95, d.a * (0.1 + 0.36 * near) * a * (1 + 2.4 * px)) * 256), rad = (0.45 + 0.95 * near) * T[3] * (1 + 0.7 * px);
+            if (al <= 0) continue;
+            let g = dustGroups.get(al);
+            if (!g) dustGroups.set(al, (g = []));
+            g.push(x, y, rad);
+            grow(x, y, rad + 1);
+          }
+          for (const [al, g] of dustGroups) {
+            if (!g.length) continue;
+            ctx.fillStyle = `rgba(74, 58, 167, ${(al / 256).toFixed(4)})`; ctx.beginPath();
+            for (let j = 0; j < g.length; j += 3) { ctx.moveTo(g[j] + g[j + 2], g[j + 1]); ctx.arc(g[j], g[j + 1], g[j + 2], 0, 6.283); }
+            ctx.fill();
           }
           if (L > 0) {
             ctx.strokeStyle = `rgba(106, 92, 196, ${((0.1 + 0.08 * (1 - w)) * L).toFixed(3)})`; ctx.lineWidth = 0.5 + 0.2 * (1 - w); ctx.beginPath();
@@ -1230,6 +1267,7 @@
             else { p = nodeTarget(n); if (formed(id)) f = id in paperD && dock ? clamp((e - (0.48 + 0.32 * paperD[id])) / 0.12) : clamp((e - 0.5) / 0.3); }
             if (f < 0.02) continue;
             proj[id] = p; fadeOf[id] = f;
+            grow(p[0], p[1], 2);
           }
           if (L > 0) {
             EDGES.forEach(([a, b, dash], n) => {
@@ -1274,18 +1312,20 @@
               const g = (on ? 7.5 : 5.2) * r;
               ctx.globalAlpha = fade * (0.55 + 0.45 * near) * (n.kind === "bg" ? (on ? 0.6 : Math.min(1, Math.max(0, prox - 0.15) * 1.5)) : 1);
               ctx.drawImage(glow[n.kind === "bg" ? "bg" : n.st], x - g, y - g, g * 2, g * 2);
+              grow(x, y, g);
             }
             const [cr, cg, cb] = n.kind === "bg" ? [128 - 44 * prox, 122 - 54 * prox, 165 + 6 * prox] : RGB[n.st];
             ctx.globalAlpha = fade * Math.min(1, (n.kind === "bg" ? 0.35 + 0.55 * near : 0.7 + 0.3 * near) + 0.5 * prox);
             ctx.fillStyle = `rgb(${cr}, ${cg}, ${cb})`;
             ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill();
             if (on) { ctx.globalAlpha = 0.5; ctx.strokeStyle = `rgb(${cr}, ${cg}, ${cb})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, r + 4, 0, 6.283); ctx.stroke(); }
+            grow(x, y, r + 6);
             ctx.globalAlpha = 1;
           }
         }
         // 5. room for the words in front
-        if (heroOn) clearing(heroCopy.getBoundingClientRect(), parseFloat(getComputedStyle(heroCopy).opacity), 0.6, 0.78);
-        if (dock && w < 1 && e > 0.3) clearing(copy.getBoundingClientRect(), parseFloat(getComputedStyle(copy).opacity), 0.72, 0.95);
+        if (dock && w < 1 && e > 0.3) { const d = copyTY - ccr0; clearing({ left: ccr.left, width: ccr.width, height: ccr.height, top: ccr.top + d, bottom: ccr.bottom + d }, copyOp, 0.72, 0.95); }
+        box = bb;
         // now and then, while nobody is touching it, one record shows its chip for a moment
         if (auto.id && (now > auto.until || !idle || hover || pinned || !proj[auto.id])) { auto.id = null; auto.next = now + 900; autoChip.classList.remove("on"); }
         if (!auto.id && idle && L >= 1 && !hover && !pinned && sway.amt > 0.5 && now > auto.next) {
@@ -1296,14 +1336,33 @@
           if (pool.length) { auto.id = auto.last = pool[Math.floor(Math.random() * pool.length)]; auto.until = now + 2600; fillChip(autoChip, auto.id); autoChip.classList.add("on"); }
         }
         syncLayer();
-        place();
+        place(false);
       }
+      // a layer laid over the page: its opacity, and where it sits ([centre x, centre y, width, height]) when it moves
+      const vignetteEl = document.querySelector(".vignette"), clearingEl = document.querySelector(".clearing");
+      const layerTo = (el, o, at) => {
+        const st = el.style, v = o > 0 ? "visible" : "hidden";
+        if (st.visibility !== v) st.visibility = v;
+        if (o <= 0) return;
+        const os = o.toFixed(3);
+        if (st.opacity !== os) st.opacity = os;
+        if (at) {
+          const ws = at[2].toFixed(1) + "px", hs = at[3].toFixed(1) + "px", ts = `translate(${(at[0] - at[2] / 2).toFixed(1)}px, ${(at[1] - at[3] / 2).toFixed(1)}px)`;
+          if (st.width !== ws) st.width = ws;
+          if (st.height !== hs) st.height = hs;
+          if (st.transform !== ts) st.transform = ts;
+        }
+      };
       // ---- What the scroll moves in the page itself. It is set here, frame by frame, from the same numbers the canvas
       // uses: no browser's own scroll-linked animation is involved, so Safari and Chrome show the same thing.
       const sm = (x, a, b) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
       const moreEl = hero.querySelector(".more"), labPin = document.querySelector("#lab .pin");
       let driven = null;
+      // the hero's words and the statement: the opacity and vertical shift driveDom gave them, this frame (heroTY, copyTY)
+      // and when the page was last read (hcr0, ccr0)
+      let heroOp = 1, heroTY = 0, hcr0 = 0, copyOp = 0, copyTY = 0, ccr0 = 0;
       function driveDom(now, dock, dp, xp) {
+        hcr0 = heroTY; ccr0 = copyTY;
         if (dock !== driven) {
           driven = dock;
           if (!dock) {
@@ -1311,14 +1370,16 @@
             for (const P of PAPERS) P.el.removeAttribute("data-driven"), ["opacity", "translate", "rotate", "scale", "visibility", "filter", "backgroundColor", "borderColor", "boxShadow"].forEach((k) => (P.el.style[k] = ""));
           }
         }
-        if (!dock) return;
+        if (!dock) { heroOp = 1; heroTY = 0; copyOp = 0; copyTY = 0; return; }
         // the hero's words leave, and the arrows with them
         const k = clamp(xp / 0.18);
+        heroOp = k >= 1 ? 0 : +(1 - k).toFixed(3); heroTY = +(-40 * k).toFixed(1);
         heroCopy.style.opacity = (1 - k).toFixed(3); heroCopy.style.translate = `0 ${(-40 * k).toFixed(1)}px`; heroCopy.style.visibility = k >= 1 ? "hidden" : "";
         const mo = 1 - clamp(xp / 0.09);
         moreEl.style.opacity = mo.toFixed(3); moreEl.style.visibility = mo <= 0 ? "hidden" : "";
         // the statement of the wide map: in once the map is there, and wholly gone before the map starts to fold
         const cin = sm(dp, 0.26, 0.32), cout = sm(dp, 0.395, 0.45), co = cin * (1 - cout);
+        copyOp = co <= 0.001 ? 0 : +co.toFixed(3); copyTY = +(14 * (1 - cin) - 14 * cout).toFixed(1);
         copy.style.opacity = co.toFixed(3); copy.style.translate = `0 ${(14 * (1 - cin) - 14 * cout).toFixed(1)}px`; copy.style.visibility = co <= 0.001 ? "hidden" : "";
         // the lab's words arrive as the map comes to rest on the left
         const lp = sm(dp, 0.585, 0.69);
@@ -1342,7 +1403,7 @@
           st.backgroundColor = a < 1 ? `rgba(255, 255, 255, ${a.toFixed(3)})` : "";
           st.borderColor = a < 1 ? `rgba(225, 224, 217, ${a.toFixed(3)})` : "";
           st.boxShadow = a < 1 ? "none" : "";
-          st.setProperty("--ink", (1 - clamp((t - 0.68) / 0.1)).toFixed(3));
+          st.setProperty("--paper-ink", (1 - clamp((t - 0.68) / 0.1)).toFixed(3));
           st.setProperty("--dot", clamp((t - 0.72) / 0.12).toFixed(3));
           if (ent < 1) busy = true;
         }
@@ -1368,7 +1429,8 @@
           const p = proj[id], show = lit.has(id) && p && L >= 1 && w > 0.9;
           t.classList.toggle("on", !!show);
           if (!show) continue;
-          const u = (p[0] - S.wr.left) / S.wr.width, tw = t.offsetWidth, th = t.offsetHeight;
+          if (!t._w) { t._w = t.offsetWidth; t._h = t.offsetHeight; }
+          const u = (p[0] - S.wr.left) / S.wr.width, tw = t._w, th = t._h;
           const first = u > 0.62 ? "left" : u < 0.38 ? "right" : t.dataset.side === "left" || t.dataset.side === "right" ? "below" : t.dataset.side;
           const box = (side) => side === "above" ? [p[0] - tw / 2, p[1] - th - 11] : side === "below" ? [p[0] - tw / 2, p[1] + 11] : side === "left" ? [p[0] - tw - 11, p[1] - th / 2] : [p[0] + 11, p[1] - th / 2];
           const clear = ([x, y]) => !taken.some(([x2, y2, w2, h2]) => x < x2 + w2 + 4 && x + tw + 4 > x2 && y < y2 + h2 + 3 && y + th + 3 > y2);
@@ -1381,17 +1443,30 @@
         else if (!chip.hidden) { chip.hidden = true; hover = null; }
       }
       // the documents behind the hero keep drifting while it is on screen; everything else is drawn on demand
-      let rafId = 0, lastNow = performance.now();
+      let rafId = 0, lastNow = performance.now(), lastInput = -1e9, lastDrawn = -1e9, pendingUpdate = false;
       const wantsLoop = () => !still && !paused && S && document.visibilityState === "visible" && ((S.hr.bottom > -40 && e < 1) || S.wideNow || sway.amt > 0.01);
       function loop(now) {
         rafId = 0;
+        // the stage steps first, while the page's layout is still clean from the last frame
+        if (pendingUpdate) { pendingUpdate = false; update(); }
+        // ambient motion alone (the hero's slow drift, the wide map's sway: nothing scrolled, pointed or arriving) is drawn
+        // at 30 frames a second. Nothing in it moves more than a pixel a frame at that rate, and it halves the cost of
+        // the two screens a visitor rests on.
+        const ambient = !busy && S && now - lastInput > 250;
+        if (ambient && now - lastDrawn < 30) { if (!rafId) rafId = requestAnimationFrame(loop); return; }
+        lastDrawn = now;
         if (!paused) timeS += Math.min(0.05, (now - lastNow) / 1000);
         lastNow = now;
         render();
-        if (wantsLoop() || busy) rafId = requestAnimationFrame(loop);
+        // update() or render() may already have asked for the next frame: never start a second chain of frames
+        if ((wantsLoop() || busy) && !rafId) rafId = requestAnimationFrame(loop);
       }
       const requestRender = () => { if (!rafId) rafId = requestAnimationFrame(loop); };
-      document.addEventListener("visibilitychange", requestRender);
+      const input = () => { lastInput = performance.now(); requestRender(); };
+      // a page coming back (another tab, or Safari's back-forward cache) may have lost the frame it asked for: ask again
+      const wake = () => { if (document.visibilityState !== "visible") return; cancelAnimationFrame(rafId); rafId = 0; box = null; pendingUpdate = true; requestRender(); };
+      document.addEventListener("visibilitychange", wake);
+      addEventListener("pageshow", (ev) => { if (ev.persisted) { measure(); fitPins(); } wake(); });
 
       // where a record is on the screen, for the dots that fly to it and the threads that leave it
       const screenPos = (id) => { const p = proj[id] || (S ? nodeTarget(N[id]) : [0, 0]); return [p[0], p[1]]; };
@@ -1433,13 +1508,13 @@
           // the map is held like an object: pull it down and its top comes toward you, pull it right and its left does
           view.vy = (dx / span) * 3.2; view.vp = drag.touch ? 0 : -(dy / span) * 2.4;
           turn(drag.wide);
-          document.body.classList.add("turning"); pinned = null; showChip(null); lastMove = performance.now();
+          document.body.classList.add("turning"); pinned = null; showChip(null); lastMove = lastInput = performance.now();
           requestRender();
           return;
         }
         if (ev.pointerType === "touch" || !S || still) return;
         if (ev.clientX === ptr.x && ev.clientY === ptr.y) return; // the page moved under a resting pointer; nobody touched anything
-        lastMove = performance.now(); ptr.x = ev.clientX; ptr.y = ev.clientY;
+        lastMove = lastInput = performance.now(); ptr.x = ev.clientX; ptr.y = ev.clientY;
         // the map leans toward the cursor: across the whole screen while it is wide, over its card once it is there
         const wideNow = mapWide(), box = !wideNow && overBox(ev) && L >= 1;
         if (wideNow) { view.ty = (ev.clientX / S.VW - 0.5) * 0.7; view.tp = -(ev.clientY / S.H - 0.5) * 0.42; }
@@ -1459,7 +1534,7 @@
         if (still || drag || (Math.abs(view.vy) < 0.0004 && Math.abs(view.vp) < 0.0004)) return;
         turn(coasting);
         view.vy *= 0.93; view.vp *= 0.93;
-        render(); requestAnimationFrame(coast);
+        input(); requestAnimationFrame(coast);
       };
       const release = (ev) => {
         if (!drag) return;
@@ -1471,9 +1546,9 @@
       };
       document.addEventListener("pointerup", release);
       document.addEventListener("pointercancel", release);
-      document.addEventListener("mouseleave", () => { view.ty = 0; view.tp = 0; ptr.on = false; requestRender(); });
-      addEventListener("scroll", () => { pinned = null; if (hover && !drag) showChip(null); requestRender(); }, { passive: true });
-      addEventListener("resize", requestRender);
+      document.documentElement.addEventListener("mouseleave", () => { view.ty = 0; view.tp = 0; ptr.on = false; requestRender(); });
+      addEventListener("scroll", () => { pinned = null; if (hover && !drag) showChip(null); pendingUpdate = true; input(); }, { passive: true });
+      addEventListener("resize", () => { box = null; for (const t of Object.values(TAGS)) t._w = 0; pendingUpdate = true; input(); });
 
       Object.keys(NODES).filter(formed).forEach((id) => born.add(id));
       let birth = (id) => { born.add(id); if (!formed(id)) bornAt[id] = performance.now(); requestRender(); };
@@ -1631,23 +1706,22 @@
         place();
         requestAnimationFrame(() => requestAnimationFrame(() => live.forEach((t) => t.p.classList.add("in"))));
       }
-      function place() {
+      function measureThreads() { for (const t of live) { t.b = t.target.getBoundingClientRect(); t.wb = t.target.closest(".win").getBoundingClientRect(); } }
+      function place(fresh = true) {
+        if (fresh) measureThreads();
         for (const t of live) {
-          const b = t.target.getBoundingClientRect();
+          if (!t.b) continue;
+          const b = t.b;
           const visible = b.bottom > 0 && b.top < innerHeight;
           for (const e of [t.p, t.c]) e.style.opacity = visible ? "" : "0";
           const [x1, y1] = screenPos(t.id);
           // to the window's edge, level with what it feeds, so it never crosses the words
-          const win = t.target.closest(".win").getBoundingClientRect();
+          const win = t.wb;
           const x2 = win.left, y2 = Math.max(win.top + 24, Math.min(win.bottom - 24, b.top + b.height / 2));
           t.p.setAttribute("d", `M${x1.toFixed(1)} ${y1.toFixed(1)} C${x1 + (x2 - x1) * 0.55} ${y1}, ${x2 - (x2 - x1) * 0.45} ${y2}, ${x2} ${y2}`);
           t.c.setAttribute("cx", x2); t.c.setAttribute("cy", y2);
         }
       }
-      let ticking = false;
-      const onScroll = () => { if (ticking || !live.length) return; ticking = true; requestAnimationFrame(() => { place(); ticking = false; }); };
-      addEventListener("scroll", onScroll, { passive: true });
-      addEventListener("resize", onScroll);
 
       // ---- The scroll plays the stages. On a wide screen a stage holds (its pin) while its steps play; on a phone
       // the steps follow the stage up the screen. Scrolling back undoes them, step by step.
@@ -1657,12 +1731,16 @@
       let current = null, inStory = false, lastFocus = "";
       const stagesBar = document.querySelector(".stages");
       const resting = () => !docking() || dockProgress() >= 0.67;
+      // the stage bar's height, which is where the rail and every pin stick; it changes only with the window's width
+      let barTop = null;
+      const railTop = () => (barTop ??= parseFloat(getComputedStyle(rail).top) || 0);
+      addEventListener("resize", () => (barTop = null));
       const stepFor = (s) => {
         const r = roots[s].getBoundingClientRect(), H = innerHeight, n = STEPS[s].length;
         if (r.top > H * 0.72) return -1;
         if (s === "lab" && !resting()) return -1;
         let p;
-        if (wide.matches) { const bar = parseFloat(getComputedStyle(rail).top) || 0; p = (bar - r.top) / Math.max(1, r.height - (H - bar)); }
+        if (wide.matches) { const bar = railTop(); p = (bar - r.top) / Math.max(1, r.height - (H - bar)); }
         else p = (H * 0.72 - r.top) / Math.max(1, r.height);
         // the first step as the stage arrives; the rest across the hold, with the last reached a little before it lets go
         return Math.min(n - 1, Math.max(0, Math.floor(Math.max(0, p) / 0.82 * (n - 1)) + (p > 0 ? 1 : 0) - (p > 0 ? 1 : 0)));
@@ -1692,10 +1770,7 @@
         const key = current + lit.join() + "|" + thr.join();
         if (key !== lastFocus) { lastFocus = key; light(lit); drawThreads(roots[current] || document.body, thr); }
       }
-      let pendingUpdate = false;
-      const schedule = () => { if (pendingUpdate) return; pendingUpdate = true; requestAnimationFrame(() => { pendingUpdate = false; update(); }); };
-      addEventListener("scroll", schedule, { passive: true });
-      addEventListener("resize", schedule);
+
       // On a short screen a stage's words and window can be taller than the space under the bar. The window is scaled down
       // by what is over, so the whole of it is always in view while its steps play.
       function fitPins() {
@@ -1737,7 +1812,14 @@
 
       requestRender();
       addEventListener("load", requestRender);
-      document.fonts?.ready.then(requestRender);
+      document.fonts?.ready.then(() => { for (const t of Object.values(TAGS)) t._w = 0; requestRender(); });
+      // The hero's words are visible by default and only fade in from below. If a browser never runs that entrance (a
+      // stalled animation timeline), finish it, so the first screen can never stay blank.
+      setTimeout(() => {
+        for (const el of [...heroCopy.children, moreEl.firstElementChild]) for (const a of el?.getAnimations?.() || []) {
+          try { if (a.animationName === "rise" && a.playState !== "finished") a.finish(); } catch {}
+        }
+      }, 2500);
 
       update();
       addEventListener("load", update);
