@@ -4,7 +4,7 @@
 set -e
 cd "$(dirname "$0")"
 rm -rf _site && mkdir _site
-cp -R index.html guide signed-in demo newsite newsite1 assets CNAME .nojekyll _site/
+cp -R index.html guide signed-in demo newsite newsite1 industries assets CNAME .nojekyll _site/
 if [ -n "${POSTHOG_KEY:-}" ]; then
   for page in _site/index.html _site/demo/index.html _site/guide/index.html; do
     sed -i.bak "s/__POSTHOG_KEY__/${POSTHOG_KEY}/" "$page" && rm -f "$page.bak"

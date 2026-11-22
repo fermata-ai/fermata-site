@@ -27,6 +27,12 @@ The landing page for Fermata: one static page whose call to action is **Download
   `assets/industries/` (`SOURCES.md` says where each is from).
 - `newsite1/index.html` is a second preview at `getfermata.app/newsite1/`, to compare with `newsite/`: the same page
   with the first screen's violet edges 15% stronger. Remove it with `newsite/`.
+- `industries/index.html` is the industries page, served at `getfermata.app/industries/`: five industries (batteries
+  and energy storage; hydrogen and e-fuels; critical minerals; carbon capture, removal and use; coatings, adhesives and
+  polymers), each with the targets teams work towards and a sliding row of photographs. All its words and photo paths
+  are in `industries/industries-content.js`; the photos are in `industries/photos/` (`SOURCES.md` there gives each
+  photo's source and license, and the page's footer carries the credits that some licenses require). Like
+  `newsite/`, it is marked `noindex`, nothing links to it yet, and it sends no analytics.
 - `archive/films/` keeps films the page no longer plays (`fermata-film-2.mp4`, the 56 s film it showed until
   2026-10-26, and `fermata-film-3.mp4`, the 86 s film it showed until 2026-11-13). The deploy does not publish `archive/`.
 - PostHog records page views, time on page and clicks, plus a `download_clicked` event that says which
