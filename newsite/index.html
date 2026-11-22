@@ -543,7 +543,7 @@
     <div class="wrap">
       <a class="brand" href="/newsite/" aria-label="Fermata"><svg width="28" height="28" aria-hidden="true"><use href="#mark"/></svg>Fermata</a>
       <nav class="nav" aria-label="Main">
-        <a class="hide-xs" href="#stage">How it works</a>
+        <a class="hide-xs" href="#story">How it works</a>
         <a class="hide-s" href="#industries">Industries</a>
         <a class="hide-s watch" href="#how-it-works">Film</a>
         <a class="hide-s" href="/guide/">User guide</a>
@@ -579,150 +579,8 @@
           <a class="cta-ghost" href="https://web.getfermata.app"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>Try demo</a>
         </div>
       </div>
-      <a class="more" href="#stage" aria-label="Scroll down to see how it works"><span><svg viewBox="0 0 24 34" aria-hidden="true"><path d="M5 4l7 6 7-6"/><path d="M5 14l7 6 7-6"/><path d="M5 24l7 6 7-6"/></svg></span></a>
+      <a class="more" href="#story" aria-label="Scroll down to see how it works"><span><svg viewBox="0 0 24 34" aria-hidden="true"><path d="M5 4l7 6 7-6"/><path d="M5 14l7 6 7-6"/><path d="M5 24l7 6 7-6"/></svg></span></a>
     </section>
-
-
-
-
-
-
-
-
-
-
-    <!-- 1b. The stage: Fermata at work over a plant, in three steps (stage.css, stage.js) -->
-    <section class="stage-sec" id="stage" aria-label="Fermata at work, in three steps">
-      <div class="stage" data-fstage>
-        <div class="stage-photo">
-          <div class="st-fit">
-            <div class="st-win" role="img" aria-label="The Fermata app, playing the step chosen below.">
-              <div class="st-bar">
-                <span class="lights"><i></i><i></i><i></i></span>
-                <span class="mark"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 15a9 9 0 0 1 18 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="8" cy="15.5" r="1.7" fill="currentColor"/><circle cx="12" cy="15.5" r="1.7" fill="currentColor"/><circle cx="16" cy="15.5" r="1.7" fill="currentColor"/></svg></span>
-                <b>Northfield Materials</b><span class="sep">/</span><span class="crumb" data-crumb>Faster drying step</span>
-              </div>
-              <div class="st-body">
-                <div class="st-side">
-                  <div class="proj"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Faster drying step</div>
-                  <div class="st-nav" data-nav="map"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="6" cy="18" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="9" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 8.2v7.6M8 6.8c6 0 8 0 8 0M6 15c0-4 6-4 10-5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Project map</div>
-                  <div class="st-nav" data-nav="status"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Project status</div>
-                  <h4>Sessions</h4>
-                  <div class="st-ses new" data-ses="tom"><i class="d live"></i><b>November pilot tests</b><span>Tom · today</span></div>
-                  <div class="st-ses"><i class="d live"></i><b>Oven mapping</b><span>Jen · Oct 2026</span></div>
-                  <div class="st-ses"><i class="d live"></i><b>Coating thickness</b><span>Daniel · Sep 2026</span></div>
-                  <div class="st-ses"><i class="d"></i><b>Additive screening</b><span>Ana · Jul 2026</span></div>
-                  <div class="st-ses"><i class="d"></i><b>8 h at 110 °C</b><span>Maya · Apr 2026</span></div>
-                  <div class="st-ses"><i class="d"></i><b>8 h at 140 °C</b><span>Maya · Mar 2026</span></div>
-                  <div class="st-ses"><i class="d"></i><b>Supplier B</b><span>Ravi · Jan 2026</span></div>
-                </div>
-                <div class="st-view">
-                  <!-- the project map -->
-                  <div class="st-screen st-map" data-screen="map">
-                    <h3>Project map</h3>
-                    <p class="st-sub">A year of the team’s work. Each session is a branch: what it confirms joins the project, and a dropped direction keeps its learning.</p>
-                    <svg data-map viewBox="0 0 780 318" aria-hidden="true"></svg>
-                    <div class="st-legend"><span><i class="k1"></i>Project</span><span><i class="k2"></i>Direction</span><span><i class="k3">✕</i>Dropped, learning kept</span><span><i class="k4"></i>Today’s session</span></div>
-                  </div>
-                  <!-- project status -->
-                  <div class="st-screen st-status" data-screen="status">
-                    <div class="st-status-head">
-                      <div><h3>Project status</h3><p class="st-sub" data-upd>Updated 14 Jul 2026</p></div>
-                      <span class="st-btn" data-hit="new"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>New session</span>
-                    </div>
-                    <div class="st-box">
-                      <h5>Conclusions</h5>
-                      <div class="st-row st-in" data-c="1"><span class="st-tag ok">Confirmed</span>8-hour drying did better than 12-hour on the bench<span class="who">Maya</span></div>
-                      <div class="st-row st-in" data-c="2"><span class="st-tag ok">Confirmed</span>Supplier B’s binder holds up under 8-hour drying<span class="who">Ravi</span></div>
-                      <div class="st-row st-in" data-c="3" data-pilot><span class="st-tag nt" data-pilot-tag>Not tested</span><span data-pilot-text>8-hour drying holds on the pilot line</span><span class="who" data-pilot-who>Next: a pilot-line check</span></div>
-                    </div>
-                    <div class="st-box">
-                      <h5>Directions</h5>
-                      <div class="st-dir st-in" data-d="1"><span class="st-av m">M</span><span>Dry 8 h at 110 °C</span><span class="st-src">Lab team</span><span class="st-tag ok">Confirmed</span></div>
-                      <div class="st-dir st-in" data-d="2"><span class="st-av m">M</span><span>Dry 8 h at 140 °C</span><span class="st-src">Lab team</span><span class="st-tag no">Not confirmed</span></div>
-                      <div class="st-dir st-in" data-d="3"><span class="st-av a">A</span><span>Screening additive</span><span class="st-src">Lab team</span><span class="st-tag no">Not confirmed</span></div>
-                      <div class="st-dir st-in" data-d="4"><span class="st-av j">J</span><span>Map oven temperature</span><span class="st-src">Pilot team</span><span class="st-tag nt">Not tested</span></div>
-                    </div>
-                    <div class="st-box">
-                      <h5>Learnings</h5>
-                      <div class="st-collapse" data-fresh><div class="st-learning fresh"><span class="st-av t">T</span><p><span class="st-new">New</span>Bench tests that stop at cycle 50 cannot show the pilot loss.<small>November pilot tests · Tom · today</small></p></div></div>
-                      <div data-old><div class="st-learning"><span class="st-av a">A</span><p>The screening additive slows drying at 110 °C; not worth a second round.<small>Additive screening · Ana · Jul 2026</small></p></div></div>
-                    </div>
-                  </div>
-                  <!-- a session -->
-                  <div class="st-screen st-session" data-screen="session">
-                    <div class="st-chat">
-                      <div class="st-chat-head">November pilot tests<span>Tom, pilot team</span></div>
-                      <div class="st-feed" data-feed></div>
-                      <div class="st-compose" data-compose><span class="txt" data-txt></span><span class="st-send" data-hit="send"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-                    </div>
-                    <div class="st-panel">
-                      <div class="st-tabs"><span data-tab="directions">Directions</span><span data-tab="findings">Findings</span></div>
-                      <div class="st-pane">
-                        <div data-pane="findings">
-                          <div class="st-kb-h st-in" data-kb><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" fill="currentColor"/></svg>From the knowledge base</div>
-                          <div class="st-card st-in" data-card="1">
-                            <p class="t">Drying line upgrade report</p>
-                            <p class="m"><span class="st-src">Plant team</span>Report · Kofi · Oct 2025</p>
-                            <p class="say">At plant scale, 8-hour rolls kept 81% of output at cycle 300, against 91% for 12-hour rolls.</p>
-                            <div class="st-bars">
-                              <div><em>Plant · 12 h</em><i style="--w:91%"></i><b>91%</b></div>
-                              <div><em>Plant · 8 h</em><i style="--w:81%;--c:#d0574a;--dl:.15s"></i><b>81%</b></div>
-                            </div>
-                          </div>
-                          <div class="st-card st-in" data-card="2">
-                            <p class="t">Maya’s notebook, p. 40</p>
-                            <p class="m"><span class="st-src">Lab team</span>Notebook · Maya · Mar 2026 · from a dropped direction</p>
-                            <p class="say">At 140 °C the rolls dried, but 4 of 6 samples cracked. Nothing between 110 and 140 °C was tried.</p>
-                            <div class="st-temps"><div><b>110 °C</b>340 ppm left</div><div class="open"><b>125 °C</b>Not tested</div><div class="bad"><b>140 °C</b>4 of 6 cracked</div></div>
-                          </div>
-                          <div class="st-search st-in" data-search><span class="st-spin"></span><span><b>Searching the knowledge base</b><small data-search-n>4,212 files · notebooks · test sheets · plant reports</small></span></div>
-                          <div class="st-in" data-finding>
-                            <div class="st-find" data-find><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 12.5l2.6 2.6L16 9.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>8-hour pilot rolls keep about 11 points less output at cycle 300</div>
-                            <div class="st-check" data-check>
-                              <div class="hd" data-check-hd><span class="st-spin"></span>Independent check: redoing the numbers…</div>
-                              <div class="st-collapse" data-check-body>
-                                <p>Reproduced from the pilot sheets: 78.8% against 89.6%.</p>
-                                <p><span class="st-tag mid">Inconclusive</span> Moisture as the cause: not proven yet.</p>
-                              </div>
-                              <div class="foot"><span class="st-share" data-hit="share" data-off>Share with project</span></div>
-                            </div>
-                          </div>
-                        </div>
-                        <div data-pane="directions">
-                          <div class="st-pdir st-in" data-pd="A">
-                            <div class="h"><span class="st-letter">A</span><b>Output at cycle 300 across every pilot run</b><span class="st-start" data-start="A">Start</span></div>
-                            <div class="meta"><span data-state>Proposed</span><span class="st-src">Knowledge base</span></div>
-                            <div class="st-strip"><i style="--t:1.4s"></i><i style="--t:1.4s"></i></div>
-                            <div class="st-collapse" data-res><div class="st-res"><span class="st-tag ok">Confirmed</span>8-hour rolls keep 78.8% against 89.6% at cycle 300</div></div>
-                          </div>
-                          <div class="st-pdir st-in" data-pd="B">
-                            <div class="h"><span class="st-letter">B</span><b>Why the bench and the pilot line disagree</b><span class="st-start" data-start="B">Start</span></div>
-                            <div class="meta"><span data-state>Proposed</span><span class="st-src">This project</span></div>
-                            <div class="st-strip"><i style="--t:2.2s"></i></div>
-                            <div class="st-collapse" data-res><div class="st-res"><span class="st-tag ok">Confirmed</span>Bench tests stop at cycle 50; the loss starts after 150</div></div>
-                          </div>
-                          <div class="st-pdir st-in" data-pd="C"><div class="h"><span class="st-letter">C</span><b>Both oven programs side by side</b><span class="st-start">Start</span></div><div class="meta"><span>Proposed</span><span class="st-src">Pilot team</span></div></div>
-                          <div class="st-pdir st-in" data-pd="D"><div class="h"><span class="st-letter">D</span><b>Dry at 125 °C, between the two tried</b><span class="st-start">Start</span></div><div class="meta"><span>Proposed</span><span class="st-src">Lab team</span></div></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="st-tip" data-tip></div>
-                </div>
-              </div>
-              <div class="st-cursor" data-cursor><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3l15 7.5-6.4 1.6L9.5 18.5z" fill="#1a1a1f" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
-            </div>
-          </div>
-        </div>
-        <div class="st-steps" role="tablist" aria-label="Three steps">
-          <button class="st-step" role="tab" aria-selected="true" data-scene="0"><span class="line"><i></i></span><span class="ttl"><small>01</small>Projects and directions<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p>See every direction your research takes, which ones were dropped, and why.</p></button>
-          <button class="st-step" role="tab" aria-selected="false" data-scene="1"><span class="line"><i></i></span><span class="ttl"><small>02</small>Learning across teams<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p>Fermata surfaces findings from other teams across the organization when they are relevant to your experiments.</p></button>
-          <button class="st-step" role="tab" aria-selected="false" data-scene="2"><span class="line"><i></i></span><span class="ttl"><small>03</small>Results the team can trust<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p>Every result is checked independently before it joins the project. You decide what to share.</p></button>
-        </div>
-      </div>
-    </section>
-
 
     <!-- 2. The story: the knowledge base on the left stays put; a project, a second team and the team's decision pass on the right -->
     <section class="story" id="story" aria-label="How Fermata works">
@@ -854,6 +712,138 @@
       </div>
     </section>
 
+    <!-- 2b. The stage: Fermata at work over a plant, in three steps (stage.css, stage.js) -->
+    <section class="stage-sec" id="stage" aria-label="Fermata at work, in three steps">
+      <div class="stage" data-fstage>
+        <div class="stage-photo">
+          <div class="st-fit">
+            <div class="st-win" role="img" aria-label="The Fermata app, playing the step chosen below.">
+              <div class="st-bar">
+                <span class="lights"><i></i><i></i><i></i></span>
+                <span class="mark"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 15a9 9 0 0 1 18 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="8" cy="15.5" r="1.7" fill="currentColor"/><circle cx="12" cy="15.5" r="1.7" fill="currentColor"/><circle cx="16" cy="15.5" r="1.7" fill="currentColor"/></svg></span>
+                <b>Northfield Materials</b><span class="sep">/</span><span class="crumb" data-crumb>Faster drying step</span>
+              </div>
+              <div class="st-body">
+                <div class="st-side">
+                  <div class="proj"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Faster drying step</div>
+                  <div class="st-nav" data-nav="map"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="6" cy="18" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="9" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 8.2v7.6M8 6.8c6 0 8 0 8 0M6 15c0-4 6-4 10-5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Project map</div>
+                  <div class="st-nav" data-nav="status"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Project status</div>
+                  <h4>Sessions</h4>
+                  <div class="st-ses new" data-ses="tom"><i class="d live"></i><b>November pilot tests</b><span>Tom · today</span></div>
+                  <div class="st-ses"><i class="d live"></i><b>Oven mapping</b><span>Jen · Oct 2026</span></div>
+                  <div class="st-ses"><i class="d live"></i><b>Coating thickness</b><span>Daniel · Sep 2026</span></div>
+                  <div class="st-ses"><i class="d"></i><b>Additive screening</b><span>Ana · Jul 2026</span></div>
+                  <div class="st-ses"><i class="d"></i><b>8 h at 110 °C</b><span>Maya · Apr 2026</span></div>
+                  <div class="st-ses"><i class="d"></i><b>8 h at 140 °C</b><span>Maya · Mar 2026</span></div>
+                  <div class="st-ses"><i class="d"></i><b>Supplier B</b><span>Ravi · Jan 2026</span></div>
+                </div>
+                <div class="st-view">
+                  <!-- the project map -->
+                  <div class="st-screen st-map" data-screen="map">
+                    <h3>Project map</h3>
+                    <p class="st-sub">A year of the team’s work. Each session is a branch: what it confirms joins the project, and a dropped direction keeps its learning.</p>
+                    <svg data-map viewBox="0 0 780 318" aria-hidden="true"></svg>
+                    <div class="st-legend"><span><i class="k1"></i>Project</span><span><i class="k2"></i>Direction</span><span><i class="k3">✕</i>Dropped, learning kept</span><span><i class="k4"></i>Today’s session</span></div>
+                  </div>
+                  <!-- project status -->
+                  <div class="st-screen st-status" data-screen="status">
+                    <div class="st-status-head">
+                      <div><h3>Project status</h3><p class="st-sub" data-upd>Updated 14 Jul 2026</p></div>
+                      <span class="st-btn" data-hit="new"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>New session</span>
+                    </div>
+                    <div class="st-box">
+                      <h5>Conclusions</h5>
+                      <div class="st-row st-in" data-c="1"><span class="st-tag ok">Confirmed</span>8-hour drying did better than 12-hour on the bench<span class="who">Maya</span></div>
+                      <div class="st-row st-in" data-c="2"><span class="st-tag ok">Confirmed</span>Supplier B’s binder holds up under 8-hour drying<span class="who">Ravi</span></div>
+                      <div class="st-row st-in" data-c="3" data-pilot><span class="st-tag nt" data-pilot-tag>Not tested</span><span data-pilot-text>8-hour drying holds on the pilot line</span><span class="who" data-pilot-who>Next: a pilot-line check</span></div>
+                    </div>
+                    <div class="st-box">
+                      <h5>Directions</h5>
+                      <div class="st-dir st-in" data-d="1"><span class="st-av m">M</span><span>Dry 8 h at 110 °C</span><span class="st-src">Lab team</span><span class="st-tag ok">Confirmed</span></div>
+                      <div class="st-dir st-in" data-d="2"><span class="st-av m">M</span><span>Dry 8 h at 140 °C</span><span class="st-src">Lab team</span><span class="st-tag no">Not confirmed</span></div>
+                      <div class="st-dir st-in" data-d="3"><span class="st-av a">A</span><span>Screening additive</span><span class="st-src">Lab team</span><span class="st-tag no">Not confirmed</span></div>
+                      <div class="st-dir st-in" data-d="4"><span class="st-av j">J</span><span>Map oven temperature</span><span class="st-src">Pilot team</span><span class="st-tag nt">Not tested</span></div>
+                    </div>
+                    <div class="st-box">
+                      <h5>Learnings</h5>
+                      <div class="st-collapse" data-fresh><div class="st-learning fresh"><span class="st-av t">T</span><p><span class="st-new">New</span>Bench tests that stop at cycle 50 cannot show the pilot loss.<small>November pilot tests · Tom · today</small></p></div></div>
+                      <div data-old><div class="st-learning"><span class="st-av a">A</span><p>The screening additive slows drying at 110 °C; not worth a second round.<small>Additive screening · Ana · Jul 2026</small></p></div></div>
+                    </div>
+                  </div>
+                  <!-- a session -->
+                  <div class="st-screen st-session" data-screen="session">
+                    <div class="st-chat">
+                      <div class="st-chat-head">November pilot tests<span>Tom, pilot team</span></div>
+                      <div class="st-feed" data-feed></div>
+                      <div class="st-compose" data-compose><span class="txt" data-txt></span><span class="st-send" data-hit="send"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+                    </div>
+                    <div class="st-panel">
+                      <div class="st-tabs"><span data-tab="directions">Directions</span><span data-tab="findings">Findings</span></div>
+                      <div class="st-pane">
+                        <div data-pane="findings">
+                          <div class="st-kb-h st-in" data-kb><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" fill="currentColor"/></svg>From the knowledge base</div>
+                          <div class="st-card st-in" data-card="1">
+                            <p class="t">Drying line upgrade report</p>
+                            <p class="m"><span class="st-src">Plant team</span>Report · Kofi · Oct 2025</p>
+                            <p class="say">At plant scale, 8-hour rolls kept 81% of output at cycle 300, against 91% for 12-hour rolls.</p>
+                            <div class="st-bars">
+                              <div><em>Plant · 12 h</em><i style="--w:91%"></i><b>91%</b></div>
+                              <div><em>Plant · 8 h</em><i style="--w:81%;--c:#d0574a;--dl:.15s"></i><b>81%</b></div>
+                            </div>
+                          </div>
+                          <div class="st-card st-in" data-card="2">
+                            <p class="t">Maya’s notebook, p. 40</p>
+                            <p class="m"><span class="st-src">Lab team</span>Notebook · Maya · Mar 2026 · from a dropped direction</p>
+                            <p class="say">At 140 °C the rolls dried, but 4 of 6 samples cracked. Nothing between 110 and 140 °C was tried.</p>
+                            <div class="st-temps"><div><b>110 °C</b>340 ppm left</div><div class="open"><b>125 °C</b>Not tested</div><div class="bad"><b>140 °C</b>4 of 6 cracked</div></div>
+                          </div>
+                          <div class="st-search st-in" data-search><span class="st-spin"></span><span><b>Searching the knowledge base</b><small data-search-n>4,212 files · notebooks · test sheets · plant reports</small></span></div>
+                          <div class="st-in" data-finding>
+                            <div class="st-find" data-find><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 12.5l2.6 2.6L16 9.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>8-hour pilot rolls keep about 11 points less output at cycle 300</div>
+                            <div class="st-check" data-check>
+                              <div class="hd" data-check-hd><span class="st-spin"></span>Independent check: redoing the numbers…</div>
+                              <div class="st-collapse" data-check-body>
+                                <p>Reproduced from the pilot sheets: 78.8% against 89.6%.</p>
+                                <p><span class="st-tag mid">Inconclusive</span> Moisture as the cause: not proven yet.</p>
+                              </div>
+                              <div class="foot"><span class="st-share" data-hit="share" data-off>Share with project</span></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div data-pane="directions">
+                          <div class="st-pdir st-in" data-pd="A">
+                            <div class="h"><span class="st-letter">A</span><b>Output at cycle 300 across every pilot run</b><span class="st-start" data-start="A">Start</span></div>
+                            <div class="meta"><span data-state>Proposed</span><span class="st-src">Knowledge base</span></div>
+                            <div class="st-strip"><i style="--t:1.4s"></i><i style="--t:1.4s"></i></div>
+                            <div class="st-collapse" data-res><div class="st-res"><span class="st-tag ok">Confirmed</span>8-hour rolls keep 78.8% against 89.6% at cycle 300</div></div>
+                          </div>
+                          <div class="st-pdir st-in" data-pd="B">
+                            <div class="h"><span class="st-letter">B</span><b>Why the bench and the pilot line disagree</b><span class="st-start" data-start="B">Start</span></div>
+                            <div class="meta"><span data-state>Proposed</span><span class="st-src">This project</span></div>
+                            <div class="st-strip"><i style="--t:2.2s"></i></div>
+                            <div class="st-collapse" data-res><div class="st-res"><span class="st-tag ok">Confirmed</span>Bench tests stop at cycle 50; the loss starts after 150</div></div>
+                          </div>
+                          <div class="st-pdir st-in" data-pd="C"><div class="h"><span class="st-letter">C</span><b>Both oven programs side by side</b><span class="st-start">Start</span></div><div class="meta"><span>Proposed</span><span class="st-src">Pilot team</span></div></div>
+                          <div class="st-pdir st-in" data-pd="D"><div class="h"><span class="st-letter">D</span><b>Dry at 125 °C, between the two tried</b><span class="st-start">Start</span></div><div class="meta"><span>Proposed</span><span class="st-src">Lab team</span></div></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="st-tip" data-tip></div>
+                </div>
+              </div>
+              <div class="st-cursor" data-cursor><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3l15 7.5-6.4 1.6L9.5 18.5z" fill="#1a1a1f" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+            </div>
+          </div>
+        </div>
+        <div class="st-steps" role="tablist" aria-label="Three steps">
+          <button class="st-step" role="tab" aria-selected="true" data-scene="0"><span class="line"><i></i></span><span class="ttl"><small>01</small>Projects and directions<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p>See every direction your research takes, which ones were dropped, and why.</p></button>
+          <button class="st-step" role="tab" aria-selected="false" data-scene="1"><span class="line"><i></i></span><span class="ttl"><small>02</small>Learning across teams<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p>Fermata surfaces findings from other teams across the organization when they are relevant to your experiments.</p></button>
+          <button class="st-step" role="tab" aria-selected="false" data-scene="2"><span class="line"><i></i></span><span class="ttl"><small>03</small>Results the team can trust<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p>Every result is checked independently before it joins the project. You decide what to share.</p></button>
+        </div>
+      </div>
+    </section>
+
     <!-- 3. The whole of it in one line, before the film -->
     <section class="sum wrap" aria-labelledby="sum-title">
       <h2 id="sum-title">One R&amp;D workspace, from the first result to the <em>team’s decision</em>.</h2>
@@ -936,7 +926,7 @@
     <div class="wrap">
       <a class="brand" href="/newsite/" aria-label="Fermata"><svg width="22" height="22" aria-hidden="true"><use href="#mark"/></svg>Fermata</a>
       <nav aria-label="Footer">
-        <a href="#stage">How it works</a>
+        <a href="#story">How it works</a>
         <a href="#industries">Industries</a>
         <a href="/guide/">User guide</a>
         <a href="https://web.getfermata.app">Try demo</a>
@@ -958,7 +948,7 @@
     // refresh opened the page in the middle of the story instead of at the top.
     document.querySelector(".more").addEventListener("click", (ev) => {
       ev.preventDefault();
-      document.getElementById("stage").scrollIntoView({ behavior: still ? "auto" : "smooth", block: "start" });
+      document.getElementById("story").scrollIntoView({ behavior: still ? "auto" : "smooth", block: "start" });
     });
 
     // ---- Download: release assets carry the version in their name, so ask GitHub for the newest DMG.
@@ -1099,8 +1089,6 @@
       // a browser that will not give a drawing surface gets the page as it is without this script: nothing hidden, nothing moving
       if (!ctx) { document.documentElement.classList.remove("js"); return; }
       const hero = document.querySelector(".hero"), heroCopy = hero.querySelector(".hero-copy"), papers = document.querySelector(".papers");
-      // the stage sits between the hero and the story: the papers wait for it to pass before they gather
-      const stageSec = document.querySelector(".stage-sec");
       const memory = document.querySelector(".memory"), story = document.querySelector(".story");
       const intro = document.querySelector(".intro"), copy = document.querySelector(".intro-copy");
       const docking = () => wide.matches && !still;
@@ -1206,7 +1194,7 @@
       // a document does not leave with the page: as you scroll down it sinks a little, nearer ones faster, toward the map
       const homeOf = (c) => [
         S.hr.left + c.hx * S.hr.width + Math.sin(timeS * c.o1 + c.p1) * c.ax * (0.5 + c.zc),
-        S.hr.top + c.hy * S.hr.height + Math.cos(timeS * c.o2 + c.p2) * c.ay * (0.5 + c.zc) + (still ? 0 : Math.max(0, -S.hr.top) * (1.08 + 0.22 * c.zc)),
+        S.hr.top + c.hy * S.hr.height + Math.cos(timeS * c.o2 + c.p2) * c.ay * (0.5 + c.zc) + (still ? 0 : scrollY * (1.08 + 0.22 * c.zc)),
       ];
       const tOf = (c) => clamp((e - (0.06 + 0.44 * c.d)) / 0.45);
       const dotA = (t) => clamp((t - 0.45) / 0.45);
@@ -1339,10 +1327,9 @@
         const now = performance.now(), VW = vw(), H = innerHeight;
         // every read of the page's layout comes first, before this frame writes any style (no forced layouts)
         const hr = hero.getBoundingClientRect(), wr = web.getBoundingClientRect(), dock = docking(), dp = dock ? dockProgress() : 1;
-        const lag = stageSec ? stageSec.offsetHeight : 0;
         const hcr = heroCopy.getBoundingClientRect(), ccr = copy.getBoundingClientRect(), copyH = copy.offsetHeight, sy0 = scrollYaw();
         measureThreads();
-        e = still ? 1 : dock ? clamp(1 - (hr.bottom + lag) / H) : clamp((H * 0.95 - wr.top) / (H * 0.75));
+        e = still ? 1 : dock ? clamp(1 - hr.bottom / H) : clamp((H * 0.95 - wr.top) / (H * 0.75));
         L = clamp((e - 0.8) / 0.19);
         w = dock ? ease(clamp((dp - 0.45) / 0.21)) : 1;
         const sx = (VW * 0.47) / 188, sy = (H * 0.44) / 140;
@@ -1366,7 +1353,7 @@
         else if (box[2] > box[0]) ctx.clearRect(Math.floor(box[0]) - 2, Math.floor(box[1]) - 2, Math.ceil(box[2] - box[0]) + 4, Math.ceil(box[3] - box[1]) + 4);
         busy = leaning;
         hr0 = hr;
-        const xp = dock ? clamp(-(hr.top + lag) / hr.height) : 0; // how far the hero, and the stage after it, have left by the top of the screen
+        const xp = dock ? clamp(-hr.top / hr.height) : 0; // how far the hero has left by the top of the screen
         driveDom(now, dock, dp, xp);
         // the first screen is lit from the middle: the page's own colour there, violet toward the edges. It goes as the hero does.
         const vg = clamp((hr.bottom / H - 0.2) / 0.6);
@@ -1577,7 +1564,7 @@
           P.w ||= P.el.offsetWidth; P.h ||= P.el.offsetHeight;
           const ent = ease(clamp((now - t0) / 600 - P.d * 0.6));
           const nx = hr0.left + (P.x * hr0.width) / 100 + P.w / 2, ny = hr0.top + (P.y * hr0.height) / 100 + P.h / 2;
-          let x = nx, y = ny + Math.max(0, -hr0.top) * 1.1 + 18 * (1 - ent);
+          let x = nx, y = ny + scrollY * 1.1 + 18 * (1 - ent);
           if (t > 0 && P.id) { const T = nodeTarget(N[P.id]), q = t * t * (3 - 2 * t); x = mix(x, T[0], q); y = mix(y, T[1], q); }
           const a = 1 - clamp((t - 0.66) / 0.14);
           st.visibility = "";

@@ -25,7 +25,8 @@ The landing page for Fermata: one static page whose call to action is **Download
   `index.html` with its asset paths pointed at `../assets/`. It is marked `noindex`, nothing links to it, and it sends
   no analytics. Remove the folder when the new page replaces `index.html`. Its industry photographs are in
   `assets/industries/` (`SOURCES.md` says where each is from).
-- Under the hero of `/newsite`, a three-step stage plays Fermata at work in a window over a plant photo:
+- After the four-step story on `/newsite`, before the summary and the film, a three-step stage plays Fermata at
+  work in a window over a plant photo:
   projects and directions, findings surfaced from other teams, and a checked result joining the project. Its
   markup is in `newsite/index.html`, its styles and scenes in `newsite/stage.css` and `newsite/stage.js` (one
   `requestAnimationFrame` clock, no timers). `?stage=2.6.5` holds scene 2 at 6.5 s, for checking a moment. The
