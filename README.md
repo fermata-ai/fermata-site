@@ -6,7 +6,7 @@ The landing page for Fermata, for industrial R&D: one static page whose call to 
 - The page is one story told by the scroll: the first screen's records gather into the company's knowledge base, a map
   that fills the screen (Team A, Team B, KPI) and then rests on the left while three stages play on the right: a
   project and its directions, a second team's result, and the team's decision. After it come one line, the film,
-  questions, industries and the close.
+  questions and the close.
 - The download button resolves the newest `.dmg` in
   [`fermata-ai/fermata-releases`](https://github.com/fermata-ai/fermata-releases/releases) through the
   GitHub API, because each asset name carries its version. Without JavaScript, or when the API call
@@ -14,8 +14,7 @@ The landing page for Fermata, for industrial R&D: one static page whose call to 
 - One fixed canvas draws the records and the map. The script moves everything the scroll moves (`driveDom`); the page
   uses no scroll-linked CSS animation, because Safari ran those wrongly. With Reduce Motion on, on a phone, or without
   JavaScript, the map rests in its place and every stage shows whole.
-- `assets/` holds the brand mark and icons, copied from the desktop app, and the industry photographs
-  (`assets/industries/`; `SOURCES.md` says where each is from).
+- `assets/` holds the brand mark and icons, copied from the desktop app.
 - `guide/index.html` is the user guide, served at `getfermata.app/guide/` and linked from the header. It is
   one self-contained page (light and dark, no build step) that takes a new user from installing Claude Code
   to a first run. It carries the same PostHog snippet, so the deploy and the preview fill in its key too.
@@ -32,6 +31,12 @@ The landing page for Fermata, for industrial R&D: one static page whose call to 
   `index.html` with its asset paths pointed at `../assets/`. It is marked `noindex`, nothing links to it, and it sends
   no analytics. Remove the folder when the new page replaces `index.html`. Its industry photographs are in
   `assets/industries/` (`SOURCES.md` says where each is from).
+- `industries/index.html` is the industries page, served at `getfermata.app/industries/` and linked from the landing
+  page's header and footer: five industries (batteries and energy storage; hydrogen and e-fuels; critical minerals;
+  carbon capture, removal and use; coatings, adhesives and polymers), each with the targets teams work towards and a
+  sliding row of photographs. All its words and photo paths are in `industries/industries-content.js`; the photos are
+  in `industries/photos/` (`SOURCES.md` there gives each photo's source and license, and the page's footer carries the
+  credits that some licenses require). It is marked `noindex` and sends no analytics.
 - `archive/films/` keeps films the page no longer plays (`fermata-film-2.mp4`, the 56 s film it showed until
   2026-10-26, and `fermata-film-3.mp4`, the 86 s film it showed until 2026-11-13). The deploy does not publish `archive/`.
 - PostHog records page views, time on page and clicks, plus a `download_clicked` event that says which
