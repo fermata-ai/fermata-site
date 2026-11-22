@@ -99,16 +99,16 @@
     .hero-copy { position: relative; z-index: 6; text-align: center; max-width: 860px; margin: 0 auto; padding-inline: 24px; }
     h1 { font-size: clamp(40px, 6.2vw, 80px); line-height: 1.02; letter-spacing: -0.035em; margin-bottom: 22px; }
     .lede { font-family: var(--serif); font-weight: 300; font-size: clamp(18px, 2vw, 22px); line-height: 1.45; color: var(--ink-2); max-width: 640px; margin: 0 auto 32px; }
-    .hero-copy > * { opacity: 0; animation: rise 0.9s var(--ease) forwards; }
-    .hero-copy > :nth-child(2) { animation-delay: 0.12s; }
-    .hero-copy > :nth-child(3) { animation-delay: 0.24s; }
-    .hero-copy > :nth-child(4) { animation-delay: 0.36s; }
+    .hero-copy > * { animation: rise 0.6s var(--ease) backwards; }
+    .hero-copy > :nth-child(2) { animation-delay: 0.05s; }
+    .hero-copy > :nth-child(3) { animation-delay: 0.1s; }
+    .hero-copy > :nth-child(4) { animation-delay: 0.15s; }
     @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
     /* three small arrows at the foot of the first screen: there is more below */
     .more { position: absolute; left: 50%; bottom: 14px; z-index: 6; translate: -50% 0; display: grid; place-items: center; width: 84px; height: 84px; border-radius: 50%;
       background: radial-gradient(closest-side, rgba(244, 244, 241, 0.97) 60%, rgba(244, 244, 241, 0)); color: var(--violet); }
-    .more span { display: block; opacity: 0; animation: rise 0.9s 1.1s var(--ease) forwards; }
+    .more span { display: block; animation: rise 0.6s 0.6s var(--ease) backwards; }
     .more svg { display: block; width: 24px; height: 34px; }
     .more path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: 0.3; animation: descend 1.9s ease-in-out infinite; }
     .more path:nth-child(2) { animation-delay: 0.22s; }
@@ -117,12 +117,17 @@
     @media (prefers-reduced-motion: reduce) { .more span { animation: none; opacity: 1; } .more path { animation: none; opacity: 0.55; } }
     .papers { position: absolute; inset: 0; z-index: 6; pointer-events: none; }
     /* the canvas that draws the documents behind the hero and the memory they become, and the labels laid over it */
-    .space { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 5; pointer-events: none; }
+    .space { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
+    /* the first screen's violet edges, and the soft clearing behind the hero's words: drawn once by the browser and
+       faded from script, never redrawn on the canvas each frame */
+    .vignette, .clearing { position: fixed; z-index: 5; pointer-events: none; opacity: 0; visibility: hidden; }
+    .vignette { inset: 0; background: radial-gradient(70.76% 70.76% at 50% 50%, rgba(74, 58, 167, 0) 40.98%, rgba(74, 58, 167, 0.1) 67.54%, rgba(74, 58, 167, 0.4) 100%); }
+    .clearing { left: 0; top: 0; background: radial-gradient(closest-side, rgba(244, 244, 241, 0.95), rgba(244, 244, 241, 0.9) 58%, rgba(244, 244, 241, 0)); }
     .space-tags { position: fixed; inset: 0; z-index: 5; pointer-events: none; overflow: clip; }
     .space-tags > * { position: absolute; left: 0; top: 0; will-change: transform; }
     body.map-wide { cursor: grab; }
     body.turning, body.turning * { cursor: grabbing !important; user-select: none; -webkit-user-select: none; }
-    /* a stage's name: a hub of the wide map (--w 0), a small caption once the map is in its card (--w 1) */
+    /* a group's name: a hub of the wide map (--w 0), a small caption once the map is in its card (--w 1) */
     .hub { display: inline-flex; align-items: center; gap: calc(6px * (1 - var(--w, 1))); white-space: nowrap; border-radius: 999px;
       padding: calc(5px * (1 - var(--w, 1))) calc(12px * (1 - var(--w, 1)));
       background: rgba(255, 255, 255, calc(0.94 * (1 - var(--w, 1)))); border: 1px solid rgba(225, 224, 217, calc(1 - var(--w, 1)));
@@ -150,29 +155,20 @@
     .t.ppt { background: var(--amber-soft); color: var(--amber); } .t.doc { background: #e1edfa; color: #1f5fa8; }
     .t.nb { background: var(--violet-soft); color: var(--violet); } .t.log { background: var(--sunk); color: var(--ink-2); }
     @keyframes settle { from { opacity: 0; translate: 0 18px; } to { opacity: var(--o, 0.92); translate: 0 0; } }
-    .paper::after { content: ""; position: absolute; left: 50%; top: 50%; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; background: #9b95c9; opacity: 0; }
+    .paper > * { opacity: var(--paper-ink, 1); }
+    .paper::after { content: ""; position: absolute; left: 50%; top: 50%; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; background: #9b95c9; opacity: var(--dot, 0); }
 
     /* ---------- the story: memory stays on the left, one stage at a time on the right ---------- */
     .story { position: relative; display: grid; grid-template-columns: minmax(300px, 5fr) 7fr; grid-template-rows: auto auto; column-gap: clamp(24px, 4vw, 64px); max-width: 1280px; margin: 0 auto; padding-inline: 32px; }
-    /* the stage bar: R&D, pilot, production. A full-width band fixed at the top while a stage is on screen */
-    :root { --bar: 60px; }
-    .stages { position: fixed; top: 0; left: 0; right: 0; z-index: 8; height: var(--bar); display: grid; place-items: center;
-      background: rgba(244, 244, 241, 0.86); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line);
-      opacity: 0; translate: 0 -100%; visibility: hidden; transition: opacity 0.45s var(--ease), translate 0.45s var(--ease), visibility 0s 0.45s; }
-    .stages.on { opacity: 1; translate: 0 0; visibility: visible; transition: opacity 0.45s var(--ease), translate 0.45s var(--ease); }
-    .stages .pill { display: flex; align-items: center; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
-    .stages a { display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; border-radius: 999px; font-size: 13.5px; font-weight: 600; color: var(--ink-3); text-decoration: none; transition: color 0.4s, background 0.4s; }
-    .stages a svg { width: 16px; height: 16px; }
-    .stages i { width: 34px; height: 2px; border-radius: 2px; background: var(--line); position: relative; overflow: hidden; }
-    .stages i::after { content: ""; position: absolute; inset: 0; background: var(--violet-2); transform: scaleX(0); transform-origin: left; transition: transform 0.7s var(--ease); }
-    .stages a.done { color: var(--violet); }
-    .stages a.now { color: var(--violet); background: var(--violet-soft); }
-    .stages i.done::after { transform: scaleX(1); }
+    /* a stage and the map beside it stick to the top of the screen */
+    :root { --bar: 0px; }
     .chapter { scroll-margin-top: var(--bar); }
     .rail { grid-column: 1; grid-row: 1 / 3; position: sticky; top: var(--bar); height: calc(100svh - var(--bar)); display: grid; place-items: center; z-index: 4; }
     .intro { grid-column: 2; grid-row: 1; }
     .chapters { grid-column: 2; grid-row: 2; }
     .memory { position: relative; width: min(100%, 480px); }
+    /* what the map is, said once above it when it rests on the left */
+    .kb { margin: 0 0 2px; text-align: center; font-size: 11.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
     /* the memory's place on the left; the canvas draws into it, with no box round it */
     div.web { position: relative; width: 100%; aspect-ratio: 400 / 340; margin: 6px 0 4px; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
     .tag { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; padding: 3px 8px 3px 6px; border-radius: 999px; background: rgba(255, 255, 255, 0.92);
@@ -309,8 +305,13 @@
     .st.done .ck, .st.done .chip { opacity: 1; scale: 1; }
     html:not(.js) .st .spin { display: none; } html:not(.js) .st .ck, html:not(.js) .st .chip { opacity: 1; scale: 1; }
     @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
-    .dir.aside { background: var(--surface); }
-    .dir.aside .dir-name { text-decoration: line-through; text-decoration-color: var(--ink-3); color: var(--ink-3); }
+    .dir-name b { font-weight: 600; margin-right: 8px; }
+    .dir-name span { color: var(--ink-3); }
+    /* B's plan changes when the knowledge base speaks: the first value is struck, the better one takes its place */
+    .dir-name .was { text-decoration: line-through; margin-right: 7px; }
+    .dir-name .now { color: var(--ink-2); font-weight: 500; }
+    .js .dir-name .was { text-decoration-color: transparent; transition: text-decoration-color 0.5s; } .js .dir-name .now { opacity: 0; transition: opacity 0.5s 0.2s; }
+    .js .dir.turned .was { text-decoration-color: currentColor; } .js .dir.turned .now { opacity: 1; }
     .recall { display: flex; gap: 9px; margin-top: 9px; padding: 9px 11px; border-radius: 9px; background: var(--violet-soft); border: 1px solid var(--violet-line); font-size: 13px; }
     .recall::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--violet); margin-top: 5px; flex: none; }
     .recall small { display: block; font-size: 11.5px; color: var(--violet); font-weight: 600; }
@@ -327,29 +328,41 @@
     .msg.fermata > p { margin: 0 0 8px; }
     .msg.fermata .from { font-size: 11.5px; font-weight: 600; color: var(--violet); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
     .chart { display: block; width: 100%; max-width: 440px; height: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
-    .chart .ln { fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .chart .ln { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
     .chart .axis { stroke: var(--line); stroke-width: 1; }
     .chart text { font-size: 10px; fill: var(--ink-3); font-family: var(--sans); }
     .chart .key { font-weight: 700; font-size: 10.5px; }
-    .sources { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 10px; font-size: 12px; color: var(--ink-3); }
-    .check { margin-top: 10px; display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 8px 11px; border-radius: 9px; background: var(--green-soft); color: var(--green); border: 1px solid var(--green-line); }
-    .check svg { width: 15px; height: 15px; flex: none; }
+    .sources { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; font-size: 13px; }
+    .sources li { display: flex; align-items: center; gap: 8px; }
+    .sources li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--violet-2); flex: none; }
+    .read { margin: 0 0 6px; font-size: 11.5px; font-weight: 600; color: var(--ink-3); }
 
     /* team */
-    .notice { display: flex; gap: 11px; align-items: flex-start; padding: 12px; border-radius: 12px; border: 1px solid var(--violet-line); background: linear-gradient(var(--violet-soft), var(--white)); }
-    .notice p { margin: 0 0 8px; font-size: 13.5px; }
-    .notice small { display: block; font-size: 11.5px; font-weight: 600; color: var(--violet); }
-    .board { margin-top: 14px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-    .board-head { display: flex; justify-content: space-between; padding: 9px 12px; background: var(--surface); border-bottom: 1px solid var(--line); font-size: 12.5px; font-weight: 600; }
-    .board-head span { color: var(--ink-3); font-weight: 400; }
-    .board table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .board th { text-align: left; font-size: 11px; font-weight: 600; color: var(--ink-3); padding: 8px 12px 4px; letter-spacing: 0.04em; }
-    .board td { padding: 8px 12px; border-top: 1px solid var(--sunk); vertical-align: middle; }
-    .board td:last-child, .board th:last-child { text-align: right; }
-    .sig { font-weight: 700; font-size: 12px; padding: 3px 10px; border-radius: 999px; display: inline-block; min-width: 54px; text-align: center; }
+    .board { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+    .board table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 15px; }
+    .board th, .board td { padding: 12px 10px; text-align: center; vertical-align: middle; }
+    .board thead th { background: var(--surface); border-bottom: 1px solid var(--line); font-size: 14px; font-weight: 600; }
+    .board thead .lt { margin-right: 7px; vertical-align: -4px; }
+    .board thead th:first-child, .board tbody th { width: 25%; text-align: left; padding-left: 14px; }
+    .board tbody th { font-weight: 600; }
+    .board tbody th small { display: block; font-size: 11.5px; font-weight: 400; color: var(--ink-3); line-height: 1.3; }
+    .board tbody tr + tr > * { border-top: 1px solid var(--sunk); }
+    .board th + th, .board th + td, .board td + td { border-left: 1px solid var(--sunk); }
+    .val { display: inline-flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .val .m { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+    .val .m svg { width: 12px; height: 12px; }
+    .val.ok .m { background: var(--green); color: var(--white); } .val.no .m { background: var(--red-soft); color: var(--red); }
+    .val.na { font-size: 13.5px; font-weight: 500; color: var(--ink-3); }
+    .board .decide > * { background: var(--surface); }
+    .sig { font-weight: 700; font-size: 13.5px; padding: 5px 0; border-radius: 999px; display: inline-block; width: min(100%, 92px); text-align: center; }
     .sig.push { background: var(--green); color: var(--white); } .sig.stop { background: var(--red-soft); color: var(--red); } .sig.wait { background: var(--amber-soft); color: var(--amber); }
-    .saved { display: flex; align-items: center; gap: 9px; margin-top: 12px; font-size: 13px; color: var(--green); }
-    .saved .loop { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--green-soft); flex: none; }
+    /* a row's marks land one after the other, left to right */
+    .js .board [data-stage] .m, .js .board [data-stage] .sig { scale: 0; transition: scale 0.5s cubic-bezier(0.3, 1.5, 0.5, 1); }
+    .js .board [data-stage].shown .m, .js .board [data-stage].shown .sig { scale: 1; }
+    .js .board [data-stage].shown td:nth-child(2) > * > .m, .js .board [data-stage].shown td:nth-child(2) > .sig { transition-delay: 0.15s; }
+    .js .board [data-stage].shown td:nth-child(3) > * > .m, .js .board [data-stage].shown td:nth-child(3) > .sig { transition-delay: 0.3s; }
+    .js .board [data-stage].shown td:nth-child(4) > * > .m, .js .board [data-stage].shown td:nth-child(4) > .sig { transition-delay: 0.45s; }
+    @media (prefers-reduced-motion: reduce) { .js .board [data-stage] .m, .js .board [data-stage] .sig { scale: 1; transition: none; } }
 
     /* staged parts wait for their moment once the script is running; without it, everything shows */
     .js [data-stage] { opacity: 0; translate: 0 8px; transition: opacity 0.6s var(--ease), translate 0.6s var(--ease); }
@@ -378,11 +391,14 @@
     .ind { position: relative; margin: 0; border-radius: 20px; overflow: hidden; background: var(--ink); aspect-ratio: 4 / 5; box-shadow: var(--shadow); }
     .ind img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 1.2s var(--ease); }
     .ind:hover img { scale: 1.04; }
-    .ind::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(12, 12, 16, 0.78) 0%, rgba(12, 12, 16, 0.18) 45%, transparent 70%); }
+    .ind img { filter: saturate(0.72) contrast(0.96); }
+    .ind::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(22, 15, 62, 0.9) 0%, rgba(52, 40, 128, 0.5) 46%, rgba(74, 58, 167, 0.3) 100%); }
     .ind-text { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 24px; color: var(--white); }
     .ind h3 { font-size: clamp(24px, 2.2vw, 30px); line-height: 1.1; margin-bottom: 6px; }
     .ind p { margin: 0; font-size: 15px; color: rgba(255, 255, 255, 0.82); }
 
+    .sum { text-align: center; padding-block: clamp(110px, 22vh, 240px) clamp(10px, 4vh, 48px); }
+    .sum h2 { font-size: clamp(36px, 5.6vw, 76px); line-height: 1.03; letter-spacing: -0.035em; max-width: 1040px; margin: 0 auto; text-wrap: balance; }
     .film-block { text-align: center; }
     .film-block .block-head { margin-inline: auto; }
     .player { position: relative; max-width: 1040px; margin: 0 auto; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #0b0b0d; border: 1px solid var(--line); box-shadow: 0 40px 90px -40px rgba(26, 26, 31, 0.55); }
@@ -422,7 +438,6 @@
     .pilot-body .msg.fermata { margin-top: 0; }
     .pilot-body .sources { margin: 0; }
     .pilot-body .plot .chart { max-width: none; }
-    .pilot-body .check { margin-top: 8px; }
     .pilot-body .chart text { font-size: 13px; } .pilot-body .chart .key { font-size: 12px; }
     .pilot-body .finding { grid-column: 1 / -1; margin-top: 0; }
 
@@ -437,15 +452,13 @@
       .intro { order: 2; } .chapters { order: 3; }
       .memory { width: 100%; }
       .web .lbl { display: none; }
+      .kb { display: none; }
       .chapter { min-height: 0; padding-block: 56px; }
       .intro { padding-top: 40px; padding-bottom: 8px; }
       .pilot-body { grid-template-columns: minmax(0, 1fr); }
       .pilot-body .msg.you { margin-left: 0; }
       .inds { grid-template-columns: 1fr; }
       .ind { aspect-ratio: 4 / 3; }
-      :root { --bar: 52px; }
-      .stages a { padding: 6px 10px; font-size: 12.5px; }
-      .stages i { width: 16px; }
     }
     @media (max-width: 560px) {
       .wrap { padding-inline: 16px; }
@@ -457,69 +470,26 @@
       .win-bar .title { padding-left: 9px; }
       .msg.you { margin-left: 0; }
       .finding { flex-wrap: wrap; } .finding .btn { margin-left: 0; }
-      .board th:nth-child(2), .board td:nth-child(2) { display: none; }
+      .board table { font-size: 13px; } .board th, .board td { padding: 10px 5px; } .board thead th:first-child, .board tbody th { padding-left: 9px; }
+      .board thead th { font-size: 11.5px; padding-inline: 2px; } .board thead .lt { display: none; } .board tbody th small { display: none; }
+      .val { font-size: 13px; gap: 4px; } .val .m { width: 16px; height: 16px; } .val .m svg { width: 10px; height: 10px; } .val.na { font-size: 12px; }
+      .sig { font-size: 12px; }
       .faq summary { font-size: 18px; }
     }
 
-    /* ---------- the moment the memory is born: gather, the wide map, the fold. Scrubbed by scroll, so it reverses.
-       The canvas draws the documents and the map; this CSS moves the hero's twelve records, places the statement,
-       and brings the card in. Without support, or with reduced motion, the memory simply rests in its card. */
-    @keyframes leave { to { opacity: 0; translate: 0 -40px; } }
-    @keyframes appear { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes ink { 0%, 68% { opacity: 1; } 78%, 100% { opacity: 0; } }
-    @keyframes dot { 0%, 72% { opacity: 0; } 84%, 100% { opacity: 1; } }
-    @keyframes nodeIn { from { opacity: 0; scale: 0.15; translate: var(--fx, 0px) var(--fy, 0px); } to { opacity: 1; scale: 1; translate: 0 0; } }
-    @keyframes edgeIn { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-    @keyframes edgeFade { from { opacity: 0; } }
-    @supports ((animation-timeline: view()) and (animation-range: entry)) {
-      @media (prefers-reduced-motion: no-preference) and (min-width: 900px) {
-        body { timeline-scope: --intro; }
-        .hero { view-timeline: --hero block; overflow-x: clip; overflow-y: visible; }
-        .hero-copy { animation: leave linear both; animation-timeline: --hero; animation-range: exit 0% exit 18%; }
-        .more { animation: appear linear both reverse; animation-timeline: --hero; animation-range: exit 0% exit 9%; }
-        /* 1. GATHER: the records in front of the hero do not leave with the page; they sink a little as you scroll down,
-           and each flies to its own place in the map */
-        .papers { animation: sink linear both; animation-timeline: --hero; animation-range: exit 0% exit 100%; }
-        @keyframes sink { to { translate: 0 108vh; } }
-        .paper {
-          --cx: calc(var(--x) * var(--hw, 1440px) / 100 + 75px);
-          --cy: calc(var(--y) * var(--hh, 828px) / 100 + 36px);
-          --range: exit calc(21% + var(--d) * 18%) exit calc(60% + var(--d) * 32%);
-          animation: settle 1.4s var(--ease) forwards, pour linear both;
-          animation-delay: calc(var(--d) * 1s), 0s;
-          animation-timeline: auto, --hero;
-          animation-range: normal, var(--range);
-        }
-        .paper > * { animation: ink linear both; animation-timeline: --hero; animation-range: var(--range); }
-        .paper::after { animation: dot linear both; animation-timeline: --hero; animation-range: var(--range); }
-        /* a record stays a crisp white card for most of the way, then is a dot, and the map takes it from there */
-        @keyframes pour {
-          10% { opacity: 1; scale: 1; filter: none; }
-          66% { opacity: 1; background-color: #fff; border-color: var(--line); filter: none; }
-          80% { background-color: rgba(255, 255, 255, 0); border-color: transparent; box-shadow: none; }
-          92% { opacity: 1; }
-          100% { translate: calc(var(--mx, 50vw) - var(--cx)) calc(var(--my, 120vh) - var(--cy)); rotate: 0deg; scale: 0.06; opacity: 0;
-                 background-color: rgba(255, 255, 255, 0); border-color: transparent; box-shadow: none; filter: none; }
-        }
-
-        /* 2. THE WIDE MAP: the memory fills the screen, with its statement in the middle */
-        .intro { grid-column: 1 / -1; height: 170vh; min-height: 0; padding: 0; display: block; view-timeline: --intro block; position: relative; z-index: 6; pointer-events: none; }
-        .intro-copy {
-          position: sticky; top: var(--copy-top, 36vh); max-width: 620px; margin: 0 auto; text-align: center; pointer-events: auto;
-          animation: introCopy linear both; animation-timeline: --intro; animation-range: cover 28% cover 52%;
-        }
-        @keyframes introCopy { 0% { opacity: 0; translate: 0 14px; } 22%, 80% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 -14px; } }
-        .intro-copy .eyebrow { margin-bottom: 10px; }
-        .intro h2 { font-size: clamp(30px, 2.9vw, 42px); margin-bottom: 10px; }
-        .intro-copy > p:not(.eyebrow) { margin: 0 auto; max-width: 620px; }
-
-        /* 3. THE FOLD: the map draws into its place on the left, and its card appears round it */
-        .memory { animation: appear linear both; animation-timeline: --intro; animation-range: cover 56% cover 66%; }
-        /* the lab's words wait until the map has folded out of their way */
-        #lab .pin { animation: appear linear both; animation-timeline: --intro; animation-range: cover 60% cover 70%; }
-        .chapters { margin-top: var(--pull, 0px); }
-      }
-
+    /* ---------- the moment the memory is born: gather, the wide map, the fold. The script moves all of it with the
+       scroll (the hero's words leaving, its twelve records flying to their places, the statement, the lab's words
+       arriving), so every browser shows the same thing. This CSS only lays the wide map out. With reduced motion, on a
+       phone or without the script, the memory simply rests in its place. */
+    @media (prefers-reduced-motion: no-preference) and (min-width: 900px) {
+      .js .hero { overflow-x: clip; overflow-y: visible; }
+      .js .paper { animation: none; opacity: 0; }
+      .js .intro { grid-column: 1 / -1; height: 170vh; min-height: 0; padding: 0; display: block; position: relative; z-index: 6; pointer-events: none; }
+      .js .intro-copy { position: sticky; top: var(--copy-top, 36vh); max-width: 620px; margin: 0 auto; text-align: center; pointer-events: auto; opacity: 0; }
+      .js .intro-copy .eyebrow { margin-bottom: 10px; }
+      .js .intro h2 { font-size: clamp(30px, 2.9vw, 42px); margin-bottom: 10px; }
+      .js .intro-copy > p:not(.eyebrow) { margin: 0 auto; max-width: 620px; }
+      .js .chapters { margin-top: var(--pull, 0px); }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -554,10 +524,12 @@
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="apple" viewBox="0 0 24 24"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.97-3.46-1.07-1.57-2.74-1.78-3.33-1.8-1.42-.15-2.77.83-3.49.83-.72 0-1.83-.81-3.01-.79-1.55.02-2.98.9-3.78 2.29-1.61 2.8-.41 6.94 1.16 9.21.77 1.11 1.68 2.36 2.88 2.31 1.16-.05 1.59-.75 2.99-.75 1.4 0 1.79.75 3.01.72 1.24-.02 2.03-1.13 2.79-2.25.88-1.29 1.24-2.54 1.26-2.6-.03-.01-2.42-.93-2.45-3.71zM14.08 5.84c.64-.77 1.07-1.85.95-2.92-.92.04-2.03.61-2.69 1.38-.59.68-1.1 1.78-.97 2.83 1.03.08 2.07-.52 2.71-1.29z"/></symbol>
     <symbol id="mark" viewBox="0 0 48 48"><path d="M6 28 A18 18 0 0 1 42 28" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><circle cx="13" cy="28" r="3.4" fill="currentColor"/><circle cx="24" cy="28" r="3.4" fill="currentColor"/><circle cx="35" cy="28" r="3.4" fill="currentColor"/></symbol>
-    <symbol id="i-rnd" viewBox="0 0 16 16"><path d="M6 1.8h4M7 2v4.2L3.2 12.8a1 1 0 0 0 .9 1.5h7.8a1 1 0 0 0 .9-1.5L9 6.2V2M4.6 10.2h6.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-pilot" viewBox="0 0 16 16"><path d="M3 5.5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2V12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 7h3.5V14M11 14h3M6 1.5v2M3 9h6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-prod" viewBox="0 0 16 16"><path d="M1.8 14.2V8.4l3.6 2V8.4l3.6 2V3h3.4v11.2zM1 14.2h14M12.2 6h.01" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <!-- the map's three groups. The script still keys them rnd, pilot and prod: two teams and the company's targets -->
+    <symbol id="i-rnd" viewBox="0 0 16 16"><path d="M8.2 5.4a2.3 2.3 0 1 1-4.6 0 2.3 2.3 0 0 1 4.6 0zM1.7 13.6c.3-2.5 1.9-3.9 4.2-3.9s3.9 1.4 4.2 3.9M10.6 3.3a2.3 2.3 0 0 1 0 4.2M11.9 9.9c1.4.5 2.2 1.8 2.4 3.7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-pilot" viewBox="0 0 16 16"><path d="M8.2 5.4a2.3 2.3 0 1 1-4.6 0 2.3 2.3 0 0 1 4.6 0zM1.7 13.6c.3-2.5 1.9-3.9 4.2-3.9s3.9 1.4 4.2 3.9M10.6 3.3a2.3 2.3 0 0 1 0 4.2M11.9 9.9c1.4.5 2.2 1.8 2.4 3.7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-prod" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="2.7" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="0.6" fill="currentColor" stroke="currentColor" stroke-width="0.8"/></symbol>
     <symbol id="i-dec" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5.4 8.2l1.8 1.8 3.4-3.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="cross" viewBox="0 0 16 16"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
     <symbol id="tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   </svg>
 
@@ -579,14 +551,14 @@
     <!-- 1. The promise, with a company's records scattered around it -->
     <section class="hero" aria-labelledby="hero-title">
       <div class="papers" aria-hidden="true">
-        <div class="paper near" style="--x:3;--y:10;--r:-6deg;--d:.1"><span class="t pdf">PDF</span><span class="nm">Plant report · Oct 2025</span><i></i><i></i></div>
+        <div class="paper near" style="--x:3;--y:10;--r:-6deg;--d:.1"><span class="t pdf">PDF</span><span class="nm">Quality report · Oct 2025</span><i></i><i></i></div>
         <div class="paper" style="--x:5;--y:36;--r:4deg;--d:.3;--o:.8"><span class="t nb">NOTEBOOK</span><span class="nm">Lab notebook, <span style="white-space:nowrap">p. 38–42</span></span><i></i><i></i></div>
-        <div class="paper far" style="--x:2;--y:58;--r:-3deg;--d:.5;--o:.6"><span class="t csv">CSV</span><span class="nm">Moisture QC log 2026</span><i></i><i></i></div>
+        <div class="paper far" style="--x:2;--y:58;--r:-3deg;--d:.5;--o:.6"><span class="t csv">CSV</span><span class="nm">Cost model 2026</span><i></i><i></i></div>
         <div class="paper near" style="--x:6;--y:76;--r:5deg;--d:.2"><span class="t ppt">SLIDES</span><span class="nm">Drying review · Mar 2026</span><i></i><i></i></div>
-        <div class="paper far" style="--x:85;--y:8;--r:5deg;--d:.4;--o:.6"><span class="t log">LOG</span><span class="nm">Pilot line maintenance</span><i></i><i></i></div>
-        <div class="paper near" style="--x:86;--y:32;--r:-4deg;--d:.15"><span class="t csv">CSV</span><span class="nm">Bench cycling results</span><i></i><i></i></div>
+        <div class="paper far" style="--x:85;--y:8;--r:5deg;--d:.4;--o:.6"><span class="t log">LOG</span><span class="nm">Line trial log</span><i></i><i></i></div>
+        <div class="paper near" style="--x:86;--y:32;--r:-4deg;--d:.15"><span class="t csv">CSV</span><span class="nm">Bench test results</span><i></i><i></i></div>
         <div class="paper" style="--x:88;--y:56;--r:3deg;--d:.35;--o:.8"><span class="t doc">DOC</span><span class="nm">Weekly sync notes</span><i></i><i></i></div>
-        <div class="paper" style="--x:84;--y:76;--r:-5deg;--d:.25;--o:.85"><span class="t csv">CSV</span><span class="nm">Pilot tests, April</span><i></i><i></i></div>
+        <div class="paper" style="--x:84;--y:76;--r:-5deg;--d:.25;--o:.85"><span class="t csv">CSV</span><span class="nm">Line tests, April</span><i></i><i></i></div>
         <div class="paper far" style="--x:22;--y:4;--r:-2deg;--d:.6;--o:.5"><span class="t doc">DOC</span><span class="nm">Additive screening</span><i></i><i></i></div>
         <div class="paper far" style="--x:68;--y:4;--r:3deg;--d:.55;--o:.5"><span class="t pdf">PDF</span><span class="nm">Supplier datasheet</span><i></i><i></i></div>
         <div class="paper far" style="--x:24;--y:90;--r:4deg;--d:.65;--o:.55"><span class="t pdf">PDF</span><span class="nm">Coating spec, rev C</span><i></i><i></i></div>
@@ -604,72 +576,74 @@
       <a class="more" href="#story" aria-label="Scroll down to see how it works"><span><svg viewBox="0 0 24 34" aria-hidden="true"><path d="M5 4l7 6 7-6"/><path d="M5 14l7 6 7-6"/><path d="M5 24l7 6 7-6"/></svg></span></a>
     </section>
 
-    <!-- 2. The story: memory on the left stays put; the stages pass on the right -->
-    <section class="story" id="story" aria-label="How Fermata works, from lab to team">
-      <aside class="rail" data-step="memory" aria-label="Company memory">
+    <!-- 2. The story: the knowledge base on the left stays put; a project, a second team and the team's decision pass on the right -->
+    <section class="story" id="story" aria-label="How Fermata works">
+      <aside class="rail" data-step="memory" aria-label="Company knowledge base">
         <div class="memory">
-          <div class="web" role="img" aria-label="The company's memory: linked documents, findings and decisions in three groups, R&amp;D, pilot and production. Drag to turn it; hover a record to see what it is."></div>
+          <p class="kb">Company knowledge base</p>
+          <div class="web" role="img" aria-label="The company's knowledge base: linked documents, findings and decisions in three groups, Team A, Team B, and cost and performance targets. Drag to turn it; hover a record to see what it is."></div>
         </div>
       </aside>
 
       <article class="chapter intro" id="memory" data-step="memory">
         <div class="intro-copy">
-          <p class="eyebrow"><span class="n">01</span>Memory</p>
+          <p class="eyebrow"><span class="n">01</span>Knowledge base</p>
           <h2>Everything your company has learned, in one place.</h2>
-          <p>Fermata reads every record and links them into one memory.</p>
+          <p>Fermata reads every record and links them into one knowledge base.</p>
         </div>
       </article>
 
       <div class="chapters">
-        <article class="chapter" id="lab" data-step="lab" style="--n:7">
+        <article class="chapter" id="lab" data-step="lab" style="--n:6">
           <div class="pin">
-          <p class="eyebrow"><span class="n">02</span>R&amp;D Lab</p>
-          <h2>R&amp;D starts from everything the company has tried.</h2>
-          <p>Maya’s project is a faster drying step. Before she plans a test, Fermata brings up last year’s plant trial, so she skips what already failed. Her result goes back into memory.</p>
+          <p class="eyebrow"><span class="n">02</span>Project and directions</p>
+          <h2>Every project starts from what the company already tried.</h2>
+          <p>Before a test is planned, Fermata brings up what was tried before.</p>
           <div class="win" data-stage="win">
-            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="../assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Faster drying step</span><span class="who"><span class="av">M</span>Maya · Lab</span></div>
+            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="../assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Project 1 · Coating drying time</span><span class="who"><span class="av">A</span>Team A</span></div>
             <div class="win-body">
               <p class="k">Directions</p>
               <div class="dirs">
                 <div class="dir" data-dir="a">
-                  <div class="dir-row"><span class="lt">A</span><span class="dir-name">Dry for 8 hours instead of 12</span><span class="st"><i class="spin" aria-hidden="true"></i><span class="ck"><svg aria-hidden="true"><use href="#tick"/></svg><span class="visually-hidden">Better on the bench</span></span></span></div>
+                  <div class="dir-row"><span class="lt">A</span><span class="dir-name"><b>Time</b><span>8 hours instead of 12</span></span><span class="st"><i class="spin" aria-hidden="true"></i><span class="ck"><svg aria-hidden="true"><use href="#tick"/></svg><span class="visually-hidden">Done</span></span></span></div>
                 </div>
                 <div class="dir" data-dir="b">
-                  <div class="dir-row"><span class="lt">B</span><span class="dir-name">Dry hotter, at 140 °C</span><span class="st"><i class="spin" aria-hidden="true"></i><span class="chip">Set aside</span></span></div>
-                  <div class="recall" data-stage="recall" data-thread="report"><div><small>From memory · Plant report, Oct 2025</small>At 140 °C, 4 of 6 samples cracked.</div></div>
+                  <div class="dir-row"><span class="lt">B</span><span class="dir-name"><b>Temperature</b><span><span class="was">140 °C</span><span class="now">125 °C</span></span></span><span class="st"><i class="spin" aria-hidden="true"></i><span class="visually-hidden">Running</span></span></div>
+                  <div class="recall" data-stage="recall" data-thread="report"><div><small>From the knowledge base</small>140 °C cracked 4 of 6 samples in 2025.</div></div>
                 </div>
                 <div class="dir" data-dir="c">
-                  <div class="dir-row"><span class="lt">C</span><span class="dir-name">Try 125 °C. Never tested.</span><span class="st"><i class="spin" aria-hidden="true"></i><span class="visually-hidden">Running</span></span></div>
+                  <div class="dir-row"><span class="lt">C</span><span class="dir-name"><b>Composition</b><span>New binder</span></span><span class="st"><i class="spin" aria-hidden="true"></i><span class="visually-hidden">Running</span></span></div>
                 </div>
               </div>
               <div class="finding" data-stage="finding">
-                <p><small>FINDING</small>8-hour drying kept more output on the bench, over the first 50 cycles.</p>
-                <span class="btn" data-share="mayaF">Share with project</span>
+                <p><small>FINDING</small>8-hour drying kept more output over the first 50 cycles.</p>
+                <span class="btn" data-share="mayaF">Share the finding</span>
               </div>
             </div>
           </div>
           </div>
         </article>
 
-        <article class="chapter" id="pilot" data-step="pilot" style="--n:7">
+        <article class="chapter" id="pilot" data-step="pilot" style="--n:6">
           <div class="pin">
-          <p class="eyebrow"><span class="n">03</span>Pilot</p>
-          <h2>On the pilot line, the result arrives with its history.</h2>
-          <p>Tom’s output fell after the switch to 8-hour drying. Fermata reads Maya’s result, the maintenance log and the plant report together, and finds why the lab and the line disagree. An independent check works it out again before anyone acts on it.</p>
+          <p class="eyebrow"><span class="n">03</span>Cross-team learning</p>
+          <h2>What one team learns, the next team starts with.</h2>
+          <p>Team B gets a different result. Fermata reads both and finds why.</p>
           <div class="win" data-stage="win">
-            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="../assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Pilot line · drying step</span><span class="who"><span class="av t">T</span>Tom · Pilot line</span></div>
+            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="../assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Project 2 · Larger batches</span><span class="who"><span class="av t">B</span>Team B</span></div>
             <div class="win-body pilot-body">
-              <div class="msg you" data-stage="ask">Since we moved to 8-hour drying, pilot output has dropped. Can you work out why?<br><span class="att">CSV · Pilot tests, November</span></div>
+              <div class="msg you" data-stage="ask">Output dropped after we moved to 8-hour drying. Why?</div>
               <div class="msg fermata" data-stage="answer">
                 <span class="from"><svg width="16" height="16" aria-hidden="true"><use href="#mark"/></svg>Fermata</span>
-                <p>The bench test stopped at cycle 50. The loss starts later: the 8-hour rolls fall behind near cycle 245.</p>
-                <div class="sources"><span>Read with</span><span class="chip vi" data-thread="mayaF">R&amp;D bench result</span><span class="chip vi" data-thread="report">Plant report 2025 · 81% kept</span><span class="chip vi" data-thread="maint">Maintenance log</span></div>
+                <p>Team A’s test stopped at cycle 50. The loss starts later, near cycle 245.</p>
+                <p class="read">Read from the knowledge base</p>
+                <ul class="sources"><li data-thread="mayaF">Team A’s finding</li><li data-thread="report">Quality report, Oct 2025</li><li data-thread="maint">Line trial log</li></ul>
               </div>
               <div class="plot">
                 <div data-stage="answer">
-                <svg class="chart" viewBox="0 0 340 150" role="img" aria-label="Output kept against cycles. The bench test covers cycles 0 to 50, where 8-hour drying is ahead, and it stays ahead until about cycle 200. Near cycle 245 the 8-hour line falls behind and ends at 79 percent, against 90 percent for 12-hour drying.">
+                <svg class="chart" viewBox="0 0 340 150" role="img" aria-label="Output kept against cycles. Team A's test covers cycles 0 to 50, where 8-hour drying is ahead, and it stays ahead until about cycle 200. Near cycle 245 the 8-hour line falls behind and ends at 79 percent, against 90 percent for 12-hour drying.">
                   <rect x="30" y="10" width="46.7" height="120" fill="#ece8f9"/>
-                  <text x="34" y="124">Bench test</text>
+                  <text x="34" y="124">Team A’s test</text>
                   <line class="axis" x1="30" y1="130" x2="310" y2="130"/>
                   <line x1="258.7" y1="10" x2="258.7" y2="130" stroke="#c3c2b7" stroke-dasharray="3 3"/>
                   <text x="252" y="143" text-anchor="end">cycle 245</text>
@@ -680,11 +654,10 @@
                   <text class="key" x="314" y="98" style="fill:#a52a2a">8 h</text>
                 </svg>
                 </div>
-                <div class="check" data-stage="check"><svg aria-hidden="true"><use href="#tick"/></svg>Independent check passed. It corrected two figures.</div>
               </div>
               <div class="finding" data-stage="finding">
-                <p><small>FINDING</small>8-hour drying keeps about 11 points less output at cycle 300.</p>
-                <span class="btn" data-share="tomF">Share with team</span>
+                <p><small>FINDING</small>8-hour drying keeps 11 points less output at cycle 300.</p>
+                <span class="btn" data-share="tomF">Share the finding</span>
               </div>
             </div>
           </div>
@@ -693,28 +666,39 @@
 
         <article class="chapter" id="team" data-step="team" style="--n:7">
           <div class="pin">
-          <p class="eyebrow"><span class="n">04</span>Production</p>
+          <p class="eyebrow"><span class="n">04</span>Team decision</p>
           <h2>Push here. Stop there.</h2>
-          <p>Before anything is scaled up, the team sees every direction with its evidence, and decides. Daniel hears before his coating reaches the pilot line. The reasons go back into memory.</p>
+          <p>Every direction against the company’s targets, on one page.</p>
           <div class="win" data-stage="win">
-            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="../assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Electrodes team</span><span class="who"><span class="av d">D</span>Daniel · Lab</span></div>
+            <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="../assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Project status · Coating drying time</span><span class="who">Team review</span></div>
             <div class="win-body">
-              <div class="notice" data-stage="notice" data-thread="tomF">
-                <span class="av t">T</span>
-                <div><small>New for you · from Tom</small><p>Tom’s finding may affect your coating. It uses the same drying step.</p><span class="btn" data-add>Add a 12-hour drying test</span></div>
-              </div>
-              <div class="board" data-stage="board">
-                <div class="board-head">Team meeting, week 12 <span>3 directions</span></div>
+              <div class="board">
                 <table>
-                  <thead><tr><th>Direction</th><th>Evidence</th><th>Decision</th></tr></thead>
+                  <thead><tr><th scope="col"><span class="visually-hidden">Measure</span></th><th scope="col"><span class="lt">A</span>Time</th><th scope="col"><span class="lt">B</span>Temperature</th><th scope="col"><span class="lt">C</span>Composition</th></tr></thead>
                   <tbody>
-                    <tr data-stage="row"><td>12-hour drying at pilot scale</td><td><span class="chip ok">Supported · checked</span></td><td><span class="sig push">Push</span></td></tr>
-                    <tr data-stage="row"><td>8-hour drying for the new coating</td><td><span class="chip no">Against at cycle 300</span></td><td><span class="sig stop">Stop</span></td></tr>
-                    <tr data-stage="row"><td>New raw-material batch</td><td><span class="chip">Not tested</span></td><td><span class="sig wait">Wait</span></td></tr>
+                    <tr data-stage="row"><th scope="row" data-thread="qc">Cost<small>change per year</small></th>
+                      <td><span class="val ok"><span class="m"><svg aria-hidden="true"><use href="#tick"/></svg></span>−$1.2M</span></td>
+                      <td><span class="val ok"><span class="m"><svg aria-hidden="true"><use href="#tick"/></svg></span>−$0.8M</span></td>
+                      <td><span class="val no"><span class="m"><svg aria-hidden="true"><use href="#cross"/></svg></span>+$0.4M</span></td></tr>
+                    <tr data-stage="row"><th scope="row" data-thread="tomF">Lifetime<small>kept at cycle 300</small></th>
+                      <td><span class="val no"><span class="m"><svg aria-hidden="true"><use href="#cross"/></svg></span>79%</span></td>
+                      <td><span class="val ok"><span class="m"><svg aria-hidden="true"><use href="#tick"/></svg></span>90%</span></td>
+                      <td><span class="val na">Not tested</span></td></tr>
+                    <tr data-stage="row"><th scope="row" data-thread="maint">Scale-up<small>trial runs passed</small></th>
+                      <td><span class="val no"><span class="m"><svg aria-hidden="true"><use href="#cross"/></svg></span>1 of 3</span></td>
+                      <td><span class="val ok"><span class="m"><svg aria-hidden="true"><use href="#tick"/></svg></span>3 of 3</span></td>
+                      <td><span class="val na">Not tested</span></td></tr>
+                    <tr class="decide" data-stage="row"><th scope="row">Team decision</th>
+                      <td><span class="sig stop">Stop</span></td>
+                      <td><span class="sig push">Push</span></td>
+                      <td><span class="sig wait">Pause</span></td></tr>
                   </tbody>
                 </table>
               </div>
-              <div class="saved" data-stage="saved"><span class="loop"><svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 3v2.5h-2.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Saved to memory: the decision, the reasons, who decided, and when to look again.</div>
+              <div class="finding" data-stage="finding">
+                <p><small>TEAM DECISION</small>Push B. Stop A. Pause C.</p>
+                <span class="btn green" data-share="decision">Save the decision</span>
+              </div>
             </div>
           </div>
           </div>
@@ -722,27 +706,9 @@
       </div>
     </section>
 
-    <!-- 3. Industries -->
-    <section class="block wrap" id="industries" aria-labelledby="ind-title">
-      <div class="block-head">
-        <p class="eyebrow">Industries</p>
-        <h2 id="ind-title">For teams that take chemistry from the bench to the plant.</h2>
-        <p>Each industry keeps its own records and asks its own questions. The way from R&amp;D to production is the same.</p>
-      </div>
-      <div class="inds">
-        <article class="ind">
-          <img src="../assets/industries/chemicals.jpg" alt="A refinery's storage tanks and columns under a golden evening sky" width="1400" height="1050" loading="lazy" decoding="async">
-          <div class="ind-text"><h3>Chemicals and process</h3><p>Catalysts, formulations and scale-up.</p></div>
-        </article>
-        <article class="ind">
-          <img src="../assets/industries/carbon-capture.jpg" alt="Chimneys and cooling towers releasing white plumes above a green forest" width="1400" height="1050" loading="lazy" decoding="async">
-          <div class="ind-text"><h3>Carbon capture and CO₂ conversion</h3><p>Sorbents, membranes and electrolysers.</p></div>
-        </article>
-        <article class="ind">
-          <img src="../assets/industries/batteries.jpg" alt="An automated production line with robots and cable trays in a bright factory" width="1400" height="1050" loading="lazy" decoding="async">
-          <div class="ind-text"><h3>Batteries and energy materials</h3><p>Electrodes, coatings and cells.</p></div>
-        </article>
-      </div>
+    <!-- 3. The whole of it in one line, before the film -->
+    <section class="sum wrap" aria-labelledby="sum-title">
+      <h2 id="sum-title">One R&amp;D workspace, from the first result to the <em>team’s decision</em>.</h2>
     </section>
 
     <!-- 4. The film -->
@@ -784,7 +750,30 @@
       </div>
     </section>
 
-    <!-- 6. Close -->
+    <!-- 6. Industries -->
+    <section class="block wrap" id="industries" aria-labelledby="ind-title">
+      <div class="block-head">
+        <p class="eyebrow">Industries</p>
+        <h2 id="ind-title">Built for industrial R&amp;D.</h2>
+        <p>Each industry keeps its own records. The way from a result to a decision is the same.</p>
+      </div>
+      <div class="inds">
+        <article class="ind">
+          <img src="../assets/industries/chemicals.jpg" alt="A refinery's storage tanks and columns under a golden evening sky" width="1400" height="1050" loading="lazy" decoding="async">
+          <div class="ind-text"><h3>Chemicals and process</h3><p>Catalysts, formulations and scale-up.</p></div>
+        </article>
+        <article class="ind">
+          <img src="../assets/industries/carbon-capture.jpg" alt="Chimneys and cooling towers releasing white plumes above a green forest" width="1400" height="1050" loading="lazy" decoding="async">
+          <div class="ind-text"><h3>Carbon capture and CO₂ conversion</h3><p>Sorbents, membranes and electrolysers.</p></div>
+        </article>
+        <article class="ind">
+          <img src="../assets/industries/batteries.jpg" alt="An automated production line with robots and cable trays in a bright factory" width="1400" height="1050" loading="lazy" decoding="async">
+          <div class="ind-text"><h3>Batteries and energy materials</h3><p>Electrodes, coatings and cells.</p></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 7. Close -->
     <section class="close wrap" id="contact">
       <h2>Fermata works around your workflow. You don’t work around it.</h2>
       <p>For macOS. Questions? Write to us.</p>
@@ -808,19 +797,21 @@
     </div>
   </footer>
 
-  <nav class="stages" aria-label="From R&amp;D to production"><div class="pill">
-    <a href="#lab" data-key="lab"><svg aria-hidden="true"><use href="#i-rnd"/></svg>R&amp;D</a>
-    <i aria-hidden="true"></i>
-    <a href="#pilot" data-key="pilot"><svg aria-hidden="true"><use href="#i-pilot"/></svg>Pilot</a>
-    <i aria-hidden="true"></i>
-    <a href="#team" data-key="team"><svg aria-hidden="true"><use href="#i-prod"/></svg>Production</a>
-  </div></nav>
   <svg class="threads" aria-hidden="true"></svg>
+  <div class="vignette" aria-hidden="true"></div>
   <canvas class="space" aria-hidden="true"></canvas>
+  <div class="clearing" aria-hidden="true"></div>
   <div class="space-tags" aria-hidden="true"></div>
 
   <script>
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // ---- The arrows under the first screen scroll to the story without changing the address: with #story in it, a
+    // refresh opened the page in the middle of the story instead of at the top.
+    document.querySelector(".more").addEventListener("click", (ev) => {
+      ev.preventDefault();
+      document.getElementById("story").scrollIntoView({ behavior: still ? "auto" : "smooth", block: "start" });
+    });
 
     // ---- Download: release assets carry the version in their name, so ask GitHub for the newest DMG.
     // Without JavaScript, or if the call fails, the buttons open the latest release page.
@@ -897,15 +888,15 @@
         b1: [62, 60, "bg"], b2: [118, 44, "bg"], b3: [40, 118, "bg"], b4: [150, 98, "bg"], b5: [70, 176, "bg"],
         b6: [268, 52, "bg"], b7: [350, 70, "bg"], b8: [372, 140, "bg"], b9: [326, 196, "bg"], b10: [252, 118, "bg"],
         b11: [138, 262, "bg"], b12: [190, 318, "bg"], b13: [262, 308, "bg"], b14: [300, 262, "bg"], b15: [110, 312, "bg"],
-        review: [88, 92, "doc", ["rnd", "R&D", "Drying review, Mar 2026"]],
-        notebook: [134, 66, "doc", ["rnd", "R&D", "Lab notebook, p. 38–42"]],
-        bench: [104, 146, "doc", ["rnd", "R&D", "Bench cycling 2026"]],
-        maint: [312, 104, "doc", ["pilot", "Pilot", "Maintenance log"]],
-        qc: [236, 280, "doc", ["prod", "Production", "Moisture QC log"]],
-        report: [168, 286, "doc", ["prod", "Production", "Plant report, Oct 2025"]],
-        mayaF: [160, 140, "finding", ["rnd", "R&D finding", "8 h better on the bench"]],
-        tomF: [318, 186, "finding", ["pilot", "Pilot finding", "11 points less by cycle 300"]],
-        decision: [214, 206, "decision", ["dec", "Decision", "push 12-hour drying"]],
+        review: [88, 92, "doc", ["rnd", "Team A", "Drying review, Mar 2026"]],
+        notebook: [134, 66, "doc", ["rnd", "Team A", "Lab notebook, p. 38–42"]],
+        bench: [104, 146, "doc", ["rnd", "Team A", "Bench test results 2026"]],
+        maint: [312, 104, "doc", ["pilot", "Team B", "Line trial log"]],
+        qc: [236, 280, "doc", ["prod", "Cost", "Cost model 2026"]],
+        report: [168, 286, "doc", ["prod", "Performance", "Quality report, Oct 2025"]],
+        mayaF: [160, 140, "finding", ["rnd", "Team A finding", "8 h better in early tests"]],
+        tomF: [318, 186, "finding", ["pilot", "Team B finding", "11 points less by cycle 300"]],
+        decision: [214, 206, "decision", ["dec", "Team decision", "Push B. Stop A. Pause C."]],
       };
       const EDGES = [
         ["b1", "b2"], ["b1", "b3"], ["b2", "b4"], ["b3", "b5"], ["b4", "b5"], ["b6", "b7"], ["b7", "b8"], ["b8", "b9"],
@@ -917,7 +908,8 @@
         ["tomF", "mayaF"], ["tomF", "maint"], ["tomF", "report"],
         ["decision", "tomF"], ["decision", "mayaF"], ["decision", "report"], ["decision", "qc", 1],
       ];
-      // A company's memory holds far more than the story's six records. Fill each stage with records of its own
+      // A company's knowledge base holds far more than the story's six records. Fill each group (Team A, Team B, and the
+      // cost and performance targets: keyed rnd, pilot and prod) with records of its own
       // (seeded, so the page is the same on every visit) and link each to its nearest neighbours.
       const seeded = (a) => () => { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
       const rand = seeded(11);
@@ -956,10 +948,12 @@
       const formed = (id) => NODES[id][2] === "bg" || NODES[id][2] === "doc";
       const canvas = document.querySelector(".space"), layer = document.querySelector(".space-tags");
       const ctx = canvas.getContext("2d");
+      // a browser that will not give a drawing surface gets the page as it is without this script: nothing hidden, nothing moving
+      if (!ctx) { document.documentElement.classList.remove("js"); return; }
       const hero = document.querySelector(".hero"), heroCopy = hero.querySelector(".hero-copy"), papers = document.querySelector(".papers");
       const memory = document.querySelector(".memory"), story = document.querySelector(".story");
       const intro = document.querySelector(".intro"), copy = document.querySelector(".intro-copy");
-      const docking = () => wide.matches && !still && CSS.supports("animation-timeline: view()");
+      const docking = () => wide.matches && !still;
       function dockProgress() { const r = intro.getBoundingClientRect(); return (innerHeight - r.top) / (r.height + innerHeight); }
       const clamp = (v) => Math.max(0, Math.min(1, v));
       const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
@@ -1004,6 +998,9 @@
       const PAPER_NODE = ["report", "notebook", "qc", "review", "maint", "bench", gOf("rnd", 0), gOf("pilot", 0), gOf("rnd", 1), gOf("rnd", 2), gOf("prod", 0), gOf("pilot", 1)];
       const paperD = {};
       paperEls.forEach((p, i) => { if (PAPER_NODE[i]) paperD[PAPER_NODE[i]] = parseFloat(p.style.getPropertyValue("--d")) || 0.3; });
+      const num = (el, name, d) => { const v = parseFloat(el.style.getPropertyValue(name)); return Number.isFinite(v) ? v : d; };
+      const PAPERS = paperEls.map((el, i) => ({ el, id: PAPER_NODE[i], x: num(el, "--x", 0), y: num(el, "--y", 0), d: num(el, "--d", 0.3), r: num(el, "--r", 0), o: num(el, "--o", 0.92),
+        base: el.classList.contains("far") ? 0.82 : el.classList.contains("near") ? 1.08 : 1 }));
 
       // the hundreds behind them are drawn: small cards at different depths, each on its way to one record or one point
       const BADGE = ["#f3c0b7", "#aedbc9", "#f0d792", "#b3cff0", "#c9c1ee", "#d5d4cb"];
@@ -1074,8 +1071,8 @@
         x.fillStyle = gr; x.fillRect(0, 0, 64, 64); glow[k] = c;
       }
 
-      // the tags of lit records: stage icon, stage, what it is. Never a person's name.
-      const SIDE = { mayaF: "above", tomF: "left", report: "below", maint: "left", decision: "below" };
+      // the tags of lit records: the group's icon, the group, what it is. Never a person's name.
+      const SIDE = { mayaF: "above", tomF: "left", report: "below", maint: "left", qc: "below", decision: "below" };
       const OFFSET = { above: "translate(-50%, calc(-100% - 11px))", below: "translate(-50%, 11px)", left: "translate(calc(-100% - 11px), -50%)", right: "translate(11px, -50%)" };
       const TAGS = {};
       for (const [id, [, , , name]] of Object.entries(NODES)) {
@@ -1087,8 +1084,8 @@
         t.querySelector("b").textContent = stg + " · "; t.querySelector("span").textContent = what;
         layer.append(t); TAGS[id] = t;
       }
-      // the three stages: hubs of the wide map, small captions once it is in its card
-      const HUBS = [["rnd", "R&D", [-0.6, -0.8], [40, 30, 20]], ["pilot", "Pilot", [0.6, -0.74], [338, 34, -26]], ["prod", "Production", [0.02, 0.56], [300, 326, 0]]].map(([st, text, uv, corner]) => {
+      // the three groups: hubs of the wide map, small captions once it rests on the left
+      const HUBS = [["rnd", "Team A", [-0.6, -0.8], [40, 30, 20]], ["pilot", "Team B", [0.6, -0.74], [338, 34, -26]], ["prod", "Cost and performance targets", [0.02, 0.56], [204, 334, 0]]].map(([st, text, uv, corner]) => {
         const h = document.createElement("span");
         h.className = "hub " + st;
         h.innerHTML = `<svg aria-hidden="true"><use href="#i-${st}"/></svg><b></b>`;
@@ -1097,37 +1094,38 @@
         return { h, st, uv, corner };
       });
 
-      // the labs and teams inside each stage: labels of the wide map, and where a record's chip says it came from
+      // what each group holds: labels of the wide map, and where a record's chip says it came from
       const TEAM_AT = {
-        rnd: [["Electrodes lab", 58, 88], ["Materials lab", 134, 60], ["Analytical lab", 98, 156]],
-        pilot: [["Pilot line 2", 280, 96], ["Scale-up team", 342, 148]],
-        prod: [["Plant QC, line 1", 144, 294], ["Process engineering", 268, 282]],
+        rnd: [["Project 3", 58, 88], ["Project 4", 134, 60], ["Project 1", 98, 156]],
+        pilot: [["Project 5", 280, 96], ["Project 2", 342, 148]],
+        prod: [["Cost model", 268, 282], ["Performance targets", 144, 294]],
       };
+      const GROUP = { rnd: "Team A", pilot: "Team B" };
       const TEAM_EL = Object.entries(TEAM_AT).flatMap(([st, list]) => list.map(([name, x, y]) => {
         const t = document.createElement("span");
         t.className = "team " + st; t.textContent = name;
         layer.append(t);
         return { t, st, f: [x, y, 30], at: null };
       }));
-      const teamOf = (id) => { const n = N[id], list = TEAM_AT[n.st]; if (!list) return "Electrodes team"; return [...list].sort((a, b) => Math.hypot(a[1] - n.f[0], a[2] - n.f[1]) - Math.hypot(b[1] - n.f[0], b[2] - n.f[1]))[0][0]; };
+      const teamOf = (id) => { const n = N[id], list = TEAM_AT[n.st]; if (!list) return "Team review"; const at = [...list].sort((a, b) => Math.hypot(a[1] - n.f[0], a[2] - n.f[1]) - Math.hypot(b[1] - n.f[0], b[2] - n.f[1]))[0][0]; return GROUP[n.st] ? `${GROUP[n.st]} · ${at}` : at; };
 
       // what a record is, for its chip: the type, the name, and the lab or team it came from
       const T = { PDF: "pdf", CSV: "csv", SLIDES: "ppt", DOC: "doc", NOTEBOOK: "nb", LOG: "log", EMAIL: "log", FINDING: "nb", DECISION: "csv" };
       const DOCS = {
-        review: ["SLIDES", "Drying review, Mar 2026", "Electrodes lab"],
-        notebook: ["NOTEBOOK", "Lab notebook, p. 38–42", "Materials lab"],
-        bench: ["CSV", "Bench cycling results 2026", "Electrodes lab"],
-        maint: ["LOG", "Pilot line maintenance 2026", "Pilot line 2"],
-        qc: ["CSV", "Moisture QC log 2026", "Plant QC, line 1"],
-        report: ["PDF", "Drying line upgrade report, Oct 2025", "Process engineering"],
-        mayaF: ["FINDING", "8 h drying better on the bench", "Electrodes lab"],
-        tomF: ["FINDING", "8 h keeps 11 points less at cycle 300", "Pilot line 2"],
-        decision: ["DECISION", "Push 12-hour drying at pilot scale", "Electrodes team"],
+        review: ["SLIDES", "Drying review, Mar 2026", "Team A · Project 3"],
+        notebook: ["NOTEBOOK", "Lab notebook, p. 38–42", "Team A · Project 4"],
+        bench: ["CSV", "Bench test results 2026", "Team A · Project 1"],
+        maint: ["LOG", "Line trial log 2026", "Team B · Project 2"],
+        qc: ["CSV", "Cost model 2026", "Cost model"],
+        report: ["PDF", "Quality report, Oct 2025", "Performance targets"],
+        mayaF: ["FINDING", "8 h drying better in early tests", "Team A · Project 1"],
+        tomF: ["FINDING", "8 h keeps 11 points less at cycle 300", "Team B · Project 2"],
+        decision: ["DECISION", "Push B. Stop A. Pause C.", "Team review"],
       };
       const POOL = {
-        rnd: [["PDF", "Electrode slurry viscosity study"], ["CSV", "Coin cell cycling, batch 14"], ["NOTEBOOK", "Lab notebook, p. 12–19"], ["SLIDES", "Binder screening review"], ["DOC", "Additive screening notes"], ["CSV", "XRD scans, set B"], ["PDF", "Supplier datasheet, PVDF"], ["NOTEBOOK", "Lab notebook, p. 51–55"], ["CSV", "Moisture uptake at 40 °C"], ["SLIDES", "Quarterly R&D review, Q2"], ["PDF", "Literature review: dry electrodes"], ["DOC", "Weekly sync notes, Feb"], ["CSV", "Particle size, lot 7"], ["NOTEBOOK", "Lab notebook, p. 60–64"], ["PDF", "Thermal stability, DSC runs"]],
-        pilot: [["LOG", "Line 2 maintenance, Q3"], ["CSV", "Pilot tests, April"], ["CSV", "Coating thickness, June"], ["PDF", "Line 2 SOP, rev D"], ["SLIDES", "Scale-up review, May"], ["EMAIL", "RE: roll R-31 results"], ["CSV", "Oven profile MC-112"], ["DOC", "Pilot run sheet, Nov"], ["LOG", "Shift handover notes"], ["PDF", "Calendering trial report"], ["CSV", "Slot-die gap settings"], ["SLIDES", "Pilot readiness review"]],
-        prod: [["CSV", "QC release log, week 41"], ["PDF", "Batch record B-2211"], ["PDF", "Customer 8D report, #114"], ["CSV", "Moisture QC log, line 1"], ["SLIDES", "Plant KPI review, Oct"], ["PDF", "Drying line upgrade spec"], ["LOG", "Downtime log, line 1"], ["DOC", "Change request CR-207"], ["CSV", "Scrap rate by shift"], ["EMAIL", "RE: supplier lot change"], ["PDF", "Annual process audit"]],
+        rnd: [["PDF", "Slurry viscosity study"], ["CSV", "Cycling results, batch 14"], ["NOTEBOOK", "Lab notebook, p. 12–19"], ["SLIDES", "Binder screening review"], ["DOC", "Additive screening notes"], ["CSV", "XRD scans, set B"], ["PDF", "Supplier datasheet, PVDF"], ["NOTEBOOK", "Lab notebook, p. 51–55"], ["CSV", "Moisture uptake at 40 °C"], ["SLIDES", "Quarterly review, Q2"], ["PDF", "Literature review: dry coating"], ["DOC", "Weekly sync notes, Feb"], ["CSV", "Particle size, lot 7"], ["NOTEBOOK", "Lab notebook, p. 60–64"], ["PDF", "Thermal stability, DSC runs"]],
+        pilot: [["LOG", "Line 2 maintenance, Q3"], ["CSV", "Line tests, April"], ["CSV", "Coating thickness, June"], ["PDF", "Line 2 SOP, rev D"], ["SLIDES", "Scale-up review, May"], ["EMAIL", "RE: roll R-31 results"], ["CSV", "Oven profile MC-112"], ["DOC", "Run sheet, Nov"], ["LOG", "Shift handover notes"], ["PDF", "Calendering trial report"], ["CSV", "Slot-die gap settings"], ["SLIDES", "Readiness review"]],
+        prod: [["CSV", "Raw material prices, Q3"], ["PDF", "Performance targets, FY26"], ["PDF", "Customer spec, rev B"], ["CSV", "Energy use by step"], ["SLIDES", "Cost review, Oct"], ["DOC", "Target sheet: cycle life"], ["CSV", "Scrap rate by shift"], ["PDF", "Supplier quotes, binder"], ["SLIDES", "KPI review, Oct"], ["CSV", "Yield by line"], ["PDF", "Annual cost audit"]],
       };
       const used = { rnd: 0, pilot: 0, prod: 0 };
       for (const id of ids) {
@@ -1150,11 +1148,19 @@
 
       // ---- drawing
       let dpr = 1;
+      // The bitmap is never larger than a 4K screen's (8.3 million pixels): at 2560×1440 and dpr 2 that is 1.5 pixels
+      // per CSS pixel instead of 2. Every frame is cleared, drawn, uploaded and composited at this size, so it sets the
+      // cost of the hero and the wide map on a big monitor. Laptops (1440×900 at dpr 2 = 5.2 million) keep full resolution.
+      const MAXPX = 3840 * 2160, vw = () => document.documentElement.clientWidth || innerWidth;
+      let box = null; // what the last frame drew, in CSS pixels; null means the whole canvas
       function sizeCanvas() {
-        const k = Math.min(2, devicePixelRatio || 1), W = innerWidth, H = innerHeight;
-        if (canvas.width !== Math.round(W * k) || canvas.height !== Math.round(H * k)) { canvas.width = Math.round(W * k); canvas.height = Math.round(H * k); }
+        const W = vw(), H = innerHeight, k = Math.min(2, devicePixelRatio || 1, Math.max(1, Math.sqrt(MAXPX / (W * H))));
+        if (canvas.width !== Math.round(W * k) || canvas.height !== Math.round(H * k)) { canvas.width = Math.round(W * k); canvas.height = Math.round(H * k); box = null; }
         dpr = k; ctx.setTransform(k, 0, 0, k, 0, 0);
       }
+      // the drawn area, grown as things are drawn while only the docked map is on the canvas
+      let bb = null;
+      const grow = (x, y, r) => { if (bb) { if (x - r < bb[0]) bb[0] = x - r; if (y - r < bb[1]) bb[1] = y - r; if (x + r > bb[2]) bb[2] = x + r; if (y + r > bb[3]) bb[3] = y + r; } };
       const rr = (x, y, ww, hh, r) => { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, ww, hh, r); else ctx.rect(x, y, ww, hh); };
       function drawCard(c, x, y, t, fade) {
         const alpha = (0.26 + 0.62 * c.zc) * (1 - clamp((t - 0.5) / 0.35)) * fade;
@@ -1166,9 +1172,11 @@
         ctx.fillStyle = "#ffffff"; rr(-38, -28, 76, 56, 5); ctx.fill();
         ctx.strokeStyle = "#dedcd3"; ctx.lineWidth = 1 / s; ctx.stroke();
         ctx.fillStyle = BADGE[c.type]; rr(-31, -21, 20 + (c.type % 3) * 5, 8, 2.5); ctx.fill();
-        ctx.fillStyle = "#e9e8e2"; ctx.fillRect(-31, -6, 62, 4); ctx.fillRect(-31, 3, 46 + (c.type % 2) * 10, 4); ctx.fillRect(-31, 12, 54 - (c.type % 3) * 8, 4);
+        // the three grey lines in one fill: they never overlap, so this is the same picture in one call instead of three
+        ctx.fillStyle = "#e9e8e2"; ctx.beginPath(); ctx.rect(-31, -6, 62, 4); ctx.rect(-31, 3, 46 + (c.type % 2) * 10, 4); ctx.rect(-31, 12, 54 - (c.type % 3) * 8, 4); ctx.fill();
         ctx.globalAlpha = 1;
       }
+      const dustGroups = new Map();
       const clearing = (r, op, kx, ky) => {
         if (op < 0.03 || r.bottom < 0 || r.top > S.H) return;
         ctx.save(); ctx.translate(r.left + r.width / 2, r.top + r.height / 2); ctx.scale(r.width * kx, r.height * ky);
@@ -1178,14 +1186,17 @@
       };
       function render() {
         sizeCanvas();
-        const now = performance.now(), VW = innerWidth, H = innerHeight;
+        const now = performance.now(), VW = vw(), H = innerHeight;
+        // every read of the page's layout comes first, before this frame writes any style (no forced layouts)
         const hr = hero.getBoundingClientRect(), wr = web.getBoundingClientRect(), dock = docking(), dp = dock ? dockProgress() : 1;
+        const hcr = heroCopy.getBoundingClientRect(), ccr = copy.getBoundingClientRect(), copyH = copy.offsetHeight, sy0 = scrollYaw();
+        measureThreads();
         e = still ? 1 : dock ? clamp(1 - hr.bottom / H) : clamp((H * 0.95 - wr.top) / (H * 0.75));
         L = clamp((e - 0.8) / 0.19);
-        w = dock ? ease(clamp((dp - 0.46) / 0.18)) : 1;
+        w = dock ? ease(clamp((dp - 0.45) / 0.21)) : 1;
         const sx = (VW * 0.47) / 188, sy = (H * 0.44) / 140;
         S = { VW, H, hr, wr, dock, dp, sx, sy, zs: Math.min(sx, sy), bs: wr.width / 400, wcx: VW / 2, wcy: H / 2,
-          bcx: wr.left + wr.width / 2, bcy: wr.top + wr.height / 2, pa: Math.min(VW * 0.27, 400), pb: copy.offsetHeight / 2 + 64 };
+          bcx: wr.left + wr.width / 2, bcy: wr.top + wr.height / 2, pa: Math.min(VW * 0.27, 400), pb: copyH / 2 + 64 };
         // the map is already turning while it gathers: the swing starts as the first records land, not once it is complete
         const wideNow = dock && L >= 1 && w < 0.5, swayOn = dock && e > 0.32 && w < 0.5, idle = swayOn && !drag && now - lastMove > 1500;
         const dt = Math.min(0.05, (now - lastFrame) / 1000); lastFrame = now;
@@ -1196,31 +1207,35 @@
         view.hy += (view.ty - view.hy) * 0.09; view.hp += (view.tp - view.hp) * 0.09;
         const leaning = Math.abs(view.ty - view.hy) > 0.002 || Math.abs(view.tp - view.hp) > 0.002;
         // a spin given to the wide map unwinds as it folds into its card, so the card always starts the right way round
-        const yaw = view.yaw + view.wy * (1 - w) + view.hy + swayYaw + (1 - ease(L)) * 0.3 + scrollYaw(), pitch = view.pitch + view.wp * (1 - w) + view.hp + swayPitch;
+        const yaw = view.yaw + view.wy * (1 - w) + view.hy + swayYaw + (1 - ease(L)) * 0.3 + sy0, pitch = view.pitch + view.wp * (1 - w) + view.hp + swayPitch;
         cyw = Math.cos(yaw); syw = Math.sin(yaw); cp = Math.cos(pitch); sp = Math.sin(pitch);
         for (const hub of HUBS) hub.at = place3(hub.uv[0] * 188 * sx, hub.uv[1] * 140 * sy, 0, ...hub.corner);
         for (const tm of TEAM_EL) tm.at = nodeTarget(tm);
-        ctx.clearRect(0, 0, VW, H);
+        if (!box) ctx.clearRect(0, 0, VW, H);
+        else if (box[2] > box[0]) ctx.clearRect(Math.floor(box[0]) - 2, Math.floor(box[1]) - 2, Math.ceil(box[2] - box[0]) + 4, Math.ceil(box[3] - box[1]) + 4);
         busy = leaning;
+        hr0 = hr;
+        const xp = dock ? clamp(-hr.top / hr.height) : 0; // how far the hero has left by the top of the screen
+        driveDom(now, dock, dp, xp);
         // the first screen is lit from the middle: the page's own colour there, violet toward the edges. It goes as the hero does.
         const vg = clamp((hr.bottom / H - 0.2) / 0.6);
-        if (vg > 0) {
-          ctx.save(); ctx.translate(VW / 2, H / 2); ctx.scale(VW * 0.58, H * 0.58);
-          const g = ctx.createRadialGradient(0, 0, 0.5, 0, 0, 1.22);
-          g.addColorStop(0, "rgba(74, 58, 167, 0)"); g.addColorStop(0.45, `rgba(74, 58, 167, ${0.1 * vg})`); g.addColorStop(1, `rgba(74, 58, 167, ${0.4 * vg})`);
-          ctx.fillStyle = g; ctx.fillRect(-1, -1, 2, 2); ctx.restore();
-        }
+        layerTo(vignetteEl, vg, null);
+        // the clearing behind the hero's words, where they are this frame
+        const hy = hcr.top + heroTY - hcr0, hop = hcr.bottom + heroTY - hcr0 < 0 || hy > H ? 0 : heroOp;
+        layerTo(clearingEl, hr.bottom > -40 && hop >= 0.03 ? hop : 0, [hcr.left + hcr.width / 2, hy + hcr.height / 2, hcr.width * 1.2, hcr.height * 1.56]);
         document.body.classList.toggle("map-wide", dock && L > 0.5 && w < 0.5);
         // the pointer carries a soft light over the map; what is inside it wakes up
         const proxR = w < 0.5 ? 190 : 70;
         const ptrOn = ptr.on && e > 0.45 && ((dock && w < 0.5) || (L >= 1 && ptr.x > wr.left && ptr.x < wr.right && ptr.y > wr.top && ptr.y < wr.bottom));
         const proxAt = (x, y) => (ptrOn ? clamp(1 - Math.hypot(x - ptr.x, y - ptr.y) / proxR) ** 2 : 0);
         const heroOn = hr.bottom > -40, mapOn = e > 0 && wr.bottom > -120 && (wr.top < H + 120 || w < 1);
-        if (!heroOn && !mapOn) { for (const k in proj) delete proj[k]; syncLayer(); return; }
+        // while only the docked map is drawn, the next frame clears just the area this one drew
+        bb = !heroOn && e >= 1 && w >= 1 && !still ? [Infinity, Infinity, -Infinity, -Infinity] : null;
+        if (!heroOn && !mapOn) { for (const k in proj) delete proj[k]; box = [0, 0, 0, 0]; syncLayer(); place(false); return; }
 
         // 1. every drawn document: where it is between its place behind the hero and its place in the map
-        const load = still ? 1 : (now - t0) / 900;
-        if (load < 1.9) busy = true;
+        const load = still ? 1 : (now - t0) / 500;
+        if (!still && load < 1.9) busy = true;
         for (const c of CARDS) {
           c.t = still ? 1 : tOf(c);
           if (c.t <= 0 && !still) { [c.x, c.y] = homeOf(c); c.T = null; continue; }
@@ -1232,9 +1247,13 @@
           const g = ctx.createRadialGradient(ptr.x, ptr.y, 0, ptr.x, ptr.y, proxR * 1.15);
           g.addColorStop(0, "rgba(106, 92, 196, 0.16)"); g.addColorStop(0.5, "rgba(106, 92, 196, 0.06)"); g.addColorStop(1, "rgba(106, 92, 196, 0)");
           ctx.fillStyle = g; ctx.beginPath(); ctx.arc(ptr.x, ptr.y, proxR * 1.15, 0, 6.283); ctx.fill();
+          grow(ptr.x, ptr.y, proxR * 1.15);
         }
         if (mapOn) {
           const late = clamp((e - 0.45) / 0.4), P = new Array(DUSTN);
+          // The points all share one colour and differ only in alpha, so the order they are drawn in does not change the
+          // picture. They are gathered by alpha (to 1/256) and each group is filled at once: about 60 fills, not 760.
+          for (const g of dustGroups.values()) g.length = 0;
           for (let i = 0; i < DUSTN; i++) {
             const d = DUST[i], c = d.card;
             let x, y, T, a;
@@ -1243,8 +1262,18 @@
             if (a < 0.02) continue;
             P[i] = [x, y, a];
             const near = clamp(0.5 + T[2] * 0.5), px = proxAt(x, y);
-            ctx.fillStyle = `rgba(74, 58, 167, ${Math.min(0.95, d.a * (0.1 + 0.36 * near) * a * (1 + 2.4 * px)).toFixed(3)})`;
-            ctx.beginPath(); ctx.arc(x, y, (0.45 + 0.95 * near) * T[3] * (1 + 0.7 * px), 0, 6.283); ctx.fill();
+            const al = Math.round(Math.min(0.95, d.a * (0.1 + 0.36 * near) * a * (1 + 2.4 * px)) * 256), rad = (0.45 + 0.95 * near) * T[3] * (1 + 0.7 * px);
+            if (al <= 0) continue;
+            let g = dustGroups.get(al);
+            if (!g) dustGroups.set(al, (g = []));
+            g.push(x, y, rad);
+            grow(x, y, rad + 1);
+          }
+          for (const [al, g] of dustGroups) {
+            if (!g.length) continue;
+            ctx.fillStyle = `rgba(74, 58, 167, ${(al / 256).toFixed(4)})`; ctx.beginPath();
+            for (let j = 0; j < g.length; j += 3) { ctx.moveTo(g[j] + g[j + 2], g[j + 1]); ctx.arc(g[j], g[j + 1], g[j + 2], 0, 6.283); }
+            ctx.fill();
           }
           if (L > 0) {
             ctx.strokeStyle = `rgba(106, 92, 196, ${((0.1 + 0.08 * (1 - w)) * L).toFixed(3)})`; ctx.lineWidth = 0.5 + 0.2 * (1 - w); ctx.beginPath();
@@ -1272,6 +1301,7 @@
             else { p = nodeTarget(n); if (formed(id)) f = id in paperD && dock ? clamp((e - (0.48 + 0.32 * paperD[id])) / 0.12) : clamp((e - 0.5) / 0.3); }
             if (f < 0.02) continue;
             proj[id] = p; fadeOf[id] = f;
+            grow(p[0], p[1], 2);
           }
           if (L > 0) {
             EDGES.forEach(([a, b, dash], n) => {
@@ -1316,18 +1346,20 @@
               const g = (on ? 7.5 : 5.2) * r;
               ctx.globalAlpha = fade * (0.55 + 0.45 * near) * (n.kind === "bg" ? (on ? 0.6 : Math.min(1, Math.max(0, prox - 0.15) * 1.5)) : 1);
               ctx.drawImage(glow[n.kind === "bg" ? "bg" : n.st], x - g, y - g, g * 2, g * 2);
+              grow(x, y, g);
             }
             const [cr, cg, cb] = n.kind === "bg" ? [128 - 44 * prox, 122 - 54 * prox, 165 + 6 * prox] : RGB[n.st];
             ctx.globalAlpha = fade * Math.min(1, (n.kind === "bg" ? 0.35 + 0.55 * near : 0.7 + 0.3 * near) + 0.5 * prox);
             ctx.fillStyle = `rgb(${cr}, ${cg}, ${cb})`;
             ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill();
             if (on) { ctx.globalAlpha = 0.5; ctx.strokeStyle = `rgb(${cr}, ${cg}, ${cb})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x, y, r + 4, 0, 6.283); ctx.stroke(); }
+            grow(x, y, r + 6);
             ctx.globalAlpha = 1;
           }
         }
         // 5. room for the words in front
-        if (heroOn) clearing(heroCopy.getBoundingClientRect(), parseFloat(getComputedStyle(heroCopy).opacity), 0.6, 0.78);
-        if (dock && w < 1 && e > 0.3) clearing(copy.getBoundingClientRect(), parseFloat(getComputedStyle(copy).opacity), 0.72, 0.95);
+        if (dock && w < 1 && e > 0.3) { const d = copyTY - ccr0; clearing({ left: ccr.left, width: ccr.width, height: ccr.height, top: ccr.top + d, bottom: ccr.bottom + d }, copyOp, 0.72, 0.95); }
+        box = bb;
         // now and then, while nobody is touching it, one record shows its chip for a moment
         if (auto.id && (now > auto.until || !idle || hover || pinned || !proj[auto.id])) { auto.id = null; auto.next = now + 900; autoChip.classList.remove("on"); }
         if (!auto.id && idle && L >= 1 && !hover && !pinned && sway.amt > 0.5 && now > auto.next) {
@@ -1338,8 +1370,80 @@
           if (pool.length) { auto.id = auto.last = pool[Math.floor(Math.random() * pool.length)]; auto.until = now + 2600; fillChip(autoChip, auto.id); autoChip.classList.add("on"); }
         }
         syncLayer();
-        place();
+        place(false);
       }
+      // a layer laid over the page: its opacity, and where it sits ([centre x, centre y, width, height]) when it moves
+      const vignetteEl = document.querySelector(".vignette"), clearingEl = document.querySelector(".clearing");
+      const layerTo = (el, o, at) => {
+        const st = el.style, v = o > 0 ? "visible" : "hidden";
+        if (st.visibility !== v) st.visibility = v;
+        if (o <= 0) return;
+        const os = o.toFixed(3);
+        if (st.opacity !== os) st.opacity = os;
+        if (at) {
+          const ws = at[2].toFixed(1) + "px", hs = at[3].toFixed(1) + "px", ts = `translate(${(at[0] - at[2] / 2).toFixed(1)}px, ${(at[1] - at[3] / 2).toFixed(1)}px)`;
+          if (st.width !== ws) st.width = ws;
+          if (st.height !== hs) st.height = hs;
+          if (st.transform !== ts) st.transform = ts;
+        }
+      };
+      // ---- What the scroll moves in the page itself. It is set here, frame by frame, from the same numbers the canvas
+      // uses: no browser's own scroll-linked animation is involved, so Safari and Chrome show the same thing.
+      const sm = (x, a, b) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+      const moreEl = hero.querySelector(".more"), labPin = document.querySelector("#lab .pin"), kbEl = document.querySelector(".kb");
+      let driven = null;
+      // the hero's words and the statement: the opacity and vertical shift driveDom gave them, this frame (heroTY, copyTY)
+      // and when the page was last read (hcr0, ccr0)
+      let heroOp = 1, heroTY = 0, hcr0 = 0, copyOp = 0, copyTY = 0, ccr0 = 0;
+      function driveDom(now, dock, dp, xp) {
+        hcr0 = heroTY; ccr0 = copyTY;
+        if (dock !== driven) {
+          driven = dock;
+          if (!dock) {
+            for (const el of [heroCopy, moreEl, copy, labPin, kbEl]) for (const k of ["opacity", "translate", "visibility"]) el.style[k] = "";
+            for (const P of PAPERS) P.el.removeAttribute("data-driven"), ["opacity", "translate", "rotate", "scale", "visibility", "filter", "backgroundColor", "borderColor", "boxShadow"].forEach((k) => (P.el.style[k] = ""));
+          }
+        }
+        if (!dock) { heroOp = 1; heroTY = 0; copyOp = 0; copyTY = 0; return; }
+        // the hero's words leave, and the arrows with them
+        const k = clamp(xp / 0.18);
+        heroOp = k >= 1 ? 0 : +(1 - k).toFixed(3); heroTY = +(-40 * k).toFixed(1);
+        heroCopy.style.opacity = (1 - k).toFixed(3); heroCopy.style.translate = `0 ${(-40 * k).toFixed(1)}px`; heroCopy.style.visibility = k >= 1 ? "hidden" : "";
+        const mo = 1 - clamp(xp / 0.09);
+        moreEl.style.opacity = mo.toFixed(3); moreEl.style.visibility = mo <= 0 ? "hidden" : "";
+        // the statement of the wide map: in once the map is there, and wholly gone before the map starts to fold
+        const cin = sm(dp, 0.26, 0.32), cout = sm(dp, 0.395, 0.45), co = cin * (1 - cout);
+        copyOp = co <= 0.001 ? 0 : +co.toFixed(3); copyTY = +(14 * (1 - cin) - 14 * cout).toFixed(1);
+        copy.style.opacity = co.toFixed(3); copy.style.translate = `0 ${(14 * (1 - cin) - 14 * cout).toFixed(1)}px`; copy.style.visibility = co <= 0.001 ? "hidden" : "";
+        // the lab's words arrive as the map comes to rest on the left
+        const lp = sm(dp, 0.585, 0.69);
+        labPin.style.opacity = lp.toFixed(3); labPin.style.translate = `0 ${(20 * (1 - lp)).toFixed(1)}px`; labPin.style.visibility = lp <= 0.001 ? "hidden" : "";
+        kbEl.style.opacity = lp.toFixed(3);
+        // the hero's twelve records: they come in, sink a little as the page scrolls, and each flies to its record in the map
+        for (const P of PAPERS) {
+          const t = clamp((xp - (0.21 + 0.18 * P.d)) / (0.39 + 0.14 * P.d)), st = P.el.style;
+          if (t >= 1 || hr0.bottom < -600) { st.visibility = "hidden"; continue; }
+          P.w ||= P.el.offsetWidth; P.h ||= P.el.offsetHeight;
+          const ent = ease(clamp((now - t0) / 600 - P.d * 0.6));
+          const nx = hr0.left + (P.x * hr0.width) / 100 + P.w / 2, ny = hr0.top + (P.y * hr0.height) / 100 + P.h / 2;
+          let x = nx, y = ny + scrollY * 1.1 + 18 * (1 - ent);
+          if (t > 0 && P.id) { const T = nodeTarget(N[P.id]), q = t * t * (3 - 2 * t); x = mix(x, T[0], q); y = mix(y, T[1], q); }
+          const a = 1 - clamp((t - 0.66) / 0.14);
+          st.visibility = "";
+          st.translate = `${(x - nx).toFixed(1)}px ${(y - ny).toFixed(1)}px`;
+          st.rotate = `${(P.r * (1 - t)).toFixed(2)}deg`;
+          st.scale = (t < 0.1 ? mix(P.base, 1, t / 0.1) : mix(1, 0.06, (t - 0.1) / 0.9)).toFixed(3);
+          st.opacity = (ent * (t < 0.1 ? mix(P.o, 1, t / 0.1) : t > 0.92 ? 1 - (t - 0.92) / 0.08 : 1)).toFixed(3);
+          st.filter = t > 0 ? "none" : "";
+          st.backgroundColor = a < 1 ? `rgba(255, 255, 255, ${a.toFixed(3)})` : "";
+          st.borderColor = a < 1 ? `rgba(225, 224, 217, ${a.toFixed(3)})` : "";
+          st.boxShadow = a < 1 ? "none" : "";
+          st.setProperty("--paper-ink", (1 - clamp((t - 0.68) / 0.1)).toFixed(3));
+          st.setProperty("--dot", clamp((t - 0.72) / 0.12).toFixed(3));
+          if (ent < 1) busy = true;
+        }
+      }
+      let hr0 = null;
       // tags, stage names and the chip are elements laid over the canvas; they follow their records
       function syncLayer() {
         const mapOn = S && e > 0 && L > 0;
@@ -1360,7 +1464,8 @@
           const p = proj[id], show = lit.has(id) && p && L >= 1 && w > 0.9;
           t.classList.toggle("on", !!show);
           if (!show) continue;
-          const u = (p[0] - S.wr.left) / S.wr.width, tw = t.offsetWidth, th = t.offsetHeight;
+          if (!t._w) { t._w = t.offsetWidth; t._h = t.offsetHeight; }
+          const u = (p[0] - S.wr.left) / S.wr.width, tw = t._w, th = t._h;
           const first = u > 0.62 ? "left" : u < 0.38 ? "right" : t.dataset.side === "left" || t.dataset.side === "right" ? "below" : t.dataset.side;
           const box = (side) => side === "above" ? [p[0] - tw / 2, p[1] - th - 11] : side === "below" ? [p[0] - tw / 2, p[1] + 11] : side === "left" ? [p[0] - tw - 11, p[1] - th / 2] : [p[0] + 11, p[1] - th / 2];
           const clear = ([x, y]) => !taken.some(([x2, y2, w2, h2]) => x < x2 + w2 + 4 && x + tw + 4 > x2 && y < y2 + h2 + 3 && y + th + 3 > y2);
@@ -1373,17 +1478,30 @@
         else if (!chip.hidden) { chip.hidden = true; hover = null; }
       }
       // the documents behind the hero keep drifting while it is on screen; everything else is drawn on demand
-      let rafId = 0, lastNow = performance.now();
+      let rafId = 0, lastNow = performance.now(), lastInput = -1e9, lastDrawn = -1e9, pendingUpdate = false;
       const wantsLoop = () => !still && !paused && S && document.visibilityState === "visible" && ((S.hr.bottom > -40 && e < 1) || S.wideNow || sway.amt > 0.01);
       function loop(now) {
         rafId = 0;
+        // the stage steps first, while the page's layout is still clean from the last frame
+        if (pendingUpdate) { pendingUpdate = false; update(); }
+        // ambient motion alone (the hero's slow drift, the wide map's sway: nothing scrolled, pointed or arriving) is drawn
+        // at 30 frames a second. Nothing in it moves more than a pixel a frame at that rate, and it halves the cost of
+        // the two screens a visitor rests on.
+        const ambient = !busy && S && now - lastInput > 250;
+        if (ambient && now - lastDrawn < 30) { if (!rafId) rafId = requestAnimationFrame(loop); return; }
+        lastDrawn = now;
         if (!paused) timeS += Math.min(0.05, (now - lastNow) / 1000);
         lastNow = now;
         render();
-        if (wantsLoop() || busy) rafId = requestAnimationFrame(loop);
+        // update() or render() may already have asked for the next frame: never start a second chain of frames
+        if ((wantsLoop() || busy) && !rafId) rafId = requestAnimationFrame(loop);
       }
       const requestRender = () => { if (!rafId) rafId = requestAnimationFrame(loop); };
-      document.addEventListener("visibilitychange", requestRender);
+      const input = () => { lastInput = performance.now(); requestRender(); };
+      // a page coming back (another tab, or Safari's back-forward cache) may have lost the frame it asked for: ask again
+      const wake = () => { if (document.visibilityState !== "visible") return; cancelAnimationFrame(rafId); rafId = 0; box = null; pendingUpdate = true; requestRender(); };
+      document.addEventListener("visibilitychange", wake);
+      addEventListener("pageshow", (ev) => { if (ev.persisted) { measure(); fitPins(); } wake(); });
 
       // where a record is on the screen, for the dots that fly to it and the threads that leave it
       const screenPos = (id) => { const p = proj[id] || (S ? nodeTarget(N[id]) : [0, 0]); return [p[0], p[1]]; };
@@ -1410,7 +1528,7 @@
       document.addEventListener("pointerdown", (ev) => {
         if (ev.button || L < 1) return;
         const touch = ev.pointerType === "touch";
-        const inBox = overBox(ev) && w > 0.5, inWide = mapWide() && !touch && !ev.target.closest("a, button, header, .stages");
+        const inBox = overBox(ev) && w > 0.5, inWide = mapWide() && !touch && !ev.target.closest("a, button, header");
         if (!inBox && !inWide) return;
         if (!touch) ev.preventDefault();
         drag = { x: ev.clientX, y: ev.clientY, moved: false, touch, wide: !inBox };
@@ -1425,13 +1543,13 @@
           // the map is held like an object: pull it down and its top comes toward you, pull it right and its left does
           view.vy = (dx / span) * 3.2; view.vp = drag.touch ? 0 : -(dy / span) * 2.4;
           turn(drag.wide);
-          document.body.classList.add("turning"); pinned = null; showChip(null); lastMove = performance.now();
+          document.body.classList.add("turning"); pinned = null; showChip(null); lastMove = lastInput = performance.now();
           requestRender();
           return;
         }
         if (ev.pointerType === "touch" || !S || still) return;
         if (ev.clientX === ptr.x && ev.clientY === ptr.y) return; // the page moved under a resting pointer; nobody touched anything
-        lastMove = performance.now(); ptr.x = ev.clientX; ptr.y = ev.clientY;
+        lastMove = lastInput = performance.now(); ptr.x = ev.clientX; ptr.y = ev.clientY;
         // the map leans toward the cursor: across the whole screen while it is wide, over its card once it is there
         const wideNow = mapWide(), box = !wideNow && overBox(ev) && L >= 1;
         if (wideNow) { view.ty = (ev.clientX / S.VW - 0.5) * 0.7; view.tp = -(ev.clientY / S.H - 0.5) * 0.42; }
@@ -1451,7 +1569,7 @@
         if (still || drag || (Math.abs(view.vy) < 0.0004 && Math.abs(view.vp) < 0.0004)) return;
         turn(coasting);
         view.vy *= 0.93; view.vp *= 0.93;
-        render(); requestAnimationFrame(coast);
+        input(); requestAnimationFrame(coast);
       };
       const release = (ev) => {
         if (!drag) return;
@@ -1463,9 +1581,9 @@
       };
       document.addEventListener("pointerup", release);
       document.addEventListener("pointercancel", release);
-      document.addEventListener("mouseleave", () => { view.ty = 0; view.tp = 0; ptr.on = false; requestRender(); });
-      addEventListener("scroll", () => { pinned = null; if (hover && !drag) showChip(null); requestRender(); }, { passive: true });
-      addEventListener("resize", requestRender);
+      document.documentElement.addEventListener("mouseleave", () => { view.ty = 0; view.tp = 0; ptr.on = false; requestRender(); });
+      addEventListener("scroll", () => { pinned = null; if (hover && !drag) showChip(null); pendingUpdate = true; input(); }, { passive: true });
+      addEventListener("resize", () => { box = null; for (const t of Object.values(TAGS)) t._w = 0; pendingUpdate = true; input(); });
 
       Object.keys(NODES).filter(formed).forEach((id) => born.add(id));
       let birth = (id) => { born.add(id); if (!formed(id)) bornAt[id] = performance.now(); requestRender(); };
@@ -1564,22 +1682,21 @@
       const shown = (name) => ({ on: (r) => stageTo(r, name, true), off: (r) => stageTo(r, name, false) });
       const settled = (dir) => ({ on: (r) => q(r, `[data-dir="${dir}"] .st`).classList.add("done"), off: (r) => q(r, `[data-dir="${dir}"] .st`).classList.remove("done") });
       const rest = { on() {}, off() {} }; // a stretch of scroll where nothing new happens, so the next thing is seen to start
+      const row = (i) => ({ on: (r) => r.querySelectorAll('[data-stage="row"]')[i].classList.add("shown"), off: (r) => r.querySelectorAll('[data-stage="row"]')[i].classList.remove("shown") });
       const STEPS = {
         lab: [
           // the window opens on three directions, all at work
           { focus: [], ...shown("win") },
           // A is done: its ring becomes a check
           { ...settled("a") },
-          // B: memory brings up last year's trial
-          { focus: ["report"], ...shown("recall") },
-          // so B is set aside. C goes on working.
-          { on: (r) => { q(r, '[data-dir="b"]').classList.add("aside"); q(r, '[data-dir="b"] .st').classList.add("done"); },
-            off: (r) => { q(r, '[data-dir="b"]').classList.remove("aside"); q(r, '[data-dir="b"] .st').classList.remove("done"); } },
+          // B: the knowledge base brings up what was tried before, so B starts somewhere better. B and C go on working.
+          { focus: ["report"], on: (r) => { stageTo(r, "recall", true); q(r, '[data-dir="b"]').classList.add("turned"); },
+            off: (r) => { stageTo(r, "recall", false); q(r, '[data-dir="b"]').classList.remove("turned"); } },
           // the finding is written
           { ...shown("finding") },
           rest,
           // and only then is it shared
-          { focus: ["mayaF", "report"], threads: ["report"], ...share("[data-share]", "mayaF", "", "Shared with project", "findings") },
+          { focus: ["mayaF", "report"], threads: ["report"], ...share("[data-share]", "mayaF", "", "Shared", "findings") },
         ],
         pilot: [
           { focus: [], ...shown("win") },
@@ -1587,23 +1704,21 @@
           { focus: ["mayaF", "report", "maint"],
             on: (r) => { stageTo(r, "answer", true); q(r, ".chart").classList.add("drawn"); },
             off: (r) => { stageTo(r, "answer", false); q(r, ".chart").classList.remove("drawn"); } },
-          { ...shown("check") },
           { ...shown("finding") },
           rest,
-          { focus: ["tomF", "mayaF", "report", "maint"], threads: ["mayaF", "report", "maint"], ...share("[data-share]", "tomF", "", "Shared with team", "findings") },
+          { focus: ["tomF", "mayaF", "report", "maint"], threads: ["mayaF", "report", "maint"], ...share("[data-share]", "tomF", "", "Shared", "findings") },
         ],
         team: [
+          // the page opens on the three directions; each row then arrives with the record it is read from
           { focus: [], ...shown("win") },
-          { focus: ["tomF"], ...shown("notice") },
-          { on: (r, animate) => { const btn = q(r, "[data-add]"); clickOn(btn, animate).then((ok) => ok && pressTo(btn, true, "Added to Daniel’s plan")); },
-            off: (r) => { const btn = q(r, "[data-add]"); unclick(btn); pressTo(btn, false); } },
-          { on: (r) => { stageTo(r, "board", true); r.querySelectorAll('[data-stage="row"]')[0].classList.add("shown"); },
-            off: (r) => { stageTo(r, "board", false); r.querySelectorAll('[data-stage="row"]')[0].classList.remove("shown"); } },
-          { on: (r) => r.querySelectorAll('[data-stage="row"]')[1].classList.add("shown"), off: (r) => r.querySelectorAll('[data-stage="row"]')[1].classList.remove("shown") },
-          { on: (r) => r.querySelectorAll('[data-stage="row"]')[2].classList.add("shown"), off: (r) => r.querySelectorAll('[data-stage="row"]')[2].classList.remove("shown") },
-          { focus: ["decision", "tomF", "mayaF", "report"], threads: [],
-            on(r, animate) { stageTo(r, "saved", true); this.s.on(r, animate); }, off(r) { stageTo(r, "saved", false); this.s.off(r); },
-            s: share(".saved .loop", "decision", "green", null, "decisions") },
+          { focus: ["qc"], ...row(0) },
+          { focus: ["qc", "tomF"], ...row(1) },
+          { focus: ["qc", "tomF", "maint"], ...row(2) },
+          // the decision is the team's: no record feeds it
+          { ...row(3) },
+          { ...shown("finding") },
+          // and it goes back into the knowledge base
+          { focus: ["decision", "qc", "tomF", "maint"], threads: [], ...share("[data-share]", "decision", "green", "Saved", "decisions") },
         ],
       };
       // what a step lights: its own focus, or the last one before it
@@ -1612,34 +1727,34 @@
       // threads: one curve from a lit node to the place on the page that uses it, kept true while scrolling
       let live = [];
       function drawThreads(root, ids) {
-        threads.replaceChildren();
-        if (!wide.matches) { live = []; return; }
+        if (!wide.matches) { threads.replaceChildren(); live = []; return; }
+        const old = new Map(live.map((t) => [t.id, t]));
         live = ids.map((id) => {
-          const target = root.querySelector(`[data-thread="${id}"]`);
-          const p = mk("path", { pathLength: 1, class: id === "decision" ? "green" : "" }, threads);
-          const c = mk("circle", { r: 2.5 }, threads);
-          return { id, target, p, c };
-        }).filter((t) => t.target);
+          const target = root.querySelector(`[data-thread="${id}"]`), was = old.get(id);
+          if (was && was.target === target) { old.delete(id); return was; }
+          if (!target) return null;
+          return { id, target, p: mk("path", { pathLength: 1, class: id === "decision" ? "green" : "" }, threads), c: mk("circle", { r: 2.5 }, threads) };
+        }).filter(Boolean);
+        for (const t of old.values()) { t.p.remove(); t.c.remove(); }
         place();
         requestAnimationFrame(() => requestAnimationFrame(() => live.forEach((t) => t.p.classList.add("in"))));
       }
-      function place() {
+      function measureThreads() { for (const t of live) { t.b = t.target.getBoundingClientRect(); t.wb = t.target.closest(".win").getBoundingClientRect(); } }
+      function place(fresh = true) {
+        if (fresh) measureThreads();
         for (const t of live) {
-          const b = t.target.getBoundingClientRect();
+          if (!t.b) continue;
+          const b = t.b;
           const visible = b.bottom > 0 && b.top < innerHeight;
           for (const e of [t.p, t.c]) e.style.opacity = visible ? "" : "0";
           const [x1, y1] = screenPos(t.id);
           // to the window's edge, level with what it feeds, so it never crosses the words
-          const win = t.target.closest(".win").getBoundingClientRect();
+          const win = t.wb;
           const x2 = win.left, y2 = Math.max(win.top + 24, Math.min(win.bottom - 24, b.top + b.height / 2));
           t.p.setAttribute("d", `M${x1.toFixed(1)} ${y1.toFixed(1)} C${x1 + (x2 - x1) * 0.55} ${y1}, ${x2 - (x2 - x1) * 0.45} ${y2}, ${x2} ${y2}`);
           t.c.setAttribute("cx", x2); t.c.setAttribute("cy", y2);
         }
       }
-      let ticking = false;
-      const onScroll = () => { if (ticking || !live.length) return; ticking = true; requestAnimationFrame(() => { place(); ticking = false; }); };
-      addEventListener("scroll", onScroll, { passive: true });
-      addEventListener("resize", onScroll);
 
       // ---- The scroll plays the stages. On a wide screen a stage holds (its pin) while its steps play; on a phone
       // the steps follow the stage up the screen. Scrolling back undoes them, step by step.
@@ -1647,14 +1762,17 @@
       const roots = Object.fromEntries(ORDER.map((s) => [s, document.querySelector(`.chapter[data-step="${s}"]`)]));
       const at = { lab: -1, pilot: -1, team: -1 };
       let current = null, inStory = false, lastFocus = "";
-      const stagesBar = document.querySelector(".stages");
       const resting = () => !docking() || dockProgress() >= 0.67;
+      // where the rail and every pin stick; it changes only with the window's width
+      let barTop = null;
+      const railTop = () => (barTop ??= parseFloat(getComputedStyle(rail).top) || 0);
+      addEventListener("resize", () => (barTop = null));
       const stepFor = (s) => {
         const r = roots[s].getBoundingClientRect(), H = innerHeight, n = STEPS[s].length;
         if (r.top > H * 0.72) return -1;
         if (s === "lab" && !resting()) return -1;
         let p;
-        if (wide.matches) { const bar = parseFloat(getComputedStyle(rail).top) || 0; p = (bar - r.top) / Math.max(1, r.height - (H - bar)); }
+        if (wide.matches) { const bar = railTop(); p = (bar - r.top) / Math.max(1, r.height - (H - bar)); }
         else p = (H * 0.72 - r.top) / Math.max(1, r.height);
         // the first step as the stage arrives; the rest across the hold, with the last reached a little before it lets go
         return Math.min(n - 1, Math.max(0, Math.floor(Math.max(0, p) / 0.82 * (n - 1)) + (p > 0 ? 1 : 0) - (p > 0 ? 1 : 0)));
@@ -1675,20 +1793,13 @@
         if (mid !== current) {
           current = mid;
           if (mid) rail.dataset.step = mid;
-          const idx = ORDER.indexOf(mid);
-          stagesBar.classList.toggle("on", idx >= 0 && inStory);
-          stagesBar.querySelectorAll("a").forEach((a, i) => { a.classList.toggle("now", i === idx); a.classList.toggle("done", i < idx); });
-          stagesBar.querySelectorAll("i").forEach((l, i) => l.classList.toggle("done", i < idx));
         }
         const [lit, thr] = ORDER.includes(current) && at[current] >= 0 ? focusAt(current, at[current]) : [[], []];
         const key = current + lit.join() + "|" + thr.join();
         if (key !== lastFocus) { lastFocus = key; light(lit); drawThreads(roots[current] || document.body, thr); }
       }
-      let pendingUpdate = false;
-      const schedule = () => { if (pendingUpdate) return; pendingUpdate = true; requestAnimationFrame(() => { pendingUpdate = false; update(); }); };
-      addEventListener("scroll", schedule, { passive: true });
-      addEventListener("resize", schedule);
-      // On a short screen a stage's words and window can be taller than the space under the bar. The window is scaled down
+
+      // On a short screen a stage's words and window can be taller than the screen. The window is scaled down
       // by what is over, so the whole of it is always in view while its steps play.
       function fitPins() {
         for (const s of ORDER) {
@@ -1721,20 +1832,6 @@
         const naturalGap = chapters.offsetTop - pull - (intro.offsetTop + intro.offsetHeight);
         const introBottomAtRest = H - DOCK_END * (intro.offsetHeight + H) + intro.offsetHeight;
         root.setProperty("--pull", (nt + h / 2 - copyLen / 2 - off - introBottomAtRest - naturalGap).toFixed(1) + "px");
-        // each record in front of the hero flies to its own place in the wide map
-        const hr = hero.getBoundingClientRect();
-        const sx = (VW * 0.47) / 188, sy = (H * 0.44) / 140, zs = Math.min(sx, sy), pa = Math.min(VW * 0.27, 400), pb = copy.offsetHeight / 2 + 64;
-        const y0 = view.yaw + 0.1, c1 = Math.cos(y0), s1 = Math.sin(y0), c2 = Math.cos(view.pitch), s2 = Math.sin(view.pitch);
-        papers.style.setProperty("--hw", hero.offsetWidth + "px"); papers.style.setProperty("--hh", hero.offsetHeight + "px");
-        paperEls.forEach((p, i) => {
-          const id = PAPER_NODE[i];
-          if (!id) return;
-          const f = N[id].f, [x, y] = pushed((f[0] - 200) * sx, (f[1] - 170) * sy, pa, pb), z = f[2] * zs;
-          const x1 = x * c1 + z * s1, z1 = -x * s1 + z * c1, y1 = y * c2 - z1 * s2, k = FW / (FW - (y * s2 + z1 * c2));
-          // where the map's record is on the page when this one arrives (the map stays put on screen), less how far the records have sunk by then
-          const end = 0.6 + 0.32 * (paperD[id] || 0), base = hr.height - H + end * H * (1 - 1.08) + H / 2;
-          p.style.setProperty("--mx", (VW / 2 + x1 * k - hr.left).toFixed(1) + "px"); p.style.setProperty("--my", (base + y1 * k).toFixed(1) + "px");
-        });
         requestRender();
       }
       measure();
@@ -1743,14 +1840,20 @@
 
       requestRender();
       addEventListener("load", requestRender);
-      document.fonts?.ready.then(requestRender);
+      document.fonts?.ready.then(() => { for (const t of Object.values(TAGS)) t._w = 0; requestRender(); });
+      // The hero's words are visible by default and only fade in from below. If a browser never runs that entrance (a
+      // stalled animation timeline), finish it, so the first screen can never stay blank.
+      setTimeout(() => {
+        for (const el of [...heroCopy.children, moreEl.firstElementChild]) for (const a of el?.getAnimations?.() || []) {
+          try { if (a.animationName === "rise" && a.playState !== "finished") a.finish(); } catch {}
+        }
+      }, 2500);
 
       update();
       addEventListener("load", update);
       // leaving the story clears the threads
       new IntersectionObserver(([e]) => {
         inStory = e.isIntersecting;
-        stagesBar.classList.toggle("on", inStory && ["lab", "pilot", "team"].includes(current));
         if (!e.isIntersecting) { threads.replaceChildren(); live = []; }
       }, { threshold: 0 })
         .observe(document.querySelector(".chapters"));
