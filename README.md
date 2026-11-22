@@ -25,6 +25,11 @@ The landing page for Fermata: one static page whose call to action is **Download
   `index.html` with its asset paths pointed at `../assets/`. It is marked `noindex`, nothing links to it, and it sends
   no analytics. Remove the folder when the new page replaces `index.html`. Its industry photographs are in
   `assets/industries/` (`SOURCES.md` says where each is from).
+- Under the hero of `/newsite`, a three-step stage plays Fermata at work in a window over a plant photo:
+  projects and directions, findings surfaced from other teams, and a checked result joining the project. Its
+  markup is in `newsite/index.html`, its styles and scenes in `newsite/stage.css` and `newsite/stage.js` (one
+  `requestAnimationFrame` clock, no timers). `?stage=2.6.5` holds scene 2 at 6.5 s, for checking a moment. The
+  photo is `assets/stage/reactor-column.jpg` (`assets/stage/SOURCES.md`).
 - `archive/films/` keeps films the page no longer plays (`fermata-film-2.mp4`, the 56 s film it showed until
   2026-10-26, and `fermata-film-3.mp4`, the 86 s film it showed until 2026-11-13). The deploy does not publish `archive/`.
 - PostHog records page views, time on page and clicks, plus a `download_clicked` event that says which
