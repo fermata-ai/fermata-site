@@ -25,8 +25,6 @@ The landing page for Fermata: one static page whose call to action is **Download
   `index.html` with its asset paths pointed at `../assets/`. It is marked `noindex`, nothing links to it, and it sends
   no analytics. Remove the folder when the new page replaces `index.html`. Its industry photographs are in
   `assets/industries/` (`SOURCES.md` says where each is from).
-- `newsite1/index.html` is a second preview at `getfermata.app/newsite1/`, to compare with `newsite/`: the same page
-  with the first screen's violet edges 15% stronger. Remove it with `newsite/`.
 - `archive/films/` keeps films the page no longer plays (`fermata-film-2.mp4`, the 56 s film it showed until
   2026-10-26, and `fermata-film-3.mp4`, the 86 s film it showed until 2026-11-13). The deploy does not publish `archive/`.
 - PostHog records page views, time on page and clicks, plus a `download_clicked` event that says which
