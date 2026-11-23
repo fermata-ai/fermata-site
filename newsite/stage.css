@@ -3,7 +3,7 @@
    (--s, set by stage.js), so the cursor’s path and every position stay the same at any width. */
 /* opaque, so the hero's papers pass behind it, with a soft top edge where they fade under */
 .stage-sec { position: relative; z-index: 8; background: linear-gradient(to bottom, rgba(244, 244, 241, 0), var(--bg) 48px, var(--bg) calc(100% - 56px), rgba(244, 244, 241, 0)); padding: 24px 0 88px; scroll-margin-top: 16px; }
-.stage { max-width: 1312px; margin: 0 auto; padding-inline: 32px; }
+.stage { max-width: 1180px; margin: 0 auto; padding-inline: 32px; }
 .stage-head { text-align: center; max-width: 760px; margin: 0 auto 22px; }
 .stage-head h2 { font-size: clamp(28px, 3.2vw, 40px); line-height: 1.1; }
 .stage-head .eyebrow { margin-bottom: 10px; }
@@ -229,7 +229,7 @@
 
 /* the three steps under the photo */
 .st-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 30px; padding-inline: 8px; }
-.st-step { all: unset; cursor: pointer; display: block; text-align: left; }
+.st-step { all: unset; cursor: pointer; display: flex; flex-direction: column; justify-content: flex-start; text-align: left; }
 .st-step:focus-visible { outline: 2px solid var(--violet); outline-offset: 6px; border-radius: 6px; }
 .st-step .line { display: block; height: 2px; background: var(--line); border-radius: 2px; overflow: hidden; }
 .st-step .line i { display: block; height: 100%; width: 0; background: var(--ink); }
@@ -298,8 +298,8 @@
 
 /* ---------- the window as wide as the three steps, the photo wider still ----------
    The window spans the steps' lines; the photo reaches past them on both sides. */
-.stage-photo { --pw: min(calc(100vw - 32px), 1328px); margin-inline: calc((100% - var(--pw)) / 2); padding: 56px 0 0; }
-.st-fit { width: calc(min(100vw, 1312px) - 80px); margin-inline: auto; }
+.stage-photo { --pw: min(calc(100vw - 32px), 1196px); margin-inline: calc((100% - var(--pw)) / 2); padding: 40px 0 0; }
+.st-fit { width: calc(min(100vw, 1180px) - 80px); margin-inline: auto; }
 @media (max-width: 760px) {
   .stage-photo { --pw: calc(100vw - 16px); padding-top: 28px; }
   .st-fit { width: calc(100vw - 40px); }
