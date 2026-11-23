@@ -68,20 +68,21 @@ em { font-style: italic; color: var(--violet); }
 :root { --hair: rgb(26 26 31 / 0.083); }
 
 /* ---------- first screen: the promise, over one photograph that gives way to the next industry's, slowly ---------- */
-.stage { position: relative; max-width: 1180px; margin: clamp(20px, 3.4vh, 36px) auto 0; padding-inline: 32px; }
-.frame { position: relative; height: clamp(240px, 42svh, 440px); overflow: hidden; border-radius: 8px; background: var(--sunk); }
+.stage { position: relative; max-width: 1180px; margin: clamp(16px, 2.6vh, 28px) auto 0; padding-inline: 32px; }
+/* the photograph takes what is left of the first screen under the line of industries: the script measures it */
+.frame { position: relative; height: var(--frame-h, clamp(240px, 42svh, 440px)); overflow: hidden; border-radius: 8px; background: var(--sunk); }
 .frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; scale: 1.06; transition: opacity 1.5s var(--ease), scale 8s linear; }
 .frame img.on { opacity: 1; scale: 1; }
 .frame .cap { display: none; } .frame .cap-off { position: absolute; left: 20px; bottom: 18px; z-index: 1; color: var(--white); font-family: var(--serif); font-size: clamp(20px, 2vw, 28px); letter-spacing: -0.01em; text-shadow: 0 1px 18px rgb(0 0 0 / 0.45); transition: opacity 0.6s; }
 .frame::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top in oklch, rgb(16 14 28 / 0.55), rgb(16 14 28 / 0) 40%); }
 .index a.peek { color: var(--ink); } .index a.peek .n { color: var(--violet); } .index a.peek::after { transform: scaleX(1); transition-duration: 4.2s; transition-timing-function: linear; }
-.hero { position: relative; padding-top: clamp(40px, 8vh, 88px); }
+.hero { position: relative; padding-top: clamp(20px, 4.5vh, 52px); }
 .hero-copy { position: relative; text-align: center; max-width: 980px; margin: 0 auto clamp(16px, 3vh, 32px); padding-inline: 24px; }
 /* the words that change: they keep two lines of room, so nothing under them moves */
-.swapbox { display: block; min-height: 2.1em; }
+.swapbox { display: block; min-height: 1.04em; }
 #swap { display: inline-block; transition: opacity 0.45s var(--ease), transform 0.45s var(--ease); }
 #swap.out { opacity: 0; transform: translateY(-0.22em); }
-h1 { font-size: clamp(40px, 6.2vw, 80px); line-height: 1.02; letter-spacing: -0.035em; margin-bottom: 22px; }
+h1 { font-size: clamp(36px, 5.2vw, 68px); line-height: 1.04; letter-spacing: -0.035em; margin-bottom: 0; }
 .lede { font-family: var(--serif); font-weight: 300; font-size: clamp(18px, 2vw, 22px); line-height: 1.45; color: var(--ink-2); max-width: 600px; margin: 0 auto; }
 .hero-copy > * { animation: rise 0.6s var(--ease) backwards; }
 .hero-copy > :nth-child(2) { animation-delay: 0.05s; } .hero-copy > :nth-child(3) { animation-delay: 0.1s; }
@@ -147,7 +148,7 @@ footer a:hover { color: var(--ink); }
 @media (max-width: 899px) {
   .nav .hide-s { display: none; }
   .wrap { padding-inline: 16px; }
-  .stage { padding-inline: 16px; } .frame { height: 220px; }
+  .stage { padding-inline: 16px; }
   .index ol { padding-inline: 16px; }
   .ind > .wrap { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .ind .collage, .ind.flip .collage { order: -1; }
@@ -269,7 +270,7 @@ footer a:hover { color: var(--ink); }
     eb.appendChild(el("span", "n", no)); eb.appendChild(document.createTextNode("Industry"));
     text.appendChild(eb); text.appendChild(el("h2", null, d.name.replace(/-/g, "\u2011")));
     // a measure that ends in brackets keeps them; only their ink is quieter. The words are the content file's own.
-    text.appendChild(el("p", "kh", "KPIs"));
+    text.appendChild(el("p", "kh", "Key performance indicators"));
     var ul = el("ul", "kpis"); d.goals.forEach(function (g, j) {
       var r = el("li"), m = /^(.*\S)(\s*\([^()]*\))$/.exec(g), nm = el("span", "nm", m ? m[1] : g); r.style.setProperty("--i", j);
       if (m) nm.appendChild(el("span", "un", m[2]));
@@ -301,7 +302,18 @@ footer a:hover { color: var(--ink); }
 
   // ---- what the scroll moves. One handler: it reads the page once (on load and resize), then only writes.
   var vh = 0, heroH = 0, raf = 0, phone = false;
+  function fitFirst() {
+    var sw = document.getElementById("swap"), box = sw.parentNode, fr = document.getElementById("frame"), keep = sw.textContent, tall = 0;
+    // the changing words keep room for the industry whose name runs longest at this width, so nothing under them moves
+    box.style.minHeight = "";
+    C.industries.forEach(function (d) { sw.textContent = d.name.charAt(0).toLowerCase() + d.name.slice(1) + "."; tall = Math.max(tall, sw.offsetHeight); });
+    sw.textContent = keep; box.style.minHeight = tall + "px";
+    // the photograph ends a little above the foot of the first screen
+    var top = fr.getBoundingClientRect().top + scrollY, room = innerHeight - top - Math.max(20, innerHeight * 0.035);
+    document.documentElement.style.setProperty("--frame-h", Math.round(Math.max(200, Math.min(620, room))) + "px");
+  }
   function measure() {
+    fitFirst();
     vh = innerHeight; phone = innerWidth < 900; heroH = document.getElementById("hero").offsetHeight;
     CH.forEach(function (c) { c.figs.forEach(function (f) { f.el.style.transform = ""; }); });
     CH.forEach(function (c) {
