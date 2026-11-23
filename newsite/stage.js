@@ -115,9 +115,10 @@
       placeX();
       return;
     }
-    // as wide as the steps below, unless that would push the steps off a short screen
-    const room = innerHeight - 56 - stepsEl.offsetHeight - 30 - 24;
-    s = Math.min(w / W, Math.max(0.62, room / H), 1.3);
+    // as wide as the steps below, never larger than drawn, and small enough that the photo, the window and the
+    // steps fit one screen with room around them
+    const room = innerHeight - 40 - stepsEl.offsetHeight - 30 - 140;
+    s = Math.min(w / W, Math.max(0.6, room / H), 1);
     fit.style.setProperty("--s", s);
     fit.style.setProperty("--x", `${Math.max(0, (w - W * s) / 2)}px`);
   };
