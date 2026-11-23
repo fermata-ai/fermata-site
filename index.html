@@ -4,7 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fermata: the integrated research environment</title>
-  <meta name="description" content="Fermata connects today's result to everything your company already knows, from the lab bench to the pilot line to the plant. For R&D, pilot and production teams. For macOS.">
+  <meta name="description" content="Integrate your company’s legacy knowledge, results and KPIs into one place, to guide each R&amp;D project’s direction and share what each team learns.">
+  <!-- Link previews (LinkedIn, Slack, X). The picture is the hero headline over the papers, 1200x630. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Fermata">
+  <meta property="og:url" content="https://getfermata.app/">
+  <meta property="og:title" content="Fermata: the integrated research environment">
+  <meta property="og:description" content="Integrate your company’s legacy knowledge, results and KPIs into one place, to guide each R&amp;D project’s direction and share what each team learns.">
+  <meta property="og:image" content="https://getfermata.app/assets/link-preview.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="From reactive to proactive R&amp;D decisions, over company reports, notebooks and spreadsheets.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://getfermata.app/assets/link-preview.jpg">
   <meta name="theme-color" content="#f4f4f1">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="assets/favicon-32.png" sizes="32x32">
@@ -95,7 +107,9 @@
     .hero { position: relative; min-height: calc(100svh - 72px); display: grid; align-content: center; padding-block: 24px 40px; overflow: clip; }
     .hero-copy { position: relative; z-index: 6; text-align: center; max-width: 860px; margin: 0 auto; padding-inline: 24px; }
     h1 { font-size: clamp(40px, 6.2vw, 80px); line-height: 1.02; letter-spacing: -0.035em; margin-bottom: 22px; }
-    .lede { font-family: var(--serif); font-weight: 300; font-size: clamp(18px, 2vw, 22px); line-height: 1.45; color: var(--ink-2); max-width: 640px; margin: 0 auto 32px; }
+    .lede { font-family: var(--serif); font-weight: 400; font-size: clamp(18px, 1.7vw, 22px); line-height: 1.55; color: #4a4a52; max-width: 880px; margin: 0 auto 32px; }
+    .lede .l1, .lede .l2 { display: block; }
+    @media (min-width: 900px) { .lede .l1 { white-space: nowrap; } }
     .hero-copy > * { animation: rise 0.6s var(--ease) backwards; }
     .hero-copy > :nth-child(2) { animation-delay: 0.05s; }
     .hero-copy > :nth-child(3) { animation-delay: 0.1s; }
@@ -244,7 +258,9 @@
       .chapters .pin { padding-block: 10px; }
     }
     .chapters .win { transform-origin: 0 0; }
-    .pin > p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: clamp(17px, 1.5vw, 19px); color: var(--ink-2); max-width: 560px; margin: 0 0 28px; }
+    .pin > p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: clamp(17px, 1.5vw, 19px); color: var(--ink-2); max-width: 640px; margin: 0 0 28px; }
+    @media (max-width: 899px) { .wide-br { display: none; } }
+    .gonogo { color: var(--violet); font-weight: 600; white-space: nowrap; }
     .chapter .eyebrow .n { font-family: var(--mono); letter-spacing: 0; margin-right: 6px; }
 
     /* ---------- app windows: the product, drawn ---------- */
@@ -390,6 +406,8 @@
     .block-head p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: 19px; color: var(--ink-2); margin: 0; }
 
     .sum { text-align: center; padding-block: clamp(110px, 22vh, 240px) clamp(10px, 4vh, 48px); }
+    .sum .eyebrow { margin-bottom: 18px; }
+    .sum-sub { font-family: var(--serif); font-weight: 400; font-size: clamp(18px, 1.9vw, 24px); line-height: 1.45; color: #4a4a52; max-width: 760px; margin: 22px auto 0; }
     .sum h2 { font-size: clamp(36px, 5.6vw, 76px); line-height: 1.03; letter-spacing: -0.035em; max-width: 1040px; margin: 0 auto; text-wrap: balance; }
     .film-block { text-align: center; }
     .film-block .block-head { margin-inline: auto; }
@@ -411,7 +429,10 @@
 
     .close { text-align: center; padding-block: clamp(90px, 16vh, 170px); }
     .close h2 { font-size: clamp(34px, 4.6vw, 60px); line-height: 1.05; max-width: 900px; margin: 0 auto 18px; }
-    .close p { font-family: var(--serif); font-weight: 300; font-size: 20px; color: var(--ink-2); margin: 0 auto 34px; }
+    .close p { font-family: var(--serif); font-weight: 400; font-size: 21px; color: #4a4a52; margin: 0 auto 34px; }
+    .close p.eyebrow { font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--violet); margin: 0 auto 18px; }
+    .close p.eyebrow a { color: inherit; text-decoration: none; }
+    .close p.eyebrow a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
     footer { border-top: 1px solid var(--line); }
     footer .wrap { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; justify-content: space-between; padding-block: 28px; font-size: 14px; color: var(--ink-3); }
@@ -557,9 +578,8 @@
       <div class="hero-copy">
         <p class="eyebrow">The integrated research environment (IRE)</p>
         <h1 id="hero-title">From reactive to <em>proactive</em> R&amp;D&nbsp;decisions</h1>
-        <p class="lede">Fermata connects today’s result to everything your company already knows, from the lab bench to the pilot line to the plant.</p>
+        <p class="lede"><span class="l1">Your company’s knowledge, results and your KPIs, in one place,</span> <span class="l2">to guide each project’s direction and share what each team learns.</span></p>
         <div class="actions">
-          <a class="cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest"><svg aria-hidden="true"><use href="#apple"/></svg>Download for Mac</a>
           <a class="cta-ghost" href="https://web.getfermata.app"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>Try demo</a>
         </div>
       </div>
@@ -571,15 +591,15 @@
       <aside class="rail" data-step="memory" aria-label="Company knowledge base">
         <div class="memory">
           <p class="kb">Company knowledge base</p>
-          <div class="web" role="img" aria-label="The company's knowledge base: linked documents, findings and decisions in three groups, Team A, Team B, and KPI. Drag to turn it; hover a record to see what it is."></div>
+          <div class="web" role="img" aria-label="The company's knowledge base: linked documents, findings and decisions in three groups, Team A, Team B, and key performance indicators. Drag to turn it; hover a record to see what it is."></div>
         </div>
       </aside>
 
       <article class="chapter intro" id="memory" data-step="memory">
         <div class="intro-copy">
           <p class="eyebrow"><span class="n">01</span>Knowledge base</p>
-          <h2>Everything your company has learned, in one place.</h2>
-          <p>Fermata reads every record and links them into one knowledge base.</p>
+          <h2>Everything your company has learned, ready for the next decision.</h2>
+          <p>Fermata integrates your legacy project reports, notebooks, logs and spreadsheets into <span class="gonogo">one shared knowledge base</span>.</p>
         </div>
       </article>
 
@@ -587,8 +607,8 @@
         <article class="chapter" id="lab" data-step="lab" style="--n:6">
           <div class="pin">
           <p class="eyebrow"><span class="n">02</span>Project and directions</p>
-          <h2>Every project starts from what the company already tried.</h2>
-          <p>Before a test is planned, Fermata brings up what was tried before.</p>
+          <h2>Every project builds on years of company knowledge.</h2>
+          <p>Fermata shows <span class="gonogo">relevant past results</span> before each experiment.</p>
           <div class="win" data-stage="win">
             <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Project 1 · Coating drying time</span><span class="who"><span class="av">A</span>Team A</span></div>
             <div class="win-body">
@@ -617,8 +637,8 @@
         <article class="chapter" id="pilot" data-step="pilot" style="--n:6">
           <div class="pin">
           <p class="eyebrow"><span class="n">03</span>Cross-team learning</p>
-          <h2>What one team learns, the next team starts with.</h2>
-          <p>Team B gets a different result. Fermata reads both and finds why.</p>
+          <h2>Each team learns from every<br class="wide-br"> other team.</h2>
+          <p>Team B gets a different result. Fermata shows <span class="gonogo">what changed and why</span>.</p>
           <div class="win" data-stage="win">
             <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Project 2 · Larger batches</span><span class="who"><span class="av t">B</span>Team B</span></div>
             <div class="win-body pilot-body">
@@ -658,7 +678,7 @@
           <div class="pin">
           <p class="eyebrow"><span class="n">04</span>Team decision</p>
           <h2>Push here. Stop there.</h2>
-          <p>Every direction against the company’s targets, on one page.</p>
+          <p>Fermata weighs evidence against your KPIs for <span class="gonogo">go/no-go decisions</span>.</p>
           <div class="win" data-stage="win">
             <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Project status · Coating drying time</span><span class="who">Team review</span></div>
             <div class="win-body">
@@ -698,13 +718,15 @@
 
     <!-- 3. The whole of it in one line, before the film -->
     <section class="sum wrap" aria-labelledby="sum-title">
-      <h2 id="sum-title">One R&amp;D workspace, from the first result to the <em>team’s decision</em>.</h2>
+      <p class="eyebrow">Fermata · one integrated R&amp;D workspace</p>
+      <h2 id="sum-title">Years of company knowledge behind your next <em>go/no-go decision</em>.</h2>
+      <p class="sum-sub">Every result moves your teams closer to your KPIs.</p>
     </section>
 
     <!-- 4. The film -->
     <section class="block wrap film-block" id="film" aria-labelledby="film-title">
       <div class="block-head">
-        <p class="eyebrow">See it work</p>
+        <p class="eyebrow">See it in action</p>
         <h2 id="film-title">Fermata in two minutes.</h2>
       </div>
       <div class="player" id="how-it-works">
@@ -717,33 +739,41 @@
     <!-- 5. Questions -->
     <section class="block wrap" aria-labelledby="faq-title">
       <div class="block-head">
-        <p class="eyebrow">Questions</p>
-        <h2 id="faq-title">Before you start.</h2>
+        <p class="eyebrow" id="faq-title">Frequently asked questions</p>
       </div>
       <div class="faq">
         <details>
-          <summary>Does my team have to change how it works?</summary>
-          <p>No. Fermata sits beside the work you already do. You ask in plain words, attach the files you have, and it reads them where they are.</p>
+          <summary>What happens to our data and intellectual property?</summary>
+          <p>Your data and intellectual property stay yours. Files stay on your Mac or your company’s server. Only your question and the context needed to answer it go to your chosen AI provider, through your company’s account with <span class="gonogo">zero data retention</span>. Your data is never used to train AI models, and we never see your files, questions or answers.</p>
         </details>
         <details>
-          <summary>Where do our files go?</summary>
-          <p>They stay on your Mac. Fermata reads them there and keeps its record of the work beside them. The parts a question needs go to the AI you chose, under your own account.</p>
+          <summary>How is Fermata different from ChatGPT or Claude?</summary>
+          <p>ChatGPT and Claude are general-purpose AI assistants for everyday work, not built around your company. Fermata is a shared workspace <span class="gonogo">built for industrial R&amp;D</span>, using the same underlying models. It connects your company’s knowledge, project histories and KPIs, so teams can compare new results with past work, check recommendations against evidence and share what they learn across projects.</p>
         </details>
         <details>
-          <summary>Which AI does it use?</summary>
-          <p>Fermata works with Claude Code or OpenAI Codex, under your own account. You choose which one in Settings.</p>
+          <summary>Do we need to change our existing tools or workflows?</summary>
+          <p>No. Fermata <span class="gonogo">works around your existing workflows</span>. It reads your reports, notebooks, spreadsheets and instrument data, and connects directly to your lab instruments and plant systems, bringing their data together in one shared knowledge base on your company’s server. Your original files stay where they are.</p>
         </details>
         <details>
-          <summary>Does Fermata make the decisions?</summary>
-          <p>No. People decide. Fermata shows the evidence, says what it assumed, has its findings checked independently, and keeps the reasons for each decision.</p>
+          <summary>How can we check Fermata’s answers and recommendations before making a decision?</summary>
+          <p>Each answer links to its sources, states its assumptions and flags anything it can’t support. An <span class="gonogo">independent reviewer</span> checks every finding before you see it. Your team makes the final call, and Fermata keeps the reasoning behind each decision.</p>
+        </details>
+        <details>
+          <summary>Can we control who sees what across teams and projects?</summary>
+          <p>Yes. You set <span class="gonogo">access by team and project</span>. Sensitive records, such as cost models and margins, stay with authorized people. You choose which findings to share across teams.</p>
+        </details>
+        <details>
+          <summary>Which AI models does Fermata use?</summary>
+          <p>Fermata works with <span class="gonogo">frontier models from Anthropic and OpenAI</span> through your company’s own account. Your team chooses which model to use, and can switch at any time.</p>
         </details>
       </div>
     </section>
 
     <!-- 6. Close -->
     <section class="close wrap" id="contact">
-      <h2>Fermata works around your workflow. You don’t work around it.</h2>
-      <p>For macOS. Questions? Write to us.</p>
+      <p class="eyebrow"><a href="mailto:hi@getfermata.app?subject=Fermata%20demo%20request">Request a demo</a></p>
+      <h2>Keep every team on the same page.</h2>
+      <p>Turn every result into progress against your KPIs.</p>
       <div class="actions">
         <a class="cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest"><svg aria-hidden="true"><use href="#apple"/></svg>Download for Mac</a>
         <a class="cta-ghost mail" href="mailto:hi@getfermata.app">hi@getfermata.app</a>
@@ -1052,7 +1082,7 @@
         layer.append(t); TAGS[id] = t;
       }
       // the three groups: hubs of the wide map, small captions once it rests on the left
-      const HUBS = [["rnd", "Team A", [-0.6, -0.8], [40, 30, 20]], ["pilot", "Team B", [0.6, -0.74], [338, 34, -26]], ["prod", "KPI", [0.02, 0.56], [204, 334, 0]]].map(([st, text, uv, corner]) => {
+      const HUBS = [["rnd", "Team A", [-0.6, -0.8], [40, 30, 20]], ["pilot", "Team B", [0.6, -0.74], [338, 34, -26]], ["prod", "Key performance indicators", [0.02, 0.56], [204, 334, 0]]].map(([st, text, uv, corner]) => {
         const h = document.createElement("span");
         h.className = "hub " + st;
         h.innerHTML = `<svg aria-hidden="true"><use href="#i-${st}"/></svg><b></b>`;
