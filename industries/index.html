@@ -43,7 +43,7 @@ em { font-style: italic; color: var(--violet); }
 :focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; border-radius: 6px; }
 
 /* ---------- masthead ---------- */
-.top { position: relative; z-index: 3; }
+.top { position: relative; z-index: 6; }
 .top .wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; }
 .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--serif); font-size: 21px; }
 .brand svg { color: var(--violet); }
@@ -51,6 +51,19 @@ em { font-style: italic; color: var(--violet); }
 .nav a { font-size: 14px; text-decoration: none; color: var(--ink-2); transition: color 0.2s; }
 .nav a:hover, .nav a[aria-current] { color: var(--ink); }
 .nav a[aria-current] { font-weight: 500; }
+/* Industries opens a short list of the five industries under it, for the pointer and for the keyboard.
+   Each goes to its own part of the industries page; Industries itself still opens that page. */
+.has-menu { position: relative; }
+.menu { position: absolute; left: 50%; top: 100%; z-index: 10; margin: 0; padding: 6px; list-style: none; translate: -50% 2px;
+  background: var(--white); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 1px 0 rgb(26 26 31 / 0.03), 0 18px 40px -18px rgb(26 26 31 / 0.32);
+  opacity: 0; visibility: hidden; transition: opacity 0.18s, translate 0.18s var(--ease), visibility 0s 0.18s; }
+/* the gap between the word and its list is bridged, so the pointer can cross it */
+.menu::before { content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px; }
+.has-menu:hover .menu, .has-menu:focus-within .menu { opacity: 1; visibility: visible; translate: -50% 8px; transition-delay: 0s; }
+/* an item's corner is the list's corner less the padding between them */
+.nav .menu a { display: block; padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--ink-2); white-space: nowrap; box-shadow: none; background: none; }
+.nav .menu a:hover, .nav .menu a:focus-visible { background: var(--violet-soft); color: var(--violet); box-shadow: none; }
+@media (prefers-reduced-motion: reduce) { .menu { transition: none; } }
 /* ---------- buttons: one primary and one secondary, in two sizes ----------
    PRIMARY (.cta): the one thing a view most wants pressed. Solid ink, white words. One to a view.
    SECONDARY (.cta-ghost): any other action beside it. Paper with a hairline; under the pointer the hairline turns violet.
@@ -187,7 +200,16 @@ footer a:hover { color: var(--ink); }
     <a class="brand" href="/" aria-label="Fermata"><svg width="28" height="28" aria-hidden="true"><use href="#mark"/></svg>Fermata</a>
     <nav class="nav" aria-label="Main">
       <a class="hide-xs" href="/#story">How it works</a>
-      <a class="hide-s" href="/industries/" aria-current="page">Industries</a>
+      <div class="has-menu hide-s">
+        <a href="/industries/" aria-current="page">Industries</a>
+        <ul class="menu" aria-label="Industries">
+          <li><a href="/industries/#batteries">Batteries and energy storage</a></li>
+          <li><a href="/industries/#hydrogen">Hydrogen and e-fuels</a></li>
+          <li><a href="/industries/#minerals">Critical minerals</a></li>
+          <li><a href="/industries/#carbon">Carbon capture, removal and use</a></li>
+          <li><a href="/industries/#coatings">Coatings, adhesives and polymers</a></li>
+        </ul>
+      </div>
       <a class="hide-s" href="/#how-it-works">Demo video</a>
       <a class="hide-s" href="/guide/">User guide</a>
       <a class="hide-xs" href="https://web.getfermata.app">Try demo</a>

@@ -88,6 +88,19 @@
     .nav a:not(.header-cta):hover, .nav a:not(.header-cta):focus-visible { color: var(--violet); background: rgba(255, 255, 255, 0.85);
       box-shadow: 0 1px 0 rgba(26, 26, 31, 0.04), 0 6px 16px -10px rgba(74, 58, 167, 0.45); }
     .nav .header-cta { margin-left: 8px; }
+    /* Industries opens a short list of the five industries under it, for the pointer and for the keyboard.
+       Each goes to its own part of the industries page; Industries itself still opens that page. */
+    .has-menu { position: relative; }
+    .menu { position: absolute; left: 50%; top: 100%; z-index: 10; margin: 0; padding: 6px; list-style: none; translate: -50% 2px;
+      background: var(--white); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 1px 0 rgb(26 26 31 / 0.03), 0 18px 40px -18px rgb(26 26 31 / 0.32);
+      opacity: 0; visibility: hidden; transition: opacity 0.18s, translate 0.18s var(--ease), visibility 0s 0.18s; }
+    /* the gap between the word and its list is bridged, so the pointer can cross it */
+    .menu::before { content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px; }
+    .has-menu:hover .menu, .has-menu:focus-within .menu { opacity: 1; visibility: visible; translate: -50% 8px; transition-delay: 0s; }
+    /* an item's corner is the list's corner less the padding between them */
+    .nav .menu a { display: block; padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--ink-2); white-space: nowrap; box-shadow: none; background: none; }
+    .nav .menu a:hover, .nav .menu a:focus-visible { background: var(--violet-soft); color: var(--violet); box-shadow: none; }
+    @media (prefers-reduced-motion: reduce) { .menu { transition: none; } }
     .header-cta { padding: 8px 16px; border-radius: 999px; background: var(--ink); color: var(--white) !important; font-weight: 500; }
     .header-cta:hover { background: #2c2c33; }
 
@@ -559,7 +572,16 @@
       <a class="brand" href="/" aria-label="Fermata"><svg width="28" height="28" aria-hidden="true"><use href="#mark"/></svg>Fermata</a>
       <nav class="nav" aria-label="Main">
         <a class="hide-xs" href="#story">How it works</a>
-        <a class="hide-s" href="/industries/">Industries</a>
+        <div class="has-menu hide-s">
+          <a href="/industries/">Industries</a>
+          <ul class="menu" aria-label="Industries">
+            <li><a href="/industries/#batteries">Batteries and energy storage</a></li>
+            <li><a href="/industries/#hydrogen">Hydrogen and e-fuels</a></li>
+            <li><a href="/industries/#minerals">Critical minerals</a></li>
+            <li><a href="/industries/#carbon">Carbon capture, removal and use</a></li>
+            <li><a href="/industries/#coatings">Coatings, adhesives and polymers</a></li>
+          </ul>
+        </div>
         <a class="hide-s watch" href="#how-it-works">Demo video</a>
         <!-- hidden for now: <a class="hide-s" href="/guide/">User guide</a> -->
         <a class="header-cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest">Download for Mac</a>
@@ -589,8 +611,8 @@
         <h1 id="hero-title"><em>SuperIntelligence</em> for Energy and Industrial Materials R&amp;D</h1>
         <p class="lede">Fermata connects today’s result to everything your company already knows, from the lab bench to the pilot line to the plant.</p>
         <div class="actions">
+          <a class="cta contact" href="mailto:hi@getfermata.app?subject=Fermata"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16v11H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4.5 7l7.5 6 7.5-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Contact us</a>
           <a class="cta-ghost" href="https://web.getfermata.app"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>Try demo</a>
-          <a class="cta-ghost contact" href="mailto:hi@getfermata.app?subject=Fermata"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16v11H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4.5 7l7.5 6 7.5-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Contact us</a>
         </div>
       </div>
       <a class="more" href="#story" aria-label="Scroll down to see how it works"><span><svg viewBox="0 0 24 34" aria-hidden="true"><path d="M5 4l7 6 7-6"/><path d="M5 14l7 6 7-6"/><path d="M5 24l7 6 7-6"/></svg></span></a>
