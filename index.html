@@ -410,7 +410,7 @@
     .block-head h2 { font-size: clamp(32px, 3.8vw, 50px); line-height: 1.06; margin-bottom: 14px; }
     .block-head p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: 19px; color: var(--ink-2); margin: 0; }
 
-    /* industries, near the foot: the words and one link on to the industries page */
+    /* industries, after the film: the words and one link on to the industries page */
     .ind-head { margin-bottom: 28px; }
     .more-link svg { width: 15px; height: 15px; color: var(--ink-2); transition: translate 0.3s var(--ease), color 0.3s; }
     .more-link:hover svg { translate: 3px 0; color: var(--violet); }
@@ -870,7 +870,17 @@
       </div>
     </section>
 
-    <!-- 5. Questions -->
+    <!-- 5. Industries -->
+    <section class="block wrap" id="industries" aria-labelledby="ind-title">
+      <div class="block-head ind-head">
+        <p class="eyebrow">Industries</p>
+        <h2 id="ind-title">Built for industrial R&amp;D.</h2>
+        <p>Each industry keeps its own records. The way from a result to a decision is the same.</p>
+      </div>
+      <a class="cta-ghost more-link" href="/industries/">Learn more<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4"/></svg></a>
+    </section>
+
+    <!-- 6. Questions -->
     <section class="block wrap" aria-labelledby="faq-title">
       <div class="block-head">
         <p class="eyebrow">Questions</p>
@@ -894,16 +904,6 @@
           <p>No. People decide. Fermata shows the evidence, says what it assumed, has its findings checked independently, and keeps the reasons for each decision.</p>
         </details>
       </div>
-    </section>
-
-    <!-- 6. Industries -->
-    <section class="block wrap" id="industries" aria-labelledby="ind-title">
-      <div class="block-head ind-head">
-        <p class="eyebrow">Industries</p>
-        <h2 id="ind-title">Built for industrial R&amp;D.</h2>
-        <p>Each industry keeps its own records. The way from a result to a decision is the same.</p>
-      </div>
-      <a class="cta-ghost more-link" href="/industries/">Learn more<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4"/></svg></a>
     </section>
 
     <!-- 7. Close -->
