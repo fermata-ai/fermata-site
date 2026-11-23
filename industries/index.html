@@ -61,8 +61,11 @@ em { font-style: italic; color: var(--violet); }
 .menu::before { content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px; }
 .has-menu:hover .menu, .has-menu:focus-within .menu { opacity: 1; visibility: visible; translate: -50% 8px; transition-delay: 0s; }
 /* an item's corner is the list's corner less the padding between them */
-.nav .menu a { display: block; padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--ink-2); white-space: nowrap; box-shadow: none; background: none; }
+.nav .menu a { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--ink-2); white-space: nowrap; box-shadow: none; background: none; }
 .nav .menu a:hover, .nav .menu a:focus-visible { background: var(--violet-soft); color: var(--violet); box-shadow: none; }
+/* each industry's mark: its stroke is the weight of the word beside it */
+.menu svg { width: 16px; height: 16px; flex: none; color: var(--ink-3); transition: color 0.2s; }
+.nav .menu a:hover svg, .nav .menu a:focus-visible svg { color: var(--violet); }
 @media (prefers-reduced-motion: reduce) { .menu { transition: none; } }
 /* ---------- buttons: one primary and one secondary, in two sizes ----------
    PRIMARY (.cta): the one thing a view most wants pressed. Solid ink, white words. One to a view.
@@ -203,11 +206,11 @@ footer a:hover { color: var(--ink); }
       <div class="has-menu hide-s">
         <a href="/industries/" aria-current="page">Industries</a>
         <ul class="menu" aria-label="Industries">
-          <li><a href="/industries/#batteries">Batteries and energy storage</a></li>
-          <li><a href="/industries/#hydrogen">Hydrogen and e-fuels</a></li>
-          <li><a href="/industries/#minerals">Critical minerals</a></li>
-          <li><a href="/industries/#carbon">Carbon capture, removal and use</a></li>
-          <li><a href="/industries/#coatings">Coatings, adhesives and polymers</a></li>
+          <li><a href="/industries/#batteries"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.8" y="4.8" width="11" height="6.4" rx="1.4"/><path d="M14.3 7v2M4.7 7.2v1.6M7.3 7.2v1.6"/></svg>Batteries and energy storage</a></li>
+          <li><a href="/industries/#hydrogen"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 1.9c2.4 2.7 4 4.8 4 7a4 4 0 0 1-8 0c0-2.2 1.6-4.3 4-7z"/></svg>Hydrogen and e-fuels</a></li>
+          <li><a href="/industries/#minerals"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 2.6h6l3 3.6-6 7.4-6-7.4zM2 6.2h12M5 2.6l3 3.6 3-3.6M8 6.2v7.2"/></svg>Critical minerals</a></li>
+          <li><a href="/industries/#carbon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.4 11.4a3 3 0 0 1 .5-5.9 3.9 3.9 0 0 1 7.5 1 2.5 2.5 0 0 1-.5 4.9"/><path d="M8 8.3v5.4M6 11.8l2 2 2-2"/></svg>Carbon capture, removal and use</a></li>
+          <li><a href="/industries/#coatings"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.2l6 3.2-6 3.2-6-3.2zM2.4 8.3 8 11.3l5.6-3M2.4 11 8 14l5.6-3"/></svg>Coatings, adhesives and polymers</a></li>
         </ul>
       </div>
       <a class="hide-s" href="/#how-it-works">Demo video</a>
