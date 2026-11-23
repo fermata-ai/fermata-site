@@ -98,10 +98,8 @@
     .menu::before { content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px; }
     .has-menu:hover .menu, .has-menu:focus-within .menu { opacity: 1; visibility: visible; translate: -50% 8px; transition-delay: 0s; }
     /* an item's corner is the list's corner less the padding between them */
-    .nav .menu a { display: flex; align-items: center; gap: 12px; padding: 5px 14px 5px 5px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--ink-2); white-space: nowrap; box-shadow: none; background: none; }
+    .nav .menu a { display: block; padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--ink-2); white-space: nowrap; box-shadow: none; background: none; }
     .nav .menu a:hover, .nav .menu a:focus-visible { background: var(--violet-soft); color: var(--violet); box-shadow: none; }
-    /* each industry's picture: a small square cut of one of its photographs. Its corner is the item's corner less the gap. */
-    .menu img { width: 40px; height: 40px; flex: none; border-radius: 4px; object-fit: cover; background: var(--sunk); }
     @media (prefers-reduced-motion: reduce) { .menu { transition: none; } }
     .header-cta { padding: 8px 16px; border-radius: 999px; background: var(--ink); color: var(--white) !important; font-weight: 500; }
     .header-cta:hover { background: #2c2c33; }
@@ -569,11 +567,11 @@
         <div class="has-menu hide-s">
           <a href="/industries/">Industries</a>
           <ul class="menu" aria-label="Industries">
-            <li><a href="/industries/#batteries"><img src="industries/thumbs/batteries.jpg" alt="" width="40" height="40" loading="lazy" decoding="async">Batteries and energy storage</a></li>
-            <li><a href="/industries/#hydrogen"><img src="industries/thumbs/hydrogen.jpg" alt="" width="40" height="40" loading="lazy" decoding="async">Hydrogen and e-fuels</a></li>
-            <li><a href="/industries/#minerals"><img src="industries/thumbs/minerals.jpg" alt="" width="40" height="40" loading="lazy" decoding="async">Critical minerals</a></li>
-            <li><a href="/industries/#carbon"><img src="industries/thumbs/carbon.jpg" alt="" width="40" height="40" loading="lazy" decoding="async">Carbon capture, removal and use</a></li>
-            <li><a href="/industries/#coatings"><img src="industries/thumbs/coatings.jpg" alt="" width="40" height="40" loading="lazy" decoding="async">Coatings, adhesives and polymers</a></li>
+            <li><a href="/industries/#batteries">Batteries and energy storage</a></li>
+            <li><a href="/industries/#hydrogen">Hydrogen and e-fuels</a></li>
+            <li><a href="/industries/#minerals">Critical minerals</a></li>
+            <li><a href="/industries/#carbon">Carbon capture, removal and use</a></li>
+            <li><a href="/industries/#coatings">Coatings, adhesives and polymers</a></li>
           </ul>
         </div>
         <a class="hide-s watch" href="#how-it-works">Demo video</a>
