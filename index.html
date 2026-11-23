@@ -101,11 +101,10 @@
     .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--serif); font-size: 21px; }
     .brand svg { color: var(--violet); }
     .nav { display: flex; align-items: center; gap: 12px; }
-    /* the header's links: dark and a size up, so they are noticed; the one under the pointer lifts into a soft pill */
+    /* the header's links: a size up, so they are noticed. The one under the pointer brightens, as on the industries page:
+       no pill behind it, which hid the word once the masthead's words became light. */
     .nav a { font-size: 15px; font-weight: 500; text-decoration: none; color: var(--ink); padding: 7px 12px; border-radius: 999px;
       transition: background 0.2s, color 0.2s, box-shadow 0.2s; }
-    .nav a:not(.header-cta):hover, .nav a:not(.header-cta):focus-visible { color: var(--violet); background: rgba(255, 255, 255, 0.85);
-      box-shadow: 0 1px 0 rgba(26, 26, 31, 0.04), 0 6px 16px -10px rgba(74, 58, 167, 0.45); }
     .nav .header-cta { margin-left: 8px; }
     /* Industries opens a short list of the five industries under it, for the pointer and for the keyboard.
        Each goes to its own part of the industries page; Industries itself still opens that page. */
@@ -774,7 +773,7 @@
     .paper .fi.g { background: #3b8b5e; } .paper .fi.r { background: #b03a2e; }
     /* smooth purple fade: the header in light colours over the violet edge */
     .top .brand, .top .nav a { color: #eeebfa; }
-    .top .nav a:hover { color: #ffffff; }
+    .top .nav a:hover, .top .nav a:focus-visible { color: #ffffff; }
     .top .brand svg { color: #b9b0ff; }
     .top .header-cta { background: #ffffff; color: #1a1a1f !important; }
     /* the list under Industries is a white panel: its words stay dark, whatever colour the masthead's own links take */
