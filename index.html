@@ -771,11 +771,12 @@
       font: 500 4.2px/1 var(--sans); color: #55555d; white-space: nowrap; }
     .paper .fi { padding: 1.3px 1px; border-radius: 0.5px; font: 700 2.8px/1 var(--sans); color: #fff; }
     .paper .fi.g { background: #3b8b5e; } .paper .fi.r { background: #b03a2e; }
-    /* smooth purple fade: the header in light colours over the violet edge */
-    .top .brand, .top .nav a { color: #eeebfa; }
-    .top .nav a:hover, .top .nav a:focus-visible { color: #ffffff; }
-    .top .brand svg { color: #b9b0ff; }
-    .top .header-cta { background: #ffffff; color: #1a1a1f !important; }
+    /* the masthead reads as it does on the industries page: dark words and a black button. Over this page's violet top the
+       words are the full ink, since the grey used on plain paper is too faint here; the one under the pointer is underlined. */
+    .top .nav a { color: var(--ink); }
+    .top .nav > a:not(.header-cta):hover, .top .nav > a:not(.header-cta):focus-visible, .top .has-menu > a:hover, .top .has-menu > a:focus-visible,
+    .top .has-menu:hover > a { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 6px; }
+    .top .nav .header-cta { color: var(--white); }
     /* the list under Industries is a white panel: its words stay dark, whatever colour the masthead's own links take */
     .top .nav .menu a { color: var(--ink-2); }
     .top .nav .menu a:hover, .top .nav .menu a:focus-visible { color: var(--violet); }
