@@ -68,15 +68,15 @@ em { font-style: italic; color: var(--violet); }
 :root { --hair: rgb(26 26 31 / 0.083); }
 
 /* ---------- first screen: the promise, over one photograph that gives way to the next industry's, slowly ---------- */
-.stage { position: relative; max-width: 1180px; margin: 0 auto; padding-inline: 32px; }
-.frame { position: relative; height: clamp(240px, 42svh, 440px); overflow: hidden; border-radius: 6px 6px 0 0; background: var(--sunk); }
+.stage { position: relative; max-width: 1180px; margin: clamp(20px, 3.4vh, 36px) auto 0; padding-inline: 32px; }
+.frame { position: relative; height: clamp(240px, 42svh, 440px); overflow: hidden; border-radius: 8px; background: var(--sunk); }
 .frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; scale: 1.06; transition: opacity 1.5s var(--ease), scale 8s linear; }
 .frame img.on { opacity: 1; scale: 1; }
 .frame .cap { display: none; } .frame .cap-off { position: absolute; left: 20px; bottom: 18px; z-index: 1; color: var(--white); font-family: var(--serif); font-size: clamp(20px, 2vw, 28px); letter-spacing: -0.01em; text-shadow: 0 1px 18px rgb(0 0 0 / 0.45); transition: opacity 0.6s; }
 .frame::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top in oklch, rgb(16 14 28 / 0.55), rgb(16 14 28 / 0) 40%); }
 .index a.peek { color: var(--ink); } .index a.peek .n { color: var(--violet); } .index a.peek::after { transform: scaleX(1); transition-duration: 4.2s; transition-timing-function: linear; }
 .hero { position: relative; padding-top: clamp(40px, 8vh, 88px); }
-.hero-copy { position: relative; text-align: center; max-width: 980px; margin: 0 auto clamp(28px, 5vh, 52px); padding-inline: 24px; }
+.hero-copy { position: relative; text-align: center; max-width: 980px; margin: 0 auto clamp(16px, 3vh, 32px); padding-inline: 24px; }
 /* the words that change: they keep two lines of room, so nothing under them moves */
 .swapbox { display: block; min-height: 2.1em; }
 #swap { display: inline-block; transition: opacity 0.45s var(--ease), transform 0.45s var(--ease); }
@@ -89,7 +89,7 @@ h1 { font-size: clamp(40px, 6.2vw, 80px); line-height: 1.02; letter-spacing: -0.
 
 /* ---------- the five industries, as one line of names that stays at the top ---------- */
 .index { position: sticky; top: 0; z-index: 4; background: rgb(244 244 241 / 0.94); border-block: 1px solid var(--line); }
-.index ol { list-style: none; margin: 0 auto; padding: 0 32px; max-width: 1180px; display: flex; gap: clamp(16px, 3vw, 40px); overflow-x: auto; scrollbar-width: none; }
+.index ol { list-style: none; margin: 0 auto; padding: 0 32px; width: fit-content; max-width: min(1180px, 100%); display: flex; gap: clamp(16px, 3vw, 40px); overflow-x: auto; scrollbar-width: none; }
 .index ol::-webkit-scrollbar { display: none; }
 .index a { position: relative; display: block; padding: 16px 0 15px; white-space: nowrap; text-decoration: none; font-size: 14px; color: var(--ink-3); transition: color 0.3s; }
 .index a .n { font-family: var(--mono); font-size: 11px; font-weight: 600; margin-right: 8px; color: var(--ink-3); transition: color 0.3s; }
@@ -107,9 +107,13 @@ main { overflow-x: clip; }
 .ind { scroll-margin-top: 72px; padding-block: clamp(56px, 10vh, 120px); }
 .ind > .wrap { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 80px); align-items: center; }
 .ind h2 { font-size: clamp(32px, 3.6vw, 50px); line-height: 1.06; margin-bottom: 28px; }
-/* the six measures: a ledger, two to a line, on hairlines */
-.kpis { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; border-top: 1px solid var(--line-2); }
-.kpis li { padding: 14px 0 15px; border-bottom: 1px solid var(--line); font-size: 16px; font-weight: 500; line-height: 1.4; }
+/* the six measures: one a line, numbered. A measure's unit stays in its brackets after the name, in quieter ink. */
+.kh { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 10px; }
+.kpis { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line-2); }
+.kpis li { display: grid; grid-template-columns: 26px minmax(0, 1fr); align-items: baseline; column-gap: 12px; padding: 13px 0 14px; border-bottom: 1px solid var(--line); }
+.kpis .ix { font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--violet); }
+.kpis .nm { font-size: 16.5px; font-weight: 500; line-height: 1.35; }
+.kpis .un { font-weight: 400; color: var(--ink-3); }
 .js .kpis li { opacity: 0; translate: 0 8px; transition: opacity 0.6s var(--ease), translate 0.6s var(--ease); transition-delay: calc(var(--i) * 70ms); }
 .js .ind.shown .kpis li { opacity: 1; translate: 0 0; }
 /* the photographs: every one of them, fitted together. They come from where they lay and close up as the industry arrives. */
@@ -151,7 +155,6 @@ footer a:hover { color: var(--ink); }
 }
 @media (max-width: 560px) {
   .nav { gap: 14px; } .nav .hide-xs { display: none; }
-  .kpis { grid-template-columns: minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -189,10 +192,11 @@ footer a:hover { color: var(--ink); }
       <p class="eyebrow">Industries</p>
       <h1>From result to decision, in <span class="swapbox"><em id="swap"></em></span></h1>
     </div>
-    <div class="stage"><div class="frame" id="frame"><span class="cap" id="cap"></span></div></div>
   </section>
 
   <nav class="index" aria-label="Industries"><ol id="index"></ol></nav>
+
+  <div class="stage"><div class="frame" id="frame"><span class="cap" id="cap"></span></div></div>
 
   <section class="say wrap"><h2 id="say"></h2></section>
 
@@ -248,6 +252,8 @@ footer a:hover { color: var(--ink); }
     var links = document.querySelectorAll("#index a"); links.forEach(function (a, j) { a.classList.toggle("peek", j === i && scrollY < 200); });
   }
   function next() { show((shot + 1) % SHOTS.length); }
+  // once the page has moved on, the line of names marks where the reader is, not which photograph is showing
+  addEventListener("scroll", function () { if (scrollY >= 200) { var pk = document.querySelector("#index a.peek"); if (pk) pk.classList.remove("peek"); } }, { passive: true });
   setTimeout(function () {
     show(0); if (!still) timer = setInterval(function () { if (scrollY < innerHeight) next(); }, 4200);
     document.querySelectorAll("#index a").forEach(function (a, j) { a.addEventListener("pointerenter", function () { if (scrollY < innerHeight) { clearInterval(timer); show(j); } }); });
@@ -262,7 +268,13 @@ footer a:hover { color: var(--ink); }
     var w = el("div", "wrap"), text = el("div", "text"), eb = el("p", "eyebrow");
     eb.appendChild(el("span", "n", no)); eb.appendChild(document.createTextNode("Industry"));
     text.appendChild(eb); text.appendChild(el("h2", null, d.name.replace(/-/g, "\u2011")));
-    var ul = el("ul", "kpis"); d.goals.forEach(function (g, j) { var r = el("li", null, g); r.style.setProperty("--i", j); ul.appendChild(r); });
+    // a measure that ends in brackets keeps them; only their ink is quieter. The words are the content file's own.
+    text.appendChild(el("p", "kh", "KPIs"));
+    var ul = el("ul", "kpis"); d.goals.forEach(function (g, j) {
+      var r = el("li"), m = /^(.*\S)(\s*\([^()]*\))$/.exec(g), nm = el("span", "nm", m ? m[1] : g); r.style.setProperty("--i", j);
+      if (m) nm.appendChild(el("span", "un", m[2]));
+      r.appendChild(el("span", "ix", "0" + (j + 1))); r.appendChild(nm); ul.appendChild(r);
+    });
     text.appendChild(ul);
     var n = Math.min(6, Math.max(4, d.photos.length)), col = el("div", "collage c" + n), figs = [];
     d.photos.slice(0, n).forEach(function (p, j) {
