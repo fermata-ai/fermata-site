@@ -412,6 +412,10 @@
 
     /* industries, after the film: the words and one link on to the industries page */
     .ind-head { margin-bottom: 28px; }
+    /* the five industries, by name: each goes to its own part of the industries page */
+    .ind-list { list-style: none; margin: 0; padding: 0; font-family: var(--serif); font-weight: 300; font-size: 19px; line-height: 1.55; }
+    .ind-list a { color: var(--ink-2); text-decoration: none; transition: color 0.2s; }
+    .ind-list a:hover { color: var(--violet); }
     .more-link svg { width: 15px; height: 15px; color: var(--ink-2); transition: translate 0.3s var(--ease), color 0.3s; }
     .more-link:hover svg { translate: 3px 0; color: var(--violet); }
 
@@ -875,7 +879,13 @@
       <div class="block-head ind-head">
         <p class="eyebrow">Industries</p>
         <h2 id="ind-title">Built for industrial R&amp;D.</h2>
-        <p>Each industry keeps its own records. The way from a result to a decision is the same.</p>
+        <ul class="ind-list">
+          <li><a href="/industries/#batteries">Batteries and energy storage</a></li>
+          <li><a href="/industries/#hydrogen">Hydrogen and e-fuels</a></li>
+          <li><a href="/industries/#minerals">Critical minerals</a></li>
+          <li><a href="/industries/#carbon">Carbon capture, removal and use</a></li>
+          <li><a href="/industries/#coatings">Coatings, adhesives and polymers</a></li>
+        </ul>
       </div>
       <a class="cta-ghost more-link" href="/industries/">Learn more<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9.5M8.5 4l4 4-4 4"/></svg></a>
     </section>
