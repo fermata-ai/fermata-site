@@ -72,9 +72,13 @@
     .top .wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; }
     .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--serif); font-size: 21px; }
     .brand svg { color: var(--violet); }
-    .nav { display: flex; align-items: center; gap: 22px; }
-    .nav a { font-size: 14px; text-decoration: none; color: var(--ink-2); transition: color 0.2s; }
-    .nav a:hover { color: var(--ink); }
+    .nav { display: flex; align-items: center; gap: 12px; }
+    /* the header's links: dark and a size up, so they are noticed; the one under the pointer lifts into a soft pill */
+    .nav a { font-size: 15px; font-weight: 500; text-decoration: none; color: var(--ink); padding: 7px 12px; border-radius: 999px;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s; }
+    .nav a:not(.header-cta):hover, .nav a:not(.header-cta):focus-visible { color: var(--violet); background: rgba(255, 255, 255, 0.85);
+      box-shadow: 0 1px 0 rgba(26, 26, 31, 0.04), 0 6px 16px -10px rgba(74, 58, 167, 0.45); }
+    .nav .header-cta { margin-left: 8px; }
     .header-cta { padding: 8px 16px; border-radius: 999px; background: var(--ink); color: var(--white) !important; font-weight: 500; }
     .header-cta:hover { background: #2c2c33; }
 
@@ -468,7 +472,8 @@
     }
     @media (max-width: 560px) {
       .wrap { padding-inline: 16px; }
-      .nav { gap: 14px; }
+      .nav { gap: 4px; }
+      .nav a:not(.header-cta) { padding-inline: 8px; }
       .nav .hide-xs { display: none; }
       .win-body { padding: 12px; }
       .win-bar { gap: 9px; padding-inline: 12px; }
@@ -546,8 +551,7 @@
         <a class="hide-xs" href="#story">How it works</a>
         <a class="hide-s" href="#industries">Industries</a>
         <a class="hide-s watch" href="#how-it-works">Film</a>
-        <a class="hide-s" href="/guide/">User guide</a>
-        <a class="hide-xs" href="https://web.getfermata.app">Try demo</a>
+        <!-- hidden for now: <a class="hide-s" href="/guide/">User guide</a> -->
         <a class="header-cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest">Download for Mac</a>
       </nav>
     </div>
@@ -575,8 +579,8 @@
         <h1 id="hero-title">From reactive to <em>proactive</em> R&amp;D&nbsp;decisions</h1>
         <p class="lede">Fermata connects today’s result to everything your company already knows, from the lab bench to the pilot line to the plant.</p>
         <div class="actions">
-          <a class="cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest"><svg aria-hidden="true"><use href="#apple"/></svg>Download for Mac</a>
           <a class="cta-ghost" href="https://web.getfermata.app"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>Try demo</a>
+          <a class="cta-ghost contact" href="mailto:hi@getfermata.app?subject=Fermata"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16v11H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4.5 7l7.5 6 7.5-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Contact us</a>
         </div>
       </div>
       <a class="more" href="#story" aria-label="Scroll down to see how it works"><span><svg viewBox="0 0 24 34" aria-hidden="true"><path d="M5 4l7 6 7-6"/><path d="M5 14l7 6 7-6"/><path d="M5 24l7 6 7-6"/></svg></span></a>
@@ -980,9 +984,10 @@
         ),
       ),
     );
-    document.querySelector(".mail").addEventListener("click", () =>
-      window.posthog?.capture("contact_clicked", {}, { transport: "sendBeacon" }),
-    );
+    for (const [sel, from] of [[".mail", "contact"], [".contact", "hero"]])
+      document.querySelector(sel).addEventListener("click", () =>
+        window.posthog?.capture("contact_clicked", { from }, { transport: "sendBeacon" }),
+      );
 
     // ---- The film: plays with sound on the first click, then hands over to the native controls.
     (() => {

@@ -24,49 +24,31 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="newsite/stage.css">
   <style>
     :root {
       color-scheme: light;
-      /* The palette in OKLCH, where L is perceived lightness: the same L reads as the same lightness in every hue.
-         Neutrals step 2.5 apart: white 100, surface 99.1, paper 96.6, sunk 94.2. Ink: 22, 45.2, 58.2.
-         The strong colours sit at L 48 (green, amber, red; the pilot blue at 48.5); violet stays the brand's 43.3.
-         Every soft fill sits at L 94.4 and every tinted line at L 88, whatever its hue. */
-      --bg: oklch(96.6% 0.004 106.5);          /* #f4f4f1: the canvas and the clearing paint this paper as rgb(244 244 241) */
-      --surface: oklch(99.1% 0.0013 106.5);
-      --white: oklch(100% 0 0);
-      --sunk: oklch(94.2% 0.0053 106.5);
-      --ink: oklch(22% 0.010 286);
-      --ink-2: oklch(45.2% 0.013 286);
-      --ink-3: oklch(58.2% 0.012 286);
-      --ink-hover: oklch(29.6% 0.0125 286);
-      /* hairlines: the ink at a low alpha, so a line keeps the same contrast on white, on the surface and on the paper */
-      --line: rgb(26 26 31 / 0.137);           /* #e1e0d9 on white */
-      --line-2: rgb(26 26 31 / 0.269);         /* #c3c2b7 on white */
-      --line-soft: rgb(26 26 31 / 0.083);      /* #ecece8 on white: the board's inner grid */
-      --violet: oklch(43.3% 0.167 283.6);
-      --violet-2: oklch(54.1% 0.156 286.1);
-      --violet-soft: oklch(94.4% 0.023 296.7);
-      --violet-line: oklch(88% 0.048 294.5);
-      --green: oklch(48% 0.091 170.1);
-      --green-2: oklch(62.3% 0.123 165.5);
-      --green-soft: oklch(94.4% 0.0162 172.6);
-      --green-line: oklch(88% 0.033 169.9);
-      --amber: oklch(48% 0.0987 76.3);
-      --amber-soft: oklch(94.4% 0.0416 87.4);
-      --red: oklch(48% 0.16 25.6);
-      --red-soft: oklch(94.4% 0.0265 17.6);
-      /* the teams' own colours (Team B's blue, KPI's brown) and the file-type tags */
-      --pilot: oklch(48.5% 0.1333 254.6);
-      --pilot-soft: oklch(94.4% 0.0218 250.2);
-      --prod: oklch(50.8% 0.108 73.3);
-      --pdf: oklch(49.5% 0.1397 30.9);
-      --pdf-soft: oklch(94.4% 0.0257 26.5);
-      /* nested corners: an inner radius is the outer radius minus the padding between them, never below a floor.
-         A window's cards sit 16 to 18px inside its 16px corner, so they take the floor; what sits ~10px inside a card
-         takes the next floor. */
-      --r-win: 16px;
-      --r-card: max(10px, calc(var(--r-win) - 18px));
-      --r-inset: max(6px, calc(var(--r-card) - 10px));
+      --bg: #f4f4f1;
+      --surface: #fcfcfb;
+      --white: #ffffff;
+      --sunk: #ecece8;
+      --line: #e1e0d9;
+      --line-2: #c3c2b7;
+      --ink: #1a1a1f;
+      --ink-2: #55555d;
+      --ink-3: #7a7a82;
+      --violet: #4a3aa7;
+      --violet-2: #6a5cc4;
+      --violet-soft: #ece8f9;
+      --violet-line: #d6cff2;
+      --green: #0f6e56;
+      --green-2: #1d9e75;
+      --green-soft: #e3f1ec;
+      --green-line: #c7e3d8;
+      --amber: #7a5200;
+      --amber-soft: #fdf0d2;
+      --red: #a52a2a;
+      --red-soft: #f9e1e1;
       --serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
       --sans: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
       --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
@@ -99,11 +81,15 @@
     .top .wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; }
     .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--serif); font-size: 21px; }
     .brand svg { color: var(--violet); }
-    .nav { display: flex; align-items: center; gap: 22px; }
-    .nav a { font-size: 14px; text-decoration: none; color: var(--ink-2); transition: color 0.2s; }
-    .nav a:hover { color: var(--ink); }
+    .nav { display: flex; align-items: center; gap: 12px; }
+    /* the header's links: dark and a size up, so they are noticed; the one under the pointer lifts into a soft pill */
+    .nav a { font-size: 15px; font-weight: 500; text-decoration: none; color: var(--ink); padding: 7px 12px; border-radius: 999px;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s; }
+    .nav a:not(.header-cta):hover, .nav a:not(.header-cta):focus-visible { color: var(--violet); background: rgba(255, 255, 255, 0.85);
+      box-shadow: 0 1px 0 rgba(26, 26, 31, 0.04), 0 6px 16px -10px rgba(74, 58, 167, 0.45); }
+    .nav .header-cta { margin-left: 8px; }
     .header-cta { padding: 8px 16px; border-radius: 999px; background: var(--ink); color: var(--white) !important; font-weight: 500; }
-    .header-cta:hover { background: var(--ink-hover); }
+    .header-cta:hover { background: #2c2c33; }
 
     /* ---------- buttons ---------- */
     .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
@@ -112,7 +98,7 @@
       background: var(--ink); color: var(--white); font-size: 15px; font-weight: 600; text-decoration: none;
       box-shadow: 0 12px 30px -14px rgba(26, 26, 31, 0.55); transition: transform 0.2s, background 0.2s;
     }
-    .cta:hover { transform: translateY(-1px); background: var(--ink-hover); }
+    .cta:hover { transform: translateY(-1px); background: #2c2c33; }
     .cta svg { width: 16px; height: 16px; margin-top: -2px; }
     .cta-ghost {
       display: inline-flex; align-items: center; gap: 9px; padding: 15px 26px; border-radius: 999px;
@@ -126,9 +112,7 @@
     .hero { position: relative; min-height: calc(100svh - 72px); display: grid; align-content: center; padding-block: 24px 40px; overflow: clip; }
     .hero-copy { position: relative; z-index: 6; text-align: center; max-width: 860px; margin: 0 auto; padding-inline: 24px; }
     h1 { font-size: clamp(40px, 6.2vw, 80px); line-height: 1.02; letter-spacing: -0.035em; margin-bottom: 22px; }
-    .lede { font-family: var(--serif); font-weight: 400; font-size: clamp(18px, 1.7vw, 22px); line-height: 1.55; color: #4a4a52; max-width: 880px; margin: 0 auto 32px; }
-    .lede .l1, .lede .l2 { display: block; }
-    @media (min-width: 900px) { .lede .l1 { white-space: nowrap; } }
+    .lede { font-family: var(--serif); font-weight: 300; font-size: clamp(18px, 2vw, 22px); line-height: 1.45; color: var(--ink-2); max-width: 640px; margin: 0 auto 32px; }
     .hero-copy > * { animation: rise 0.6s var(--ease) backwards; }
     .hero-copy > :nth-child(2) { animation-delay: 0.05s; }
     .hero-copy > :nth-child(3) { animation-delay: 0.1s; }
@@ -151,8 +135,8 @@
     /* the first screen's violet edges, and the soft clearing behind the hero's words: drawn once by the browser and
        faded from script, never redrawn on the canvas each frame */
     .vignette, .clearing { position: fixed; z-index: 5; pointer-events: none; opacity: 0; visibility: hidden; }
-    .vignette { inset: 0; background: radial-gradient(78% 78% at 50% 50%, rgba(44, 33, 104, 0.00) 28%, rgba(44, 33, 104, 0.05) 36%, rgba(44, 33, 104, 0.13) 44%, rgba(44, 33, 104, 0.24) 52%, rgba(44, 33, 104, 0.37) 60%, rgba(44, 33, 104, 0.50) 68%, rgba(44, 33, 104, 0.61) 76%, rgba(44, 33, 104, 0.69) 84%, rgba(44, 33, 104, 0.74) 92%, rgba(44, 33, 104, 0.77) 100%); }
-    .clearing { left: 0; top: 0; background: radial-gradient(closest-side, rgba(244, 244, 241, 0.8), rgba(244, 244, 241, 0.55) 55%, rgba(244, 244, 241, 0.18) 80%, rgba(244, 244, 241, 0)); }
+    .vignette { inset: 0; background: radial-gradient(70.76% 70.76% at 50% 50%, rgba(74, 58, 167, 0) 40.98%, rgba(74, 58, 167, 0.1) 67.54%, rgba(74, 58, 167, 0.4) 100%); }
+    .clearing { left: 0; top: 0; background: radial-gradient(closest-side, rgba(244, 244, 241, 0.95), rgba(244, 244, 241, 0.9) 58%, rgba(244, 244, 241, 0)); }
     .space-tags { position: fixed; inset: 0; z-index: 5; pointer-events: none; overflow: clip; }
     .space-tags > * { position: absolute; left: 0; top: 0; will-change: transform; }
     body.map-wide { cursor: grab; }
@@ -160,15 +144,15 @@
     /* a group's name: a hub of the wide map (--w 0), a small caption once the map is in its card (--w 1) */
     .hub { display: inline-flex; align-items: center; gap: calc(6px * (1 - var(--w, 1))); white-space: nowrap; border-radius: 999px;
       padding: calc(5px * (1 - var(--w, 1))) calc(12px * (1 - var(--w, 1)));
-      background: rgba(255, 255, 255, calc(0.94 * (1 - var(--w, 1)))); border: 1px solid rgb(26 26 31 / calc(0.137 * (1 - var(--w, 1))));
+      background: rgba(255, 255, 255, calc(0.94 * (1 - var(--w, 1)))); border: 1px solid rgba(225, 224, 217, calc(1 - var(--w, 1)));
       font-size: calc(13.5px - 4.5px * var(--w, 1)); font-weight: 600; letter-spacing: calc(0.02em + 0.16em * var(--w, 1)); text-transform: uppercase;
       color: color-mix(in srgb, var(--ink-3) calc(var(--w, 1) * 100%), var(--hub)); opacity: 0; }
-    .hub svg { width: calc(15px * (1 - var(--w, 1))); height: 15px; opacity: calc(1 - var(--w, 1)); stroke-width: 1.8; }
+    .hub svg { width: calc(15px * (1 - var(--w, 1))); height: 15px; opacity: calc(1 - var(--w, 1)); }
     .hub b { font-weight: 600; }
     .team { white-space: nowrap; padding: 3px 9px; border-radius: 999px; background: rgba(255, 255, 255, 0.88); border: 1px solid var(--line);
       font-size: 11.5px; font-weight: 600; opacity: 0; box-shadow: 0 4px 12px -9px rgba(26, 26, 31, 0.4); }
-    .team.rnd { color: var(--violet); } .team.pilot { color: var(--pilot); } .team.prod { color: var(--prod); }
-    .hub.rnd { --hub: var(--violet); } .hub.pilot { --hub: var(--pilot); } .hub.prod { --hub: var(--prod); }
+    .team.rnd { color: var(--violet); } .team.pilot { color: #1f5fa8; } .team.prod { color: #8a5a00; }
+    .hub.rnd { --hub: var(--violet); } .hub.pilot { --hub: #1f5fa8; } .hub.prod { --hub: #8a5a00; }
     .paper {
       position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%);
       width: 150px; padding: 10px 11px 12px; border-radius: 9px; background: var(--white); border: 1px solid var(--line);
@@ -181,8 +165,8 @@
     .paper i + i { width: 72%; }
     .paper.far { scale: 0.82; filter: blur(0.6px); }
     .paper.near { scale: 1.08; }
-    .t.pdf { background: var(--pdf-soft); color: var(--pdf); } .t.csv { background: var(--green-soft); color: var(--green); }
-    .t.ppt { background: var(--amber-soft); color: var(--amber); } .t.doc { background: var(--pilot-soft); color: var(--pilot); }
+    .t.pdf { background: #fbe4e1; color: #a23b2c; } .t.csv { background: var(--green-soft); color: var(--green); }
+    .t.ppt { background: var(--amber-soft); color: var(--amber); } .t.doc { background: #e1edfa; color: #1f5fa8; }
     .t.nb { background: var(--violet-soft); color: var(--violet); } .t.log { background: var(--sunk); color: var(--ink-2); }
     @keyframes settle { from { opacity: 0; translate: 0 18px; } to { opacity: var(--o, 0.92); translate: 0 0; } }
     .paper > * { opacity: var(--paper-ink, 1); }
@@ -204,9 +188,9 @@
     .tag { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; padding: 3px 8px 3px 6px; border-radius: 999px; background: rgba(255, 255, 255, 0.92);
       border: 1px solid var(--line); font-size: 10.5px; color: var(--ink); box-shadow: 0 4px 12px -8px rgba(26, 26, 31, 0.4); opacity: 0; transition: opacity 0.4s; }
     .tag.on { opacity: 1; }
-    .tag svg { width: 11px; height: 11px; stroke-width: 2.2; }
+    .tag svg { width: 11px; height: 11px; }
     .tag b { font-weight: 700; }
-    .tag.rnd { color: var(--violet); } .tag.pilot { color: var(--pilot); } .tag.prod { color: var(--prod); } .tag.dec { color: var(--green); }
+    .tag.rnd { color: var(--violet); } .tag.pilot { color: #1f5fa8; } .tag.prod { color: #8a5a00; } .tag.dec { color: var(--green); }
     .tag span { color: var(--ink); font-weight: 500; }
     /* the chip a record shows under the pointer: small, like a label on a shelf */
     .hchip { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; padding: 3px 9px 3px 4px; border-radius: 999px; background: rgba(255, 255, 255, 0.96);
@@ -256,7 +240,7 @@
     .web .lbl { opacity: 0; transition: opacity 0.5s; pointer-events: none; }
     .web .lbl text { font-size: 10.5px; font-family: var(--sans); font-weight: 500; fill: var(--ink); }
     .web .lbl .stg { font-weight: 700; fill: currentColor; }
-    .web .lbl.rnd { color: var(--violet); } .web .lbl.pilot { color: var(--pilot); } .web .lbl.prod { color: var(--prod); } .web .lbl.dec { color: var(--green); }
+    .web .lbl.rnd { color: var(--violet); } .web .lbl.pilot { color: #1f5fa8; } .web .lbl.prod { color: #8a5a00; } .web .lbl.dec { color: var(--green); }
     .web .lbl rect { fill: var(--white); stroke: var(--line); stroke-width: 1; }
     /* the part of a thread inside the web: straight from its node to the card's right edge, under the nodes */
     .web .thr { fill: none; stroke: var(--violet-2); stroke-width: 1.3; opacity: 0.7; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.5s var(--ease); }
@@ -277,13 +261,11 @@
       .chapters .pin { padding-block: 10px; }
     }
     .chapters .win { transform-origin: 0 0; }
-    .pin > p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: clamp(17px, 1.5vw, 19px); color: var(--ink-2); max-width: 640px; margin: 0 0 28px; }
-    @media (max-width: 899px) { .wide-br { display: none; } }
-    .gonogo { color: var(--violet); font-weight: 600; white-space: nowrap; }
+    .pin > p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: clamp(17px, 1.5vw, 19px); color: var(--ink-2); max-width: 560px; margin: 0 0 28px; }
     .chapter .eyebrow .n { font-family: var(--mono); letter-spacing: 0; margin-right: 6px; }
 
     /* ---------- app windows: the product, drawn ---------- */
-    .win { position: relative; background: var(--white); border: 1px solid var(--line); border-radius: var(--r-win); box-shadow: var(--shadow); overflow: hidden; max-width: 640px; }
+    .win { position: relative; background: var(--white); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; max-width: 640px; }
     /* the pointer that comes in and presses a button, and the ring its click leaves */
     .cur { position: absolute; z-index: 5; width: 24px; height: 24px; margin: -3px 0 0 -5px; pointer-events: none; transform-origin: 5px 3px; filter: drop-shadow(0 2px 3px rgba(26, 26, 31, 0.35)); }
     .cur svg { display: block; width: 100%; height: 100%; }
@@ -298,13 +280,13 @@
     .win-bar .who { white-space: nowrap; flex: none; }
     .win-bar .who { margin-left: auto; display: flex; align-items: center; gap: 7px; color: var(--ink-3); font-size: 12.5px; }
     .av { width: 22px; height: 22px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 10.5px; font-weight: 700; background: var(--violet-soft); color: var(--violet); flex: none; }
-    .av.t { background: var(--pilot-soft); color: var(--pilot); } .av.d { background: var(--amber-soft); color: var(--amber); }
+    .av.t { background: #e1edfa; color: #1f5fa8; } .av.d { background: var(--amber-soft); color: var(--amber); }
     .win-body { padding: 16px 18px 18px; font-size: 14px; }
     .k { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; margin: 0 0 8px; }
     .chip { display: inline-flex; align-items: center; gap: 5px; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 500; white-space: nowrap; background: var(--sunk); color: var(--ink-2); transition: background 0.4s, color 0.4s; }
     .chip.ok { background: var(--green-soft); color: var(--green); } .chip.vi { background: var(--violet-soft); color: var(--violet); }
     .chip.am { background: var(--amber-soft); color: var(--amber); } .chip.no { background: var(--red-soft); color: var(--red); }
-    .btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line-2); background: var(--white); border-radius: var(--r-inset); padding: 6px 11px; font: 500 13px var(--sans); color: var(--ink); transition: background 0.3s, color 0.3s, border-color 0.3s, scale 0.15s; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line-2); background: var(--white); border-radius: 8px; padding: 6px 11px; font: 500 13px var(--sans); color: var(--ink); transition: background 0.3s, color 0.3s, border-color 0.3s, scale 0.15s; }
     .btn.done { background: var(--violet); border-color: var(--violet); color: var(--white); }
     .btn.green.done { background: var(--green); border-color: var(--green); }
     .btn.press { scale: 0.96; }
@@ -321,23 +303,22 @@
 
     /* directions */
     .dirs { display: grid; gap: 8px; }
-    .dir { border: 1px solid var(--line); border-radius: var(--r-card); padding: 10px 12px; transition: opacity 0.5s, background 0.5s; }
+    .dir { border: 1px solid var(--line); border-radius: 11px; padding: 10px 12px; transition: opacity 0.5s, background 0.5s; }
     .dir-row { display: flex; align-items: center; gap: 9px; }
     .lt { width: 20px; height: 20px; border-radius: 5px; display: inline-grid; place-items: center; background: var(--sunk); color: var(--ink-2); font-size: 11px; font-weight: 700; flex: none; }
     .dir-row .st { margin-left: auto; display: inline-grid; align-items: center; justify-items: end; min-width: 22px; min-height: 22px; }
     .dir-row .st .spin { margin-right: 3px; }
-    /* the one going out blurs as it fades; once it is gone it is hidden, so the ring's turn is not painted behind the check */
-    .dir-row .st > * { grid-area: 1 / 1; transition: opacity 0.35s var(--ease), scale 0.45s var(--ease), filter 0.35s var(--ease), visibility 0s; }
+    .dir-row .st > * { grid-area: 1 / 1; transition: opacity 0.35s var(--ease), scale 0.45s var(--ease); }
     /* a direction at work: a small ring that turns. When it is settled the ring gives way to its result. */
     .spin { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--violet-line); border-top-color: var(--violet); animation: turn 0.9s linear infinite; }
     @keyframes turn { to { rotate: 1turn; } }
     .st .ck { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--green); color: var(--white); }
-    .st .ck svg { width: 13px; height: 13px; stroke-width: 1.8; }
-    .st .ck, .st .chip { opacity: 0; scale: 0.6; filter: blur(4px); }
-    .st.done .spin { opacity: 0; scale: 0.4; filter: blur(4px); visibility: hidden; transition-delay: 0s, 0s, 0s, 0.35s; }
-    .st.done .ck, .st.done .chip { opacity: 1; scale: 1; filter: none; }
-    html:not(.js) .st .spin { display: none; } html:not(.js) .st .ck, html:not(.js) .st .chip { opacity: 1; scale: 1; filter: none; }
-    @media (prefers-reduced-motion: reduce) { .spin { animation: none; } .dir-row .st > * { filter: none !important; } }
+    .st .ck svg { width: 13px; height: 13px; }
+    .st .ck, .st .chip { opacity: 0; scale: 0.6; }
+    .st.done .spin { opacity: 0; scale: 0.4; }
+    .st.done .ck, .st.done .chip { opacity: 1; scale: 1; }
+    html:not(.js) .st .spin { display: none; } html:not(.js) .st .ck, html:not(.js) .st .chip { opacity: 1; scale: 1; }
+    @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
     .dir-name b { font-weight: 600; margin-right: 8px; }
     .dir-name span { color: var(--ink-3); }
     /* B's plan changes when the knowledge base speaks: the first value is struck, the better one takes its place */
@@ -345,22 +326,22 @@
     .dir-name .now { color: var(--ink-2); font-weight: 500; }
     .js .dir-name .was { text-decoration-color: transparent; transition: text-decoration-color 0.5s; } .js .dir-name .now { opacity: 0; transition: opacity 0.5s 0.2s; }
     .js .dir.turned .was { text-decoration-color: currentColor; } .js .dir.turned .now { opacity: 1; }
-    .recall { display: flex; gap: 9px; margin-top: 9px; padding: 9px 11px; border-radius: var(--r-inset); background: var(--violet-soft); border: 1px solid var(--violet-line); font-size: 13px; }
+    .recall { display: flex; gap: 9px; margin-top: 9px; padding: 9px 11px; border-radius: 9px; background: var(--violet-soft); border: 1px solid var(--violet-line); font-size: 13px; }
     .recall::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--violet); margin-top: 5px; flex: none; }
     .recall small { display: block; font-size: 11.5px; color: var(--violet); font-weight: 600; }
-    .finding { margin-top: 12px; display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: var(--r-card); border: 1px dashed var(--line-2); }
+    .finding { margin-top: 12px; display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 11px; border: 1px dashed var(--line-2); }
     .finding p { margin: 0; font-size: 13.5px; }
     .finding p small { display: block; font-size: 11.5px; color: var(--ink-3); font-weight: 600; letter-spacing: 0.04em; }
     .finding .btn { margin-left: auto; flex: none; }
 
     /* conversation */
-    .msg { border-radius: var(--r-card); padding: 10px 12px; font-size: 13.5px; }
+    .msg { border-radius: 12px; padding: 10px 12px; font-size: 13.5px; }
     .msg.you { background: var(--sunk); margin-left: 15%; }
-    .msg.you .att { display: inline-flex; gap: 6px; align-items: center; margin-top: 7px; font-size: 12px; color: var(--ink-2); background: var(--white); border: 1px solid var(--line); border-radius: var(--r-inset); padding: 2px 7px; }
+    .msg.you .att { display: inline-flex; gap: 6px; align-items: center; margin-top: 7px; font-size: 12px; color: var(--ink-2); background: var(--white); border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; }
     .msg.fermata { margin-top: 10px; padding: 0; }
     .msg.fermata > p { margin: 0 0 8px; }
     .msg.fermata .from { font-size: 11.5px; font-weight: 600; color: var(--violet); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-    .chart { display: block; width: 100%; max-width: 440px; height: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); }
+    .chart { display: block; width: 100%; max-width: 440px; height: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
     .chart .ln { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
     .chart .axis { stroke: var(--line); stroke-width: 1; }
     .chart text { font-size: 10px; fill: var(--ink-3); font-family: var(--sans); }
@@ -371,7 +352,7 @@
     .read { margin: 0 0 6px; font-size: 11.5px; font-weight: 600; color: var(--ink-3); }
 
     /* team */
-    .board { border: 1px solid var(--line); border-radius: var(--r-card); overflow: hidden; }
+    .board { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
     .board table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 15px; }
     .board th, .board td { padding: 12px 10px; text-align: center; vertical-align: middle; }
     .board thead th { background: var(--surface); border-bottom: 1px solid var(--line); font-size: 14px; font-weight: 600; }
@@ -379,11 +360,11 @@
     .board thead th:first-child, .board tbody th { width: 25%; text-align: left; padding-left: 14px; }
     .board tbody th { font-weight: 600; }
     .board tbody th small { display: block; font-size: 11.5px; font-weight: 400; color: var(--ink-3); line-height: 1.3; }
-    .board tbody tr + tr > * { border-top: 1px solid var(--line-soft); }
-    .board th + th, .board th + td, .board td + td { border-left: 1px solid var(--line-soft); }
+    .board tbody tr + tr > * { border-top: 1px solid var(--sunk); }
+    .board th + th, .board th + td, .board td + td { border-left: 1px solid var(--sunk); }
     .val { display: inline-flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
     .val .m { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; flex: none; }
-    .val .m svg { width: 12px; height: 12px; stroke-width: 2.6; }
+    .val .m svg { width: 12px; height: 12px; }
     .val.ok .m { background: var(--green); color: var(--white); } .val.no .m { background: var(--red-soft); color: var(--red); }
     .val.na { font-size: 13.5px; font-weight: 500; color: var(--ink-3); }
     .board .decide > * { background: var(--surface); }
@@ -410,7 +391,7 @@
     .js .chart .ln.late { transition-delay: 0.25s; }
 
     /* threads from memory to the moment it is used */
-    .threads { position: fixed; inset: 0; width: 100vw; height: 100dvh; pointer-events: none; z-index: 5; overflow: visible; }
+    .threads { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 5; overflow: visible; }
     .threads path { fill: none; stroke: var(--violet-2); stroke-width: 1.3; opacity: 0.55; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.9s var(--ease), opacity 0.4s; }
     .threads path.in { stroke-dashoffset: 0; }
     .threads path.green { stroke: var(--green-2); }
@@ -425,13 +406,21 @@
     .block-head h2 { font-size: clamp(32px, 3.8vw, 50px); line-height: 1.06; margin-bottom: 14px; }
     .block-head p:not(.eyebrow) { font-family: var(--serif); font-weight: 300; font-size: 19px; color: var(--ink-2); margin: 0; }
 
+    .inds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .ind { position: relative; margin: 0; border-radius: 20px; overflow: hidden; background: var(--ink); aspect-ratio: 4 / 5; box-shadow: var(--shadow); }
+    .ind img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 1.2s var(--ease); }
+    .ind:hover img { scale: 1.04; }
+    .ind img { filter: saturate(0.88); }
+    .ind::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(18, 14, 48, 0.84) 0%, rgba(40, 31, 100, 0.3) 44%, rgba(74, 58, 167, 0.12) 100%); }
+    .ind-text { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 24px; color: var(--white); }
+    .ind h3 { font-size: clamp(24px, 2.2vw, 30px); line-height: 1.1; margin-bottom: 6px; }
+    .ind p { margin: 0; font-size: 15px; color: rgba(255, 255, 255, 0.82); }
+
     .sum { text-align: center; padding-block: clamp(110px, 22vh, 240px) clamp(10px, 4vh, 48px); }
-    .sum .eyebrow { margin-bottom: 18px; }
-    .sum-sub { font-family: var(--serif); font-weight: 400; font-size: clamp(18px, 1.9vw, 24px); line-height: 1.45; color: #4a4a52; max-width: 760px; margin: 22px auto 0; }
     .sum h2 { font-size: clamp(36px, 5.6vw, 76px); line-height: 1.03; letter-spacing: -0.035em; max-width: 1040px; margin: 0 auto; text-wrap: balance; }
     .film-block { text-align: center; }
     .film-block .block-head { margin-inline: auto; }
-    .player { position: relative; max-width: 1040px; margin: 0 auto; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #0b0b0d; background-clip: padding-box; border: 1px solid var(--line); box-shadow: 0 40px 90px -40px rgba(26, 26, 31, 0.55); }
+    .player { position: relative; max-width: 1040px; margin: 0 auto; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #0b0b0d; border: 1px solid var(--line); box-shadow: 0 40px 90px -40px rgba(26, 26, 31, 0.55); }
     .player video { display: block; width: 100%; height: 100%; }
     .play { position: absolute; inset: 0; display: grid; place-items: center; border: 0; padding: 0; cursor: pointer; background: linear-gradient(to top, rgba(11, 11, 13, 0.3), rgba(11, 11, 13, 0.02)); }
     .play span { width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center; background: var(--white); color: var(--ink); box-shadow: 0 14px 40px -10px rgba(0, 0, 0, 0.5); transition: transform 0.2s; }
@@ -449,10 +438,7 @@
 
     .close { text-align: center; padding-block: clamp(90px, 16vh, 170px); }
     .close h2 { font-size: clamp(34px, 4.6vw, 60px); line-height: 1.05; max-width: 900px; margin: 0 auto 18px; }
-    .close p { font-family: var(--serif); font-weight: 400; font-size: 21px; color: #4a4a52; margin: 0 auto 34px; }
-    .close p.eyebrow { font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--violet); margin: 0 auto 18px; }
-    .close p.eyebrow a { color: inherit; text-decoration: none; }
-    .close p.eyebrow a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    .close p { font-family: var(--serif); font-weight: 300; font-size: 20px; color: var(--ink-2); margin: 0 auto 34px; }
 
     footer { border-top: 1px solid var(--line); }
     footer .wrap { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; justify-content: space-between; padding-block: 28px; font-size: 14px; color: var(--ink-3); }
@@ -490,10 +476,13 @@
       .intro { padding-top: 40px; padding-bottom: 8px; }
       .pilot-body { grid-template-columns: minmax(0, 1fr); }
       .pilot-body .msg.you { margin-left: 0; }
+      .inds { grid-template-columns: 1fr; }
+      .ind { aspect-ratio: 4 / 3; }
     }
     @media (max-width: 560px) {
       .wrap { padding-inline: 16px; }
-      .nav { gap: 14px; }
+      .nav { gap: 4px; }
+      .nav a:not(.header-cta) { padding-inline: 8px; }
       .nav .hide-xs { display: none; }
       .win-body { padding: 12px; }
       .win-bar { gap: 9px; padding-inline: 12px; }
@@ -531,229 +520,6 @@
       .js .chart .ln { transition: none; }
       .threads path { transition: none; }
     }
-
-    /* ---------- paper style D: each record is a real page of its kind, on a desk, at a depth ---------- */
-    /* the sheet itself is .in (its tone, grain, a slightly uneven outline); .paper places it and casts its shadow (which
-       the script fades as it flies); .paper::before adds the deeper shadow under a lifted corner */
-    .paper { width: 118px; padding: 0; border: 0; border-radius: 0; background: none; color: #26262c; font-family: var(--sans); line-height: 1.3;
-      box-shadow: 0 0.5px 1px rgba(26, 26, 31, 0.1), 0 3px 6px -3px rgba(26, 26, 31, 0.12), 0 16px 30px -16px rgba(26, 26, 31, 0.32); }
-    .paper.near { box-shadow: 0 1px 1.5px rgba(26, 26, 31, 0.1), 0 7px 14px -6px rgba(26, 26, 31, 0.14), 0 30px 50px -22px rgba(26, 26, 31, 0.46); }
-    .paper.far { filter: blur(1.1px); box-shadow: 0 0.5px 1px rgba(26, 26, 31, 0.07), 0 10px 20px -12px rgba(26, 26, 31, 0.24); }
-    .paper::before { content: ""; position: absolute; inset: -28px; z-index: -1; pointer-events: none; opacity: var(--paper-ink, 1); background: var(--lsh, none); }
-    .paper .in { position: relative; height: 100%; overflow: hidden; padding: 8px 9px 7px;
-      background-color: var(--tone, #fdfdfb); background-image: var(--grain, none); background-size: 80px 80px;
-      box-shadow: inset 0 0 0 0.5px rgba(26, 26, 31, 0.13);
-      clip-path: var(--cp, polygon(0.5px 0, 100% 0.6px, calc(100% - 0.4px) 100%, 0 calc(100% - 0.7px))); }
-    /* light across the sheet and its folds, laid over the print as real light is */
-    .papers { --light0: linear-gradient(115deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 45%, rgba(26, 26, 31, 0.045)),
-      radial-gradient(ellipse at 30% 75%, rgba(150, 132, 100, 0.05), rgba(150, 132, 100, 0) 60%); }
-    .paper .in::after { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none;
-      background: var(--fold, linear-gradient(transparent, transparent)), var(--light, var(--light0)); }
-    .paper.t-copy { --tone: #fdfdfb; } .paper.t-bright { --tone: #fefefe; } .paper.t-cream { --tone: #faf6e8; }
-    .paper.t-recy { --tone: #f1f0eb; } .paper.t-ivory { --tone: #fbf8ef; } .paper.t-old { --tone: #f8f4e6; }
-    /* a corner lifted off the desk: it catches the light, curls a little, and its shadow reaches further */
-    .paper.lift-br { --lsh: radial-gradient(closest-side, rgba(26, 26, 31, 0.24), rgba(26, 26, 31, 0)) right 1px bottom 0 / 48px 44px no-repeat;
-      --light: radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 32%), linear-gradient(to top, rgba(26, 26, 31, 0.07), rgba(26, 26, 31, 0) 5px), var(--light0); }
-    .paper.lift-tr { --lsh: radial-gradient(closest-side, rgba(26, 26, 31, 0.2), rgba(26, 26, 31, 0)) right 3px top 24px / 38px 34px no-repeat;
-      --light: radial-gradient(circle at 100% 0, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 32%), linear-gradient(to left, rgba(26, 26, 31, 0.06), rgba(26, 26, 31, 0) 5px), var(--light0); }
-    .paper.lift-bl { --lsh: radial-gradient(closest-side, rgba(26, 26, 31, 0.24), rgba(26, 26, 31, 0)) left 2px bottom 0 / 48px 44px no-repeat;
-      --light: radial-gradient(circle at 0 100%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 32%), linear-gradient(to top, rgba(26, 26, 31, 0.07), rgba(26, 26, 31, 0) 5px), var(--light0); }
-    /* folds: a valley in shade, the crease, its lit ridge */
-    .paper.fold-h { --fold: linear-gradient(to bottom, rgba(26, 26, 31, 0) 0, rgba(26, 26, 31, 0.035) calc(50% - 7px), rgba(26, 26, 31, 0.12) calc(50% - 0.4px),
-      rgba(255, 255, 255, 0.5) calc(50% + 0.3px), rgba(255, 255, 255, 0.1) calc(50% + 2px), rgba(255, 255, 255, 0) calc(50% + 6px), rgba(26, 26, 31, 0.025) 100%); }
-    .paper.fold-v { --fold: linear-gradient(to right, rgba(26, 26, 31, 0) 0, rgba(26, 26, 31, 0.035) calc(50% - 7px), rgba(26, 26, 31, 0.12) calc(50% - 0.4px),
-      rgba(255, 255, 255, 0.5) calc(50% + 0.3px), rgba(255, 255, 255, 0.1) calc(50% + 2px), rgba(255, 255, 255, 0) calc(50% + 6px), rgba(26, 26, 31, 0.025) 100%); }
-    .paper.fold-3 { --fold: linear-gradient(to bottom, rgba(26, 26, 31, 0) 0, rgba(26, 26, 31, 0.03) calc(33.3% - 6px), rgba(26, 26, 31, 0.11) calc(33.3% - 0.4px),
-      rgba(255, 255, 255, 0.5) calc(33.3% + 0.3px), rgba(255, 255, 255, 0) calc(33.3% + 5px), rgba(26, 26, 31, 0.03) calc(66.7% - 6px),
-      rgba(26, 26, 31, 0.11) calc(66.7% - 0.4px), rgba(255, 255, 255, 0.5) calc(66.7% + 0.3px), rgba(255, 255, 255, 0) calc(66.7% + 5px), rgba(26, 26, 31, 0.02) 100%); }
-    /* a dog-eared corner: the sheet is cut along the fold, the flap lies on the page and casts a small shadow */
-    .paper.dog-tr { --cp: polygon(0.5px 0, calc(100% - 13px) 0, 100% 13px, calc(100% - 0.4px) 100%, 0 calc(100% - 0.7px));
-      box-shadow: none; }
-    .paper.dog-tr::before { inset: 0; background: none;
-      box-shadow: 0 0.5px 1px rgba(26, 26, 31, 0.1), 0 3px 6px -3px rgba(26, 26, 31, 0.12), 0 16px 30px -16px rgba(26, 26, 31, 0.32);
-      clip-path: polygon(-50px -50px, calc(100% - 63px) -50px, calc(100% + 50px) 63px, calc(100% + 50px) calc(100% + 50px), -50px calc(100% + 50px)); }
-    .paper .dg { position: absolute; z-index: 4; top: 0; right: 0; width: 13px; height: 13px; filter: drop-shadow(-0.6px 0.9px 0.7px rgba(26, 26, 31, 0.25)); }
-    .paper .dg::before { content: ""; position: absolute; inset: 0; clip-path: polygon(0 0, 100% 100%, 0 100%); background: linear-gradient(45deg, #e6e2d6, #f3f0e6 55%, #faf8f1); }
-    /* rare marks: a staple, a paper clip, a highlighter stroke, pencil notes, one coffee ring */
-    .paper .stp { position: absolute; z-index: 4; left: 3px; top: 7px; width: 11px; height: 1.5px; rotate: -38deg; border-radius: 0.8px;
-      background: linear-gradient(#eceef1, #a3a6ad 55%, #7f828a); box-shadow: 0.4px 0.7px 0.6px rgba(26, 26, 31, 0.35); }
-    .paper .clip { position: absolute; z-index: 5; top: -7px; left: 15px; width: 8px; height: 22px; rotate: -4deg; overflow: visible;
-      filter: drop-shadow(0.5px 0.8px 0.5px rgba(26, 26, 31, 0.3)); }
-    .paper .hl { background: linear-gradient(100deg, rgba(255, 223, 88, 0) 0, rgba(255, 223, 88, 0.62) 4%, rgba(255, 219, 80, 0.55) 95%, rgba(255, 223, 88, 0) 100%);
-      padding: 0 2px; margin: 0 -1px 0 -2px; }
-    .paper .mn { font: 500 8.5px/1 Caveat, "Bradley Hand", "Segoe Print", cursive; color: #4d5d88; white-space: nowrap; z-index: 2; }
-    .paper .mn.r1 { position: absolute; right: 8px; bottom: 15px; rotate: -7deg; }
-    .paper .mn.il { display: inline-block; margin-left: 4px; rotate: -6deg; font-size: 8px; }
-    .paper .cof { position: absolute; z-index: 2; right: -14px; bottom: -16px; width: 52px; height: 52px; border-radius: 50%; pointer-events: none;
-      background: radial-gradient(circle, rgba(146, 98, 52, 0) 55%, rgba(146, 98, 52, 0.2) 58.5%, rgba(146, 98, 52, 0.06) 62%, rgba(146, 98, 52, 0) 67%),
-        radial-gradient(circle at 46% 55%, rgba(146, 98, 52, 0) 57%, rgba(146, 98, 52, 0.09) 60.5%, rgba(146, 98, 52, 0) 64%),
-        radial-gradient(circle, rgba(170, 128, 78, 0.05), rgba(170, 128, 78, 0) 56%); }
-    /* sizes: real proportions, and not every sheet the same */
-    .paper.d-page { width: 118px; aspect-ratio: 8.5 / 11; }
-    .paper.d-page.near { width: 121px; }
-    .paper.d-page.far { width: 98px; }
-    .paper.d-page.far.fold-3 { width: 95px; }
-    .paper.d-page.far.t-old { width: 101px; aspect-ratio: 8.3 / 11; }
-    .paper.d-nb { width: 112px; aspect-ratio: 0.78;
-      --cp: polygon(1.2px 0, 100% 0.5px, calc(100% - 0.4px) 100%, 1px 100%, 1.8px 94%, 0.4px 88%, 1.6px 81%, 0.6px 74%, 1.9px 67%, 0.3px 60%,
-        1.4px 53%, 0.5px 46%, 1.8px 39%, 0.4px 32%, 1.5px 25%, 0.6px 18%, 1.7px 11%, 0.5px 5%); }
-    .paper.d-nb.lift-tr { --light: linear-gradient(to right, rgba(26, 26, 31, 0.07), rgba(26, 26, 31, 0) 9px),
-      radial-gradient(circle at 100% 0, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 32%), var(--light0); }
-    .paper.d-slide { width: 166px; aspect-ratio: 16 / 9; }
-    .paper.d-sheet { width: 148px; }
-    .paper.d-sheet.far { width: 128px; }
-    .paper.d-sheet.lift-bl { width: 142px; }
-    .paper.d-log { width: 136px; }
-    .paper.d-mail { width: 140px; }
-    /* the quiet file-type line at the top of a page */
-    .paper .rh, .paper .rh0 { display: flex; justify-content: space-between; gap: 6px; font: 600 4.8px/1 var(--sans); letter-spacing: 0.13em;
-      text-transform: uppercase; color: #9d9da3; white-space: nowrap; }
-    .paper .rh { padding-bottom: 3px; margin-bottom: 6px; border-bottom: 0.5px solid #e2e1db; }
-    .paper .h { font: 500 8.4px/1.18 var(--serif); color: #26262c; margin: 0 0 5px; letter-spacing: -0.005em; text-wrap: balance; }
-    .paper .gk { display: block; width: 100%; margin: 0 0 3px; }
-    .paper .gk rect { fill: #d6d5cf; }
-    .paper .gk.q rect { fill: #e4e3dd; }
-    .paper .fig { display: block; width: 100%; height: auto; margin: 3px 0 1px; }
-    .paper .fig text, .paper .sl-c text { font: 500 5px var(--sans); fill: #9a9aa0; text-anchor: middle; }
-    .paper .cap { font: italic 400 4.9px/1.3 var(--serif); color: #7a7a82; margin: 0 0 5px; }
-    .paper .pf, .paper .sl-f { position: absolute; left: 9px; right: 9px; bottom: 6px; display: flex; justify-content: space-between;
-      font: 600 4.6px/1 var(--sans); letter-spacing: 0.12em; text-transform: uppercase; color: #a8a8ad; }
-    /* notes and specs */
-    .paper .dt { font: 600 8px/1.15 var(--sans); color: #26262c; letter-spacing: -0.01em; }
-    .paper .dm { font: 400 5.2px/1.4 var(--sans); color: #8a8a90; margin-bottom: 4px; }
-    .paper .bl { margin: 0 0 4px; padding: 0 0 0 7px; font: 400 5.4px/1.55 var(--sans); color: #45454d; }
-    .paper .bl li { white-space: nowrap; }
-    .paper .bl li::marker { color: #8a8a90; }
-    .paper .dh, .paper .sec { font: 600 5.4px/1.2 var(--sans); color: #26262c; margin: 3px 0 2.5px; }
-    .paper .sp { font: 400 5.4px/1.3 var(--mono); color: #26262c; margin-bottom: 2px; }
-    .paper .ck { display: flex; gap: 3px; align-items: flex-start; }
-    .paper .ck span { flex: none; width: 4px; height: 4px; border: 0.6px solid #b0afa8; margin-top: -1px; }
-    .paper .mini { width: 100%; border-collapse: collapse; font: 400 5px/1 var(--sans); color: #45454d; margin: 2px 0 5px; }
-    .paper .mini th { text-align: left; font-weight: 600; color: #26262c; border-bottom: 0.6px solid #b9b8b0; padding: 0 0 2px; }
-    .paper .mini td { padding: 2px 0; border-bottom: 0.5px solid #e6e5df; }
-    /* the datasheet's header band and property table */
-    .paper .ds-band { margin: -8px -9px 5px; padding: 7px 9px 5px; background: rgba(120, 110, 85, 0.07); border-bottom: 0.5px solid rgba(26, 26, 31, 0.08); }
-    .paper .ds-t { font: 600 8.6px/1.1 var(--sans); color: #26262c; margin-top: 3px; }
-    .paper .kv { width: 100%; border-collapse: collapse; font: 400 5.2px/1 var(--sans); color: #55555d; margin-bottom: 3px; }
-    .paper .kv td { padding: 2px 0; border-bottom: 0.5px solid #e9e8e2; }
-    .paper .kv td + td { text-align: right; font-family: var(--mono); color: #26262c; }
-    /* the lab notebook: a printed header and footer, blue rules, a red margin, ink */
-    .paper.d-nb .in { padding: 0; }
-    .paper .nb-h { white-space: nowrap; display: flex; justify-content: space-between; align-items: baseline; height: 16px; padding: 5px 6px 0;
-      border-bottom: 0.6px solid #bccde4; font: 600 4.4px/1 var(--sans); letter-spacing: 0.13em; text-transform: uppercase; color: #a3a3a8; }
-    .paper .hw { font: 500 9px/1 Caveat, "Bradley Hand", "Segoe Print", cursive; letter-spacing: 0; text-transform: none; color: #2b3a6b; margin-left: 3px; }
-    .paper .nb-l { position: absolute; left: 0; right: 0; top: 16px; bottom: 12px; padding-top: 0.5px;
-      background: repeating-linear-gradient(transparent 0 10.4px, #cddbec 10.4px 11px); }
-    .paper .nb-l::before { content: ""; position: absolute; left: 15px; top: -16px; bottom: -12px; width: 0.7px; background: #e8a5a5; }
-    .paper .nb-l p { margin: 0; height: 11px; padding-left: 19px; font: 500 10.2px/11px Caveat, "Bradley Hand", "Segoe Print", cursive; color: #2b3a6b;
-      position: relative; top: 0.5px; white-space: nowrap; }
-    .paper .ring { position: relative; margin-right: 3px; }
-    .paper .ring::after { content: ""; position: absolute; left: -3px; right: -3px; top: 1px; bottom: -1px; border: 0.7px solid #2b3a6b; border-radius: 50%; rotate: -4deg; }
-    .paper .nb-s { position: absolute; right: 7px; bottom: 6px; width: 38px; }
-    .paper .nb-f { position: absolute; left: 19px; right: 30px; bottom: 3.5px; font: 600 4.2px/1 var(--sans); letter-spacing: 0.13em; text-transform: uppercase;
-      color: #b0b0b5; border-bottom: 0.5px solid #d3d2cc; padding-bottom: 1px; }
-    /* the spreadsheet: file bar, column letters, row numbers, cells */
-    .paper.d-sheet .in { padding: 0; }
-    .paper .fb { display: flex; align-items: center; gap: 4px; padding: 4px 6px; background: rgba(120, 110, 85, 0.05); border-bottom: 0.5px solid rgba(26, 26, 31, 0.08);
-      font: 500 5.4px/1 var(--mono); color: #6f6f77; white-space: nowrap; }
-    .paper .fb b { margin-left: auto; font: 600 4.6px/1 var(--sans); letter-spacing: 0.13em; color: #a3a3a8; }
-    .paper .fb .ic { width: 5px; height: 6px; border: 0.6px solid #b0afa8; border-radius: 0.5px;
-      background: linear-gradient(#b0afa8, #b0afa8) 50% 0 / 0.5px 100% no-repeat, linear-gradient(#b0afa8, #b0afa8) 0 50% / 100% 0.5px no-repeat; }
-    .paper .ss { border-collapse: collapse; width: 100%; font: 400 5.8px/1 var(--mono); color: #45454d; font-variant-numeric: tabular-nums; }
-    .paper .ss td, .paper .ss th { border: 0.5px solid rgba(26, 26, 31, 0.09); padding: 2.3px 3px; white-space: nowrap; text-align: right; font-weight: 400; }
-    .paper .ss th { background: rgba(120, 110, 85, 0.08); color: #9a9aa0; font: 500 4.8px/1 var(--sans); text-align: center; padding: 2px 1.5px; }
-    .paper .ss tbody th { width: 9px; }
-    .paper .ss td.l { text-align: left; }
-    .paper .ss tr.hd td { font-weight: 600; color: #26262c; }
-    .paper .ss td.on { outline: 1px solid #4a3aa7; outline-offset: -1px; background: rgba(74, 58, 167, 0.06); color: #26262c; }
-    /* the slide: title, a plotted line, three points, a footer */
-    .paper.d-slide .in { padding: 8px 10px 14px; display: grid; grid-template-columns: 1.5fr 1fr; grid-template-rows: auto auto 1fr; column-gap: 8px; }
-    .paper .sl-t { grid-column: 1 / -1; font: 600 8.4px/1.1 var(--sans); color: #26262c; letter-spacing: -0.01em; }
-    .paper .sl-s { grid-column: 1 / -1; font: 400 5px/1.3 var(--sans); color: #8a8a90; margin: 1px 0 3px; }
-    .paper .sl-c { width: 100%; height: 100%; min-height: 0; }
-    .paper .sl-c text.v { fill: #4a3aa7; font-weight: 600; }
-    .paper .sl-b { align-self: center; }
-    .paper .sl-li { display: flex; gap: 3px; margin-bottom: 4px; }
-    .paper .sl-li > span { flex: none; width: 2.4px; height: 2.4px; background: #55555d; margin-top: 0; }
-    .paper .sl-f { bottom: 5px; left: 10px; right: 10px; }
-    /* the log: time-stamped lines on faint stripes */
-    .paper .lg { font: 400 5.5px/1.75 var(--mono); color: #45454d; white-space: nowrap; margin: 0 -3px; }
-    .paper .lg div { padding: 0 3px; }
-    .paper .lg div:nth-child(even) { background: rgba(120, 110, 85, 0.05); }
-    .paper .lg span { color: #a0a0a6; margin-right: 5px; }
-    /* the email: subject, sender, body, a quoted reply */
-    .paper .em-s { font: 600 7px/1.2 var(--sans); color: #26262c; margin-bottom: 4px; }
-    .paper .em-f { display: grid; grid-template-columns: 12px 1fr; column-gap: 4px; align-items: center; font: 400 5px/1.35 var(--sans); color: #8a8a90;
-      padding-bottom: 4px; border-bottom: 0.5px solid #e4e3de; margin-bottom: 5px; }
-    .paper .em-f .av { grid-row: span 2; width: 12px; height: 12px; border-radius: 50%; background: #e7e5ef; color: #55555d; font: 600 6px/12px var(--sans); text-align: center; }
-    .paper .em-f b { color: #26262c; font-weight: 600; font-size: 5.4px; }
-    .paper .em-q { border-left: 1px solid #d6d5cf; padding-left: 4px; margin-top: 2px; }
-    /* ---- colour, as on real R&D paper, and always for data. Muted, print-like: greens, amber, red, blue, the page's violet */
-    .paper .fig text.lim { fill: #b03a2e; text-anchor: start; font-size: 4.4px; font-weight: 600; }
-    .paper svg text.c-g { fill: #3b8b5e; font-weight: 600; } .paper svg text.c-a { fill: #c27a1a; font-weight: 600; }
-    .paper svg text.c-r { fill: #b03a2e; font-weight: 600; }
-    /* a company's colour band at the top of a report; the slide template's bar */
-    .paper .rb { display: flex; justify-content: space-between; gap: 6px; margin: -8px -9px 6px; padding: 4.5px 9px 4px; background: #1f5fa8;
-      font: 600 4.6px/1 var(--sans); letter-spacing: 0.13em; text-transform: uppercase; color: rgba(255, 255, 255, 0.92); white-space: nowrap; }
-    .paper .rb span + span { color: rgba(255, 255, 255, 0.7); }
-    .paper .sl-bar { position: absolute; left: 0; right: 0; top: 0; height: 2.5px; background: #4a3aa7; }
-    .paper .sl-li > span { border-radius: 0.4px; }
-    /* the supplier's band */
-    .paper .ds-band { background: #0f6e56; border-bottom: 0; }
-    .paper .ds-band .rh0 { color: rgba(255, 255, 255, 0.72); }
-    .paper .ds-band .ds-t { color: #ffffff; }
-    /* status chips: pass green, a warning amber, a fault red, information blue */
-    .paper .st { flex: none; display: inline-block; margin-left: auto; padding: 1.1px 1.8px 0.9px; border-radius: 1px; font: 700 3.7px/1 var(--sans);
-      letter-spacing: 0.07em; text-transform: uppercase; font-style: normal; vertical-align: 0.6px; }
-    .paper .st.g { background: #d9ebdf; color: #1d6a3f; } .paper .st.a { background: #f6e6c9; color: #8a5a12; }
-    .paper .st.r { background: #f3d8d2; color: #9c2f25; } .paper .st.b { background: #dbe6f3; color: #1f5fa8; }
-    .paper .lg div { display: flex; align-items: center; }
-    .paper .dt .st { margin-left: 4px; vertical-align: 1.3px; }
-    .paper .mini .st { font-size: 3.5px; padding: 0.8px 1.5px 0.7px; }
-    /* spreadsheets: a coloured header row, conditional fills (pale, with the text in the same colour's dark), data bars */
-    .paper .ss.hg tr.hd td { background: #dcebe0; color: #1d6a3f; } .paper .ss.hb tr.hd td { background: #dbe6f3; color: #1f5fa8; }
-    .paper .ss.ha tr.hd td { background: #f5e6cb; color: #8a5a12; }
-    .paper .ss td.fg { background: #d9ebdf; color: #1d6a3f; } .paper .ss td.fa { background: #f6e6c9; color: #8a5a12; }
-    .paper .ss td.fr { background: #f3d8d2; color: #9c2f25; font-weight: 600; }
-    .paper .ss td.db { background: linear-gradient(90deg, var(--bc) var(--v), transparent var(--v)) 0 50% / 100% 72% no-repeat; }
-    .paper .ss td.db.g { --bc: #bcdcc6; } .paper .ss td.db.a { --bc: #efd29f; } .paper .ss td.db.r { --bc: #e8b9ae; color: #9c2f25; }
-    .paper .ss .sw { display: inline-block; width: 3.6px; height: 3.6px; margin-right: 2px; vertical-align: -0.2px; }
-    .paper .ss tr.tot td { font-weight: 600; color: #26262c; border-top: 0.8px solid #8f8e88; }
-    .paper .stk { display: flex; height: 4.5px; margin: 5px 6px 6px; }
-    .paper .stk b { display: block; height: 100%; }
-    /* the notebook in red pen: a ringed result, an underline, circled numbers in the margin; and an index flag */
-    .paper .ring::after { border-color: #b8342a; }
-    .paper .ul { text-decoration: underline 0.7px #b8342a; text-underline-offset: 1.6px; }
-    .paper .cn { position: absolute; left: 3.5px; top: 1.6px; width: 7.5px; height: 7.5px; border: 0.6px solid #b8342a; border-radius: 50%;
-      font: 500 7px/7.5px Caveat, "Bradley Hand", "Segoe Print", cursive; font-style: normal; color: #b8342a; text-align: center; }
-    .paper .mn.rp { color: #b8342a; }
-    .paper .flag { position: absolute; z-index: 5; right: -8px; width: 16px; height: 6px; rotate: 3deg; pointer-events: none;
-      background: linear-gradient(90deg, rgba(var(--fc), 0.3) 0 46%, rgba(var(--fc), 0.9) 46%); box-shadow: 0.6px 0.9px 1.2px rgba(26, 26, 31, 0.18); }
-    .paper .flag.o { --fc: 226, 146, 64; } .paper .flag.g { --fc: 98, 160, 115; } .paper .flag.b { --fc: 104, 150, 210; }
-    .paper .sticky { position: absolute; z-index: 5; right: -12px; bottom: 16px; width: 38px; height: 31px; padding: 5px 4px 0; rotate: 6deg; pointer-events: none;
-      background: linear-gradient(#f1df8c, #f4e49b 82%, #e8d580); font: 500 7.6px/1.1 Caveat, "Bradley Hand", "Segoe Print", cursive; color: #2b3a6b; white-space: nowrap;
-      box-shadow: 0 0.5px 1px rgba(26, 26, 31, 0.14), 0 4px 6px -3px rgba(26, 26, 31, 0.28); }
-    /* the notes: owners' initials in their colours, ticked actions */
-    .paper .who { display: inline-block; width: 5.4px; height: 5.4px; margin-left: 2.5px; border-radius: 50%; font: 700 3.4px/5.4px var(--sans);
-      font-style: normal; color: #fff; text-align: center; vertical-align: 0.4px; }
-    .paper .who.wm { background: #4a3aa7; } .paper .who.wt { background: #c27a1a; } .paper .who.wd { background: #3b8b5e; }
-    .paper .ck.on span { border-color: #3b8b5e; position: relative; }
-    .paper .ck.on span::after { content: ""; position: absolute; left: 0.9px; top: -0.9px; width: 1.4px; height: 2.8px; border: solid #3b8b5e; border-width: 0 0.8px 0.8px 0; rotate: 40deg; }
-    /* the email: a coloured avatar, a chart pasted in, the files attached */
-    .paper .em-f .av.ao { background: #c27a1a; color: #fff; }
-    .paper .em-c { display: block; width: 74%; height: auto; margin: 1px 0 3px; padding: 1.5px; background: #fff; border: 0.5px solid #e4e3de; }
-    .paper .em-c text { font: 500 4.6px var(--sans); fill: #9a9aa0; text-anchor: middle; }
-    .paper .em-c text.t { text-anchor: start; font-size: 4px; }
-    .paper .ats { display: flex; gap: 3px; margin-bottom: 3px; }
-    .paper .att { display: inline-flex; align-items: center; gap: 2px; padding: 1.3px 2.5px 1.3px 1.3px; border: 0.5px solid #dddcd5; border-radius: 1.5px;
-      font: 500 4.2px/1 var(--sans); color: #55555d; white-space: nowrap; }
-    .paper .fi { padding: 1.3px 1px; border-radius: 0.5px; font: 700 2.8px/1 var(--sans); color: #fff; }
-    .paper .fi.g { background: #3b8b5e; } .paper .fi.r { background: #b03a2e; }
-    /* smooth purple fade: the header in light colours over the violet edge */
-    .top .brand, .top .nav a { color: #eeebfa; }
-    .top .nav a:hover { color: #ffffff; }
-    .top .brand svg { color: #b9b0ff; }
-    .top .header-cta { background: #ffffff; color: #1a1a1f !important; }
   </style>
   <!-- PostHog: page views, time on page, clicks (autocapture) and download clicks. The key is not in this
        repo: the deploy workflow puts it in place of __POSTHOG_KEY__ from the POSTHOG_KEY secret. A page
@@ -773,21 +539,18 @@
       posthog.register({ surface: "site" });
     }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="apple" viewBox="0 0 24 24"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.97-3.46-1.07-1.57-2.74-1.78-3.33-1.8-1.42-.15-2.77.83-3.49.83-.72 0-1.83-.81-3.01-.79-1.55.02-2.98.9-3.78 2.29-1.61 2.8-.41 6.94 1.16 9.21.77 1.11 1.68 2.36 2.88 2.31 1.16-.05 1.59-.75 2.99-.75 1.4 0 1.79.75 3.01.72 1.24-.02 2.03-1.13 2.79-2.25.88-1.29 1.24-2.54 1.26-2.6-.03-.01-2.42-.93-2.45-3.71zM14.08 5.84c.64-.77 1.07-1.85.95-2.92-.92.04-2.03.61-2.69 1.38-.59.68-1.1 1.78-.97 2.83 1.03.08 2.07-.52 2.71-1.29z"/></symbol>
     <symbol id="mark" viewBox="0 0 48 48"><path d="M6 28 A18 18 0 0 1 42 28" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><circle cx="13" cy="28" r="3.4" fill="currentColor"/><circle cx="24" cy="28" r="3.4" fill="currentColor"/><circle cx="35" cy="28" r="3.4" fill="currentColor"/></symbol>
     <!-- the map's three groups. The script still keys them rnd, pilot and prod: two teams and the company's KPI -->
-    <!-- the stroke of these icons is set where each is drawn, to match the weight of the text beside it at that size:
-         the font's stem is 0.085em at 400, 0.123em at 600, 0.143em at 700 (.hub, .tag, .st .ck, .val .m) -->
-    <symbol id="i-rnd" viewBox="0 0 16 16"><path d="M8.2 5.4a2.3 2.3 0 1 1-4.6 0 2.3 2.3 0 0 1 4.6 0zM1.7 13.6c.3-2.5 1.9-3.9 4.2-3.9s3.9 1.4 4.2 3.9M10.6 3.3a2.3 2.3 0 0 1 0 4.2M11.9 9.9c1.4.5 2.2 1.8 2.4 3.7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-pilot" viewBox="0 0 16 16"><path d="M8.2 5.4a2.3 2.3 0 1 1-4.6 0 2.3 2.3 0 0 1 4.6 0zM1.7 13.6c.3-2.5 1.9-3.9 4.2-3.9s3.9 1.4 4.2 3.9M10.6 3.3a2.3 2.3 0 0 1 0 4.2M11.9 9.9c1.4.5 2.2 1.8 2.4 3.7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-prod" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor"/><circle cx="8" cy="8" r="2.7" fill="none" stroke="currentColor"/><circle cx="8" cy="8" r="0.6" fill="currentColor" stroke="currentColor" stroke-width="0.8"/></symbol>
-    <symbol id="i-dec" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor"/><path d="M5.4 8.2l1.8 1.8 3.4-3.6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="cross" viewBox="0 0 16 16"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7" fill="none" stroke="currentColor" stroke-linecap="round"/></symbol>
-    <symbol id="tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-rnd" viewBox="0 0 16 16"><path d="M8.2 5.4a2.3 2.3 0 1 1-4.6 0 2.3 2.3 0 0 1 4.6 0zM1.7 13.6c.3-2.5 1.9-3.9 4.2-3.9s3.9 1.4 4.2 3.9M10.6 3.3a2.3 2.3 0 0 1 0 4.2M11.9 9.9c1.4.5 2.2 1.8 2.4 3.7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-pilot" viewBox="0 0 16 16"><path d="M8.2 5.4a2.3 2.3 0 1 1-4.6 0 2.3 2.3 0 0 1 4.6 0zM1.7 13.6c.3-2.5 1.9-3.9 4.2-3.9s3.9 1.4 4.2 3.9M10.6 3.3a2.3 2.3 0 0 1 0 4.2M11.9 9.9c1.4.5 2.2 1.8 2.4 3.7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-prod" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="2.7" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="0.6" fill="currentColor" stroke="currentColor" stroke-width="0.8"/></symbol>
+    <symbol id="i-dec" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5.4 8.2l1.8 1.8 3.4-3.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="cross" viewBox="0 0 16 16"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   </svg>
 
   <header class="top">
@@ -795,10 +558,9 @@
       <a class="brand" href="/" aria-label="Fermata"><svg width="28" height="28" aria-hidden="true"><use href="#mark"/></svg>Fermata</a>
       <nav class="nav" aria-label="Main">
         <a class="hide-xs" href="#story">How it works</a>
-        <a class="hide-s" href="/industries/">Industries</a>
+        <a class="hide-s" href="#industries">Industries</a>
         <a class="hide-s watch" href="#how-it-works">Film</a>
-        <a class="hide-s" href="/guide/">User guide</a>
-        <a class="hide-xs" href="https://web.getfermata.app">Try demo</a>
+        <!-- hidden for now: <a class="hide-s" href="/guide/">User guide</a> -->
         <a class="header-cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest">Download for Mac</a>
       </nav>
     </div>
@@ -808,25 +570,26 @@
     <!-- 1. The promise, with a company's records scattered around it -->
     <section class="hero" aria-labelledby="hero-title">
       <div class="papers" aria-hidden="true">
-        <div class="paper near d-page t-copy lift-br" style="--x:3;--y:10;--r:-6deg;--d:.1"><div class="in"><span class="stp"></span><div class="rb"><span>QA report · Pilot line</span><span>Oct 2025</span></div><div class="h">Coating quality, October 2025</div><svg class="gk" viewBox="0 0 100 12.6" preserveAspectRatio="none" style="height:12.6px"><rect x="0.0" y="0.0" width="10.2" height="1.5"/><rect x="11.9" y="0.0" width="14.2" height="1.5"/><rect x="27.7" y="0.0" width="9.1" height="1.5"/><rect x="38.5" y="0.0" width="9.6" height="1.5"/><rect x="49.8" y="0.0" width="10.5" height="1.5"/><rect x="62.0" y="0.0" width="6.0" height="1.5"/><rect x="69.7" y="0.0" width="9.6" height="1.5"/><rect x="81.1" y="0.0" width="10.9" height="1.5"/><rect x="93.7" y="0.0" width="2.5" height="1.5"/><rect x="0.0" y="4.2" width="7.3" height="1.5"/><rect x="9.0" y="4.2" width="5.0" height="1.5"/><rect x="15.7" y="4.2" width="12.9" height="1.5"/><rect x="30.3" y="4.2" width="11.6" height="1.5"/><rect x="43.7" y="4.2" width="4.5" height="1.5"/><rect x="49.8" y="4.2" width="14.8" height="1.5"/><rect x="66.3" y="4.2" width="14.6" height="1.5"/><rect x="82.6" y="4.2" width="11.0" height="1.5"/><rect x="0.0" y="8.4" width="5.7" height="1.5"/><rect x="7.4" y="8.4" width="4.2" height="1.5"/><rect x="13.3" y="8.4" width="9.8" height="1.5"/><rect x="24.8" y="8.4" width="4.7" height="1.5"/><rect x="31.2" y="8.4" width="6.1" height="1.5"/><rect x="39.0" y="8.4" width="6.7" height="1.5"/><rect x="47.3" y="8.4" width="4.3" height="1.5"/><rect x="53.3" y="8.4" width="9.0" height="1.5"/></svg><svg class="fig" viewBox="0 0 100 40"><line x1="2" y1="31.3" x2="98" y2="31.3" stroke="#cfcdc6" stroke-width=".6"/><rect x="8" y="29.5" width="15" height="1.5" fill="#3b8b5e"/><text x="15.5" y="38">120</text><rect x="31" y="22.8" width="15" height="8.2" fill="#3b8b5e"/><text x="38.5" y="38">125</text><rect x="54" y="16.0" width="15" height="15.0" fill="#c27a1a"/><text x="61.5" y="38">130</text><rect x="77" y="2.5" width="15" height="28.5" fill="#b03a2e"/><text x="84.5" y="38">140 °C</text><line x1="4" y1="22.75" x2="98" y2="22.75" stroke="#b03a2e" stroke-width=".6" stroke-dasharray="2 1.3"/><text x="4" y="21" class="lim">limit</text></svg><div class="cap">Fig. 3. Cracked samples (of 6) by oven temperature</div><svg class="gk" viewBox="0 0 100 8.4" preserveAspectRatio="none" style="height:8.4px"><rect x="0.0" y="0.0" width="11.2" height="1.5"/><rect x="12.9" y="0.0" width="11.3" height="1.5"/><rect x="26.0" y="0.0" width="5.6" height="1.5"/><rect x="33.2" y="0.0" width="4.1" height="1.5"/><rect x="39.1" y="0.0" width="8.1" height="1.5"/><rect x="48.9" y="0.0" width="7.0" height="1.5"/><rect x="57.6" y="0.0" width="12.9" height="1.5"/><rect x="72.2" y="0.0" width="11.6" height="1.5"/><rect x="85.5" y="0.0" width="10.6" height="1.5"/><rect x="0.0" y="4.2" width="11.3" height="1.5"/><rect x="13.0" y="4.2" width="5.6" height="1.5"/><rect x="20.3" y="4.2" width="8.8" height="1.5"/><rect x="30.8" y="4.2" width="5.8" height="1.5"/><rect x="38.3" y="4.2" width="14.0" height="1.5"/><rect x="54.0" y="4.2" width="4.6" height="1.5"/></svg><div class="pf"><span>Pilot line QA</span><span>3</span></div><span class="mn r1">see nb p. 38</span></div></div>
-        <div class="paper d-nb t-cream lift-tr" style="--x:5;--y:36;--r:4deg;--d:.3;--o:.8"><div class="in"><div class="nb-h"><span>Project<b class="hw">Coating</b></span><span>Page<b class="hw">38</b></span></div><div class="nb-l"><p>14 Mar 2025</p><p><i class="cn">1</i>Oven 140 °C, 8 h</p><p><span class="ring">4 of 6</span> cracked</p><p><i class="cn">2</i><span class="ul">→ back to 125 °C?</span></p><p>ask Maya: binder</p><svg class="nb-s" viewBox="0 0 40 22"><path d="M2 1v19h37" fill="none" stroke="#2b3a6b" stroke-width=".7" stroke-linecap="round"/><path d="M3 4c6 1 11 2 16 4s9 7 18 11" fill="none" stroke="#2b3a6b" stroke-width=".8" stroke-linecap="round"/><path d="M3 3c5 1 9 2.5 13 5.5s7 9 10 11.5" fill="none" stroke="#b8342a" stroke-width=".8" stroke-linecap="round"/><circle cx="7.5" cy="4.1" r=".95" fill="#b8342a"/><circle cx="14" cy="7.4" r=".95" fill="#b8342a"/><circle cx="21" cy="14" r=".95" fill="#b8342a"/></svg></div><div class="nb-f">Witnessed</div></div><span class="flag o" style="top:38%"></span></div>
-        <div class="paper far d-sheet t-recy fold-h" style="--x:2;--y:58;--r:-3deg;--d:.5;--o:.6"><div class="in"><div class="fb"><span class="ic"></span>cost_model_2026.csv<b>CSV</b></div><table class="ss ha"><thead><tr><th></th><th>A</th><th>B</th><th>C</th></tr></thead><tbody><tr class="hd"><th>1</th><td class="l">item</td><td>$/kg</td><td>share</td></tr><tr><th>2</th><td class="l"><i class="sw" style="background:#4a3aa7"></i>binder</td><td>4.10</td><td>22%</td></tr><tr><th>3</th><td class="l"><i class="sw" style="background:#c27a1a"></i>drying</td><td>2.75</td><td>15%</td></tr><tr><th>4</th><td class="l"><i class="sw" style="background:#1f5fa8"></i>solvent</td><td>1.90</td><td>10%</td></tr><tr><th>5</th><td class="l"><i class="sw" style="background:#3b8b5e"></i>labour</td><td>3.30</td><td>18%</td></tr><tr><th>6</th><td class="l"><i class="sw" style="background:#b9b8b0"></i>other</td><td>6.35</td><td>35%</td></tr><tr class="tot"><th>7</th><td class="l">total</td><td>18.40</td><td>100%</td></tr></tbody></table><div class="stk"><b style="width:22%;background:#4a3aa7"></b><b style="width:15%;background:#c27a1a"></b><b style="width:10%;background:#1f5fa8"></b><b style="width:18%;background:#3b8b5e"></b><b style="width:35%;background:#b9b8b0"></b></div></div></div>
-        <div class="paper near d-slide t-bright lift-tr" style="--x:6;--y:76;--r:5deg;--d:.2"><div class="in"><div class="sl-bar"></div><div class="sl-t">Drying review: 8 h vs 12 h</div><div class="sl-s">Output kept by cycle, pilot line</div><svg class="sl-c" viewBox="0 0 100 56"><rect x="73.4" y="2" width="16.6" height="46" fill="#b03a2e" fill-opacity=".08"/><path d="M8 2V48H90" fill="none" stroke="#cfcdc6" stroke-width=".7"/><line x1="73.4" y1="2" x2="73.4" y2="48" stroke="#b9b8b0" stroke-width=".6" stroke-dasharray="1.6 1.6"/><polyline points="8.0,8.0 12.0,8.7 16.0,9.3 20.0,10.0 24.0,10.6 28.0,11.3 32.0,12.0 36.0,12.6 40.0,13.3 44.0,13.9 48.0,14.6 52.0,15.3 56.0,15.9 60.0,16.6 64.0,17.2 68.0,17.9 72.0,18.6 76.0,19.2 80.0,19.9 84.0,20.5 88.0,21.2" fill="none" stroke="#3b8b5e" stroke-width="1.3"/><polyline points="8.0,7.2 12.0,7.8 16.0,8.3 20.0,8.9 24.0,9.4 28.0,10.0 32.0,10.6 36.0,11.1 40.0,11.7 44.0,12.2 48.0,12.8 52.0,13.4 56.0,13.9 60.0,14.5 64.0,15.0 68.0,15.6 72.0,16.2 76.0,16.7 78.4,17.1 80.0,18.9 84.0,23.4 88.0,28.0" fill="none" stroke="#c27a1a" stroke-width="1.3"/><polyline points="8.0,6.8 12.0,7.2 16.0,7.7 20.0,8.1 24.0,8.6 28.0,9.0 32.0,9.4 36.0,9.9 40.0,10.3 44.0,10.8 48.0,11.2 52.0,11.6 56.0,12.1 60.0,12.5 64.0,13.0 68.0,13.4 72.0,13.8 73.4,14.0 76.0,18.9 80.0,26.3 84.0,33.8 88.0,41.2" fill="none" stroke="#b03a2e" stroke-width="1.5"/><text x="94" y="21" class="c-g">12 h</text><text x="94" y="30" class="c-a">10 h</text><text x="94" y="45" class="c-r">8 h</text><text x="8" y="54" text-anchor="middle">0</text><text x="88" y="54" text-anchor="middle">300</text></svg><div class="sl-b"><div class="sl-li"><span style="background:#3b8b5e"></span><svg class="gk" viewBox="0 0 100 7.2" preserveAspectRatio="none" style="height:7.2px"><rect x="0.0" y="0.0" width="13.7" height="1.3"/><rect x="15.4" y="0.0" width="4.4" height="1.3"/><rect x="21.4" y="0.0" width="7.1" height="1.3"/><rect x="30.2" y="0.0" width="14.6" height="1.3"/><rect x="46.5" y="0.0" width="11.3" height="1.3"/><rect x="59.5" y="0.0" width="5.4" height="1.3"/><rect x="66.6" y="0.0" width="7.8" height="1.3"/><rect x="76.1" y="0.0" width="13.7" height="1.3"/><rect x="91.5" y="0.0" width="4.7" height="1.3"/><rect x="0.0" y="3.6" width="13.9" height="1.3"/><rect x="15.6" y="3.6" width="5.4" height="1.3"/><rect x="22.7" y="3.6" width="11.1" height="1.3"/><rect x="35.4" y="3.6" width="7.5" height="1.3"/></svg></div><div class="sl-li"><span style="background:#c27a1a"></span><svg class="gk" viewBox="0 0 100 7.2" preserveAspectRatio="none" style="height:7.2px"><rect x="0.0" y="0.0" width="6.5" height="1.3"/><rect x="8.2" y="0.0" width="5.8" height="1.3"/><rect x="15.8" y="0.0" width="14.1" height="1.3"/><rect x="31.5" y="0.0" width="10.4" height="1.3"/><rect x="43.6" y="0.0" width="11.6" height="1.3"/><rect x="56.9" y="0.0" width="10.1" height="1.3"/><rect x="68.6" y="0.0" width="8.2" height="1.3"/><rect x="78.6" y="0.0" width="12.0" height="1.3"/><rect x="92.3" y="0.0" width="3.4" height="1.3"/><rect x="0.0" y="3.6" width="11.3" height="1.3"/><rect x="13.0" y="3.6" width="13.2" height="1.3"/><rect x="27.9" y="3.6" width="8.8" height="1.3"/><rect x="38.4" y="3.6" width="5.7" height="1.3"/><rect x="45.8" y="3.6" width="5.6" height="1.3"/><rect x="53.2" y="3.6" width="12.0" height="1.3"/></svg></div><div class="sl-li"><span style="background:#b03a2e"></span><svg class="gk" viewBox="0 0 100 7.2" preserveAspectRatio="none" style="height:7.2px"><rect x="0.0" y="0.0" width="4.3" height="1.3"/><rect x="6.0" y="0.0" width="7.0" height="1.3"/><rect x="14.7" y="0.0" width="6.5" height="1.3"/><rect x="22.9" y="0.0" width="12.1" height="1.3"/><rect x="36.7" y="0.0" width="11.4" height="1.3"/><rect x="49.8" y="0.0" width="13.8" height="1.3"/><rect x="65.3" y="0.0" width="5.0" height="1.3"/><rect x="72.0" y="0.0" width="8.6" height="1.3"/><rect x="82.3" y="0.0" width="4.3" height="1.3"/><rect x="88.3" y="0.0" width="6.4" height="1.3"/><rect x="0.0" y="3.6" width="4.3" height="1.3"/><rect x="6.0" y="3.6" width="6.2" height="1.3"/><rect x="13.9" y="3.6" width="11.1" height="1.3"/><rect x="26.7" y="3.6" width="10.0" height="1.3"/><rect x="38.4" y="3.6" width="6.4" height="1.3"/><rect x="46.5" y="3.6" width="10.5" height="1.3"/></svg></div></div><div class="sl-f"><span>Slides · Mar 2026</span><span>4</span></div></div></div>
-        <div class="paper far d-log t-recy" style="--x:85;--y:8;--r:5deg;--d:.4;--o:.6"><div class="in"><div class="rh"><span>Log</span><span>Line 2 · R-31</span></div><div class="lg"><div><span>06:40</span>line start, oven 140 °C<em class="st b">run</em></div><div><span>07:15</span>roll R-31 coated</div><div><span>07:52</span>web speed 4.5 m/min</div><div><span>09:02</span>dryer set to 8 h<em class="st a">set</em></div><div><span>10:18</span>tension alarm, cleared<em class="st r">alarm</em></div><div><span>11:30</span>QC sample pulled<em class="st b">qc</em></div><div><span>12:05</span>thickness 82 µm<em class="st g">pass</em></div><div><span>13:40</span>R-31 to storage</div></div><span class="cof"></span></div></div>
-        <div class="paper near d-sheet t-copy fold-v" style="--x:86;--y:32;--r:-4deg;--d:.15"><div class="in"><div class="fb"><span class="ic"></span>bench_tests.csv<b>CSV</b></div><table class="ss hg"><thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead><tbody><tr class="hd"><th>1</th><td class="l">sample</td><td>dry h</td><td>°C</td><td>yield</td></tr><tr><th>2</th><td class="l">R-29</td><td>12</td><td>120</td><td class="fg">0.91</td></tr><tr><th>3</th><td class="l">R-30</td><td>8</td><td>120</td><td class="fa">0.86</td></tr><tr><th>4</th><td class="l">R-31</td><td>8</td><td>140</td><td class="on fr">0.79</td></tr><tr><th>5</th><td class="l">R-32</td><td>10</td><td>130</td><td class="fa">0.88</td></tr><tr><th>6</th><td class="l">R-33</td><td>12</td><td>125</td><td class="fg">0.90</td></tr></tbody></table></div></div>
-        <div class="paper d-page t-ivory dog-tr" style="--x:88;--y:56;--r:3deg;--d:.35;--o:.8"><div class="in"><div class="rh"><span>Doc</span><span>12 Mar</span></div><div class="dt">Weekly sync<em class="st g">on track</em></div><div class="dm">Maya, Tom, Daniel</div><ul class="bl"><li>8 h drying looks better early<i class="who wm">M</i></li><li>R-31 on the pilot line Thu<i class="who wt">T</i></li><li>Cost model: update for 8 h<i class="who wd">D</i></li><li>Rerun at 125 °C<i class="who wm">M</i></li></ul><div class="dh">Notes</div><svg class="gk" viewBox="0 0 100 12.6" preserveAspectRatio="none" style="height:12.6px"><rect x="0.0" y="0.0" width="10.1" height="1.5"/><rect x="11.8" y="0.0" width="12.9" height="1.5"/><rect x="26.4" y="0.0" width="7.5" height="1.5"/><rect x="35.7" y="0.0" width="7.5" height="1.5"/><rect x="44.9" y="0.0" width="11.6" height="1.5"/><rect x="58.2" y="0.0" width="9.3" height="1.5"/><rect x="69.3" y="0.0" width="8.0" height="1.5"/><rect x="78.9" y="0.0" width="8.5" height="1.5"/><rect x="89.1" y="0.0" width="7.4" height="1.5"/><rect x="0.0" y="4.2" width="10.9" height="1.5"/><rect x="12.6" y="4.2" width="13.8" height="1.5"/><rect x="28.2" y="4.2" width="11.6" height="1.5"/><rect x="41.5" y="4.2" width="11.0" height="1.5"/><rect x="54.1" y="4.2" width="7.7" height="1.5"/><rect x="63.6" y="4.2" width="8.8" height="1.5"/><rect x="74.0" y="4.2" width="5.6" height="1.5"/><rect x="81.3" y="4.2" width="12.0" height="1.5"/><rect x="0.0" y="8.4" width="7.2" height="1.5"/><rect x="8.9" y="8.4" width="14.8" height="1.5"/><rect x="25.4" y="8.4" width="7.7" height="1.5"/><rect x="34.8" y="8.4" width="14.8" height="1.5"/></svg><div class="dh">Actions</div><div class="ck on"><span></span><svg class="gk" viewBox="0 0 100 3.0" preserveAspectRatio="none" style="height:3.0px"><rect x="0.0" y="0.0" width="10.4" height="1.5"/><rect x="12.1" y="0.0" width="6.9" height="1.5"/><rect x="20.7" y="0.0" width="12.9" height="1.5"/><rect x="35.3" y="0.0" width="9.1" height="1.5"/><rect x="46.1" y="0.0" width="7.7" height="1.5"/><rect x="55.5" y="0.0" width="13.9" height="1.5"/><rect x="71.0" y="0.0" width="12.7" height="1.5"/><rect x="85.4" y="0.0" width="9.7" height="1.5"/></svg></div><div class="ck"><span></span><svg class="gk" viewBox="0 0 100 3.0" preserveAspectRatio="none" style="height:3.0px"><rect x="0.0" y="0.0" width="10.1" height="1.5"/><rect x="11.8" y="0.0" width="12.9" height="1.5"/><rect x="26.4" y="0.0" width="7.5" height="1.5"/><rect x="35.7" y="0.0" width="7.5" height="1.5"/><rect x="44.9" y="0.0" width="11.6" height="1.5"/><rect x="58.2" y="0.0" width="9.3" height="1.5"/><rect x="69.3" y="0.0" width="8.0" height="1.5"/><rect x="78.9" y="0.0" width="8.5" height="1.5"/><rect x="89.1" y="0.0" width="7.4" height="1.5"/></svg></div><span class="dg"></span></div><svg class="clip" viewBox="0 0 9 24"><path d="M2.6 19V5a2 2 0 0 1 4 0v15.2a3 3 0 0 1-6 0V7.5" fill="none" stroke="#8b8e96" stroke-width="1" stroke-linecap="round"/><path d="M2.3 18.4V5a2 2 0 0 1 2-2" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width=".35" stroke-linecap="round"/></svg><span class="sticky">R-31 Thu!<br>book line 2</span></div>
-        <div class="paper d-sheet t-copy lift-bl" style="--x:84;--y:76;--r:-5deg;--d:.25;--o:.85"><div class="in"><div class="fb"><span class="ic"></span>line_tests_april.csv<b>CSV</b></div><table class="ss hb"><thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead><tbody><tr class="hd"><th>1</th><td class="l">roll</td><td>speed</td><td>cycles</td><td>kept</td></tr><tr><th>2</th><td class="l">R-28</td><td>4.0</td><td>300</td><td class="db g" style="--v:75%">90%</td></tr><tr><th>3</th><td class="l">R-31</td><td>4.5</td><td>300</td><td class="db r" style="--v:48%">79%</td></tr><tr><th>4</th><td class="l">R-33</td><td>4.0</td><td>250</td><td class="db g" style="--v:70%">88%</td></tr><tr><th>5</th><td class="l">R-34</td><td>5.0</td><td>200</td><td class="db a" style="--v:60%">84%</td></tr></tbody></table></div></div>
-        <div class="paper far d-page t-ivory fold-3" style="--x:22;--y:4;--r:-2deg;--d:.6;--o:.5"><div class="in"><div class="rh"><span>Doc</span><span>Feb 2025</span></div><div class="dt">Additive screening</div><svg class="gk" viewBox="0 0 100 8.4" preserveAspectRatio="none" style="height:8.4px"><rect x="0.0" y="0.0" width="10.8" height="1.5"/><rect x="12.5" y="0.0" width="4.1" height="1.5"/><rect x="18.3" y="0.0" width="14.8" height="1.5"/><rect x="34.8" y="0.0" width="13.0" height="1.5"/><rect x="49.6" y="0.0" width="15.0" height="1.5"/><rect x="66.3" y="0.0" width="6.9" height="1.5"/><rect x="74.9" y="0.0" width="6.2" height="1.5"/><rect x="82.7" y="0.0" width="4.6" height="1.5"/><rect x="89.1" y="0.0" width="6.1" height="1.5"/><rect x="0.0" y="4.2" width="11.6" height="1.5"/><rect x="13.3" y="4.2" width="8.0" height="1.5"/><rect x="23.0" y="4.2" width="13.0" height="1.5"/><rect x="37.7" y="4.2" width="5.1" height="1.5"/></svg><table class="mini"><tr><th>Additive</th><th>%</th><th>Coat</th></tr><tr><td>A-1</td><td>0.5</td><td><em class="st g">ok</em></td></tr><tr><td>A-2</td><td>1.0</td><td><em class="st r">streaks</em></td></tr><tr><td>A-3</td><td>2.0</td><td><em class="st g">ok</em></td></tr></table><svg class="gk" viewBox="0 0 100 12.6" preserveAspectRatio="none" style="height:12.6px"><rect x="0.0" y="0.0" width="10.5" height="1.5"/><rect x="12.2" y="0.0" width="14.9" height="1.5"/><rect x="28.8" y="0.0" width="7.8" height="1.5"/><rect x="38.3" y="0.0" width="10.0" height="1.5"/><rect x="50.0" y="0.0" width="8.1" height="1.5"/><rect x="59.8" y="0.0" width="12.1" height="1.5"/><rect x="73.6" y="0.0" width="11.5" height="1.5"/><rect x="86.9" y="0.0" width="6.6" height="1.5"/><rect x="0.0" y="4.2" width="11.7" height="1.5"/><rect x="13.4" y="4.2" width="7.8" height="1.5"/><rect x="22.9" y="4.2" width="8.2" height="1.5"/><rect x="32.8" y="4.2" width="11.0" height="1.5"/><rect x="45.5" y="4.2" width="11.6" height="1.5"/><rect x="58.8" y="4.2" width="6.4" height="1.5"/><rect x="66.9" y="4.2" width="12.9" height="1.5"/><rect x="81.5" y="4.2" width="8.9" height="1.5"/><rect x="92.1" y="4.2" width="7.7" height="1.5"/><rect x="0.0" y="8.4" width="7.5" height="1.5"/><rect x="9.2" y="8.4" width="4.2" height="1.5"/><rect x="15.1" y="8.4" width="8.6" height="1.5"/><rect x="25.4" y="8.4" width="6.8" height="1.5"/><rect x="33.9" y="8.4" width="7.8" height="1.5"/></svg><div class="dh">Next</div><svg class="gk" viewBox="0 0 100 12.6" preserveAspectRatio="none" style="height:12.6px"><rect x="0.0" y="0.0" width="9.5" height="1.5"/><rect x="11.2" y="0.0" width="10.2" height="1.5"/><rect x="23.1" y="0.0" width="9.1" height="1.5"/><rect x="33.9" y="0.0" width="10.5" height="1.5"/><rect x="46.1" y="0.0" width="9.4" height="1.5"/><rect x="57.1" y="0.0" width="9.7" height="1.5"/><rect x="68.5" y="0.0" width="6.2" height="1.5"/><rect x="76.4" y="0.0" width="5.2" height="1.5"/><rect x="83.3" y="0.0" width="6.8" height="1.5"/><rect x="91.9" y="0.0" width="3.1" height="1.5"/><rect x="0.0" y="4.2" width="7.9" height="1.5"/><rect x="9.6" y="4.2" width="8.6" height="1.5"/><rect x="19.9" y="4.2" width="10.1" height="1.5"/><rect x="31.7" y="4.2" width="8.8" height="1.5"/><rect x="42.2" y="4.2" width="13.4" height="1.5"/><rect x="57.3" y="4.2" width="14.3" height="1.5"/><rect x="73.3" y="4.2" width="10.3" height="1.5"/><rect x="85.2" y="4.2" width="6.2" height="1.5"/><rect x="0.0" y="8.4" width="13.4" height="1.5"/><rect x="15.1" y="8.4" width="9.1" height="1.5"/><rect x="25.9" y="8.4" width="12.8" height="1.5"/><rect x="40.4" y="8.4" width="13.7" height="1.5"/><rect x="55.8" y="8.4" width="14.5" height="1.5"/></svg></div></div>
-        <div class="paper far d-page t-bright" style="--x:68;--y:4;--r:3deg;--d:.55;--o:.5"><div class="in"><div class="ds-band"><div class="rh0">PDF · Technical data</div><div class="ds-t">Binder B-7</div></div><div class="sec">Properties</div><table class="kv"><tr><td>Viscosity</td><td>2.1 Pa·s</td></tr><tr><td>Solids</td><td>48 %</td></tr><tr><td>Cure</td><td>125–140 °C</td></tr><tr><td>Tg</td><td>62 °C</td></tr></table><div class="sec">Viscosity vs temperature</div><svg class="fig" viewBox="0 0 100 30"><rect x="56" y="1" width="20" height="25" fill="#f5e3c3"/><text x="66" y="6.5" class="c-a">cure</text><path d="M6 1V26H96" fill="none" stroke="#cfcdc6" stroke-width=".8"/><path d="M7 3C20 12 35 18 55 21.5S85 24.5 95 25" fill="none" stroke="#c27a1a" stroke-width="1.5"/></svg></div></div>
-        <div class="paper far d-page t-old" style="--x:24;--y:90;--r:4deg;--d:.65;--o:.55"><div class="in"><div class="rh"><span>PDF</span><span>Rev C</span></div><div class="h">Coating specification</div><div class="sec">1&ensp;Scope</div><svg class="gk" viewBox="0 0 100 8.4" preserveAspectRatio="none" style="height:8.4px"><rect x="0.0" y="0.0" width="5.9" height="1.5"/><rect x="7.6" y="0.0" width="11.5" height="1.5"/><rect x="20.8" y="0.0" width="5.8" height="1.5"/><rect x="28.3" y="0.0" width="14.4" height="1.5"/><rect x="44.4" y="0.0" width="13.3" height="1.5"/><rect x="59.4" y="0.0" width="12.2" height="1.5"/><rect x="73.3" y="0.0" width="9.1" height="1.5"/><rect x="84.1" y="0.0" width="9.5" height="1.5"/><rect x="0.0" y="4.2" width="10.6" height="1.5"/><rect x="12.3" y="4.2" width="8.1" height="1.5"/><rect x="22.1" y="4.2" width="9.4" height="1.5"/><rect x="33.2" y="4.2" width="14.6" height="1.5"/></svg><div class="sec">2&ensp;Drying</div><div class="sp"><span class="hl">12 h at 125 °C</span> ±3 °C<span class="mn il rp">8 h?</span></div><div class="sec">3&ensp;Tests</div><svg class="gk" viewBox="0 0 100 8.4" preserveAspectRatio="none" style="height:8.4px"><rect x="0.0" y="0.0" width="9.4" height="1.5"/><rect x="11.1" y="0.0" width="10.2" height="1.5"/><rect x="23.1" y="0.0" width="7.9" height="1.5"/><rect x="32.6" y="0.0" width="5.2" height="1.5"/><rect x="39.6" y="0.0" width="7.9" height="1.5"/><rect x="49.2" y="0.0" width="5.9" height="1.5"/><rect x="56.8" y="0.0" width="5.3" height="1.5"/><rect x="63.8" y="0.0" width="5.8" height="1.5"/><rect x="71.3" y="0.0" width="4.4" height="1.5"/><rect x="77.4" y="0.0" width="10.1" height="1.5"/><rect x="89.2" y="0.0" width="5.3" height="1.5"/><rect x="96.2" y="0.0" width="3.2" height="1.5"/><rect x="0.0" y="4.2" width="14.0" height="1.5"/><rect x="15.7" y="4.2" width="11.2" height="1.5"/><rect x="28.6" y="4.2" width="12.5" height="1.5"/><rect x="42.8" y="4.2" width="11.1" height="1.5"/></svg><table class="mini"><tr><th>Rev</th><th>Date</th><th>Change</th></tr><tr><td>C</td><td>2025</td><td>drying time</td></tr></table></div><span class="flag b" style="top:22%"></span></div>
-        <div class="paper far d-mail t-copy fold-h" style="--x:66;--y:91;--r:-4deg;--d:.7;--o:.55"><div class="in"><div class="rh"><span>Email</span><span>Thu 11:42</span></div><div class="em-s">RE: roll R-31 results</div><div class="em-f"><span class="av ao">T</span><b>Tom · Pilot line</b><span>to Maya, Daniel</span></div><svg class="gk" viewBox="0 0 100 8.4" preserveAspectRatio="none" style="height:8.4px"><rect x="0.0" y="0.0" width="6.1" height="1.5"/><rect x="7.8" y="0.0" width="14.6" height="1.5"/><rect x="24.2" y="0.0" width="14.2" height="1.5"/><rect x="40.0" y="0.0" width="9.1" height="1.5"/><rect x="50.9" y="0.0" width="11.3" height="1.5"/><rect x="63.9" y="0.0" width="6.4" height="1.5"/><rect x="71.9" y="0.0" width="6.4" height="1.5"/><rect x="80.1" y="0.0" width="7.2" height="1.5"/><rect x="88.9" y="0.0" width="8.1" height="1.5"/><rect x="0.0" y="4.2" width="14.7" height="1.5"/><rect x="16.4" y="4.2" width="4.8" height="1.5"/><rect x="22.9" y="4.2" width="6.1" height="1.5"/><rect x="30.7" y="4.2" width="5.0" height="1.5"/><rect x="37.4" y="4.2" width="11.6" height="1.5"/></svg><svg class="em-c" viewBox="0 0 100 35"><text x="3" y="4.5" class="t">kept at cycle 300</text><line x1="6" y1="26" x2="96" y2="26" stroke="#cfcdc6" stroke-width=".6"/><rect x="10" y="5.0" width="13" height="21.0" fill="#3b8b5e"/><text x="16.5" y="33">R-28</text><rect x="32" y="16.5" width="13" height="9.5" fill="#b03a2e"/><text x="38.5" y="33">R-31</text><rect x="54" y="7.1" width="13" height="18.9" fill="#3b8b5e"/><text x="60.5" y="33">R-33</text><rect x="76" y="11.3" width="13" height="14.7" fill="#c27a1a"/><text x="82.5" y="33">R-34</text></svg><div class="ats"><span class="att"><b class="fi g">CSV</b>line_tests.csv</span><span class="att"><b class="fi r">PDF</b>R-31_QC.pdf</span></div><div class="em-q"><svg class="gk q" viewBox="0 0 100 8.4" preserveAspectRatio="none" style="height:8.4px"><rect x="0.0" y="0.0" width="10.8" height="1.5"/><rect x="12.5" y="0.0" width="5.9" height="1.5"/><rect x="20.0" y="0.0" width="11.8" height="1.5"/><rect x="33.6" y="0.0" width="10.7" height="1.5"/><rect x="46.0" y="0.0" width="8.2" height="1.5"/><rect x="55.9" y="0.0" width="10.8" height="1.5"/><rect x="68.4" y="0.0" width="10.2" height="1.5"/><rect x="80.3" y="0.0" width="4.5" height="1.5"/><rect x="86.5" y="0.0" width="7.5" height="1.5"/><rect x="0.0" y="4.2" width="9.7" height="1.5"/><rect x="11.4" y="4.2" width="13.7" height="1.5"/><rect x="26.8" y="4.2" width="12.1" height="1.5"/><rect x="40.6" y="4.2" width="8.1" height="1.5"/><rect x="50.4" y="4.2" width="6.5" height="1.5"/><rect x="58.6" y="4.2" width="3.8" height="1.5"/></svg></div></div></div>
+        <div class="paper near" style="--x:3;--y:10;--r:-6deg;--d:.1"><span class="t pdf">PDF</span><span class="nm">Quality report · Oct 2025</span><i></i><i></i></div>
+        <div class="paper" style="--x:5;--y:36;--r:4deg;--d:.3;--o:.8"><span class="t nb">NOTEBOOK</span><span class="nm">Lab notebook, <span style="white-space:nowrap">p. 38–42</span></span><i></i><i></i></div>
+        <div class="paper far" style="--x:2;--y:58;--r:-3deg;--d:.5;--o:.6"><span class="t csv">CSV</span><span class="nm">Cost model 2026</span><i></i><i></i></div>
+        <div class="paper near" style="--x:6;--y:76;--r:5deg;--d:.2"><span class="t ppt">SLIDES</span><span class="nm">Drying review · Mar 2026</span><i></i><i></i></div>
+        <div class="paper far" style="--x:85;--y:8;--r:5deg;--d:.4;--o:.6"><span class="t log">LOG</span><span class="nm">Line trial log</span><i></i><i></i></div>
+        <div class="paper near" style="--x:86;--y:32;--r:-4deg;--d:.15"><span class="t csv">CSV</span><span class="nm">Bench test results</span><i></i><i></i></div>
+        <div class="paper" style="--x:88;--y:56;--r:3deg;--d:.35;--o:.8"><span class="t doc">DOC</span><span class="nm">Weekly sync notes</span><i></i><i></i></div>
+        <div class="paper" style="--x:84;--y:76;--r:-5deg;--d:.25;--o:.85"><span class="t csv">CSV</span><span class="nm">Line tests, April</span><i></i><i></i></div>
+        <div class="paper far" style="--x:22;--y:4;--r:-2deg;--d:.6;--o:.5"><span class="t doc">DOC</span><span class="nm">Additive screening</span><i></i><i></i></div>
+        <div class="paper far" style="--x:68;--y:4;--r:3deg;--d:.55;--o:.5"><span class="t pdf">PDF</span><span class="nm">Supplier datasheet</span><i></i><i></i></div>
+        <div class="paper far" style="--x:24;--y:90;--r:4deg;--d:.65;--o:.55"><span class="t pdf">PDF</span><span class="nm">Coating spec, rev C</span><i></i><i></i></div>
+        <div class="paper far" style="--x:66;--y:91;--r:-4deg;--d:.7;--o:.55"><span class="t log">EMAIL</span><span class="nm">RE: roll R-31 results</span><i></i><i></i></div>
       </div>
       <div class="hero-copy">
         <p class="eyebrow">The integrated research environment (IRE)</p>
         <h1 id="hero-title">From reactive to <em>proactive</em> R&amp;D&nbsp;decisions</h1>
-        <p class="lede"><span class="l1">Your company’s knowledge, results and your KPIs, in one place,</span> <span class="l2">to guide each project’s direction and share what each team learns.</span></p>
+        <p class="lede">Fermata connects today’s result to everything your company already knows, from the lab bench to the pilot line to the plant.</p>
         <div class="actions">
           <a class="cta-ghost" href="https://web.getfermata.app"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>Try demo</a>
+          <a class="cta-ghost contact" href="mailto:hi@getfermata.app?subject=Fermata"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16v11H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4.5 7l7.5 6 7.5-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Contact us</a>
         </div>
       </div>
       <a class="more" href="#story" aria-label="Scroll down to see how it works"><span><svg viewBox="0 0 24 34" aria-hidden="true"><path d="M5 4l7 6 7-6"/><path d="M5 14l7 6 7-6"/><path d="M5 24l7 6 7-6"/></svg></span></a>
@@ -837,15 +600,15 @@
       <aside class="rail" data-step="memory" aria-label="Company knowledge base">
         <div class="memory">
           <p class="kb">Company knowledge base</p>
-          <div class="web" role="img" aria-label="The company's knowledge base: linked documents, findings and decisions in three groups, Team A, Team B, and key performance indicators. Drag to turn it; hover a record to see what it is."></div>
+          <div class="web" role="img" aria-label="The company's knowledge base: linked documents, findings and decisions in three groups, Team A, Team B, and KPI. Drag to turn it; hover a record to see what it is."></div>
         </div>
       </aside>
 
       <article class="chapter intro" id="memory" data-step="memory">
         <div class="intro-copy">
           <p class="eyebrow"><span class="n">01</span>Knowledge base</p>
-          <h2>Everything your company has learned, ready for the next decision.</h2>
-          <p>Fermata integrates your legacy project reports, notebooks, logs and spreadsheets into <span class="gonogo">one shared knowledge base</span>.</p>
+          <h2>Everything your company has learned, in one place.</h2>
+          <p>Fermata reads every record and links them into one knowledge base.</p>
         </div>
       </article>
 
@@ -853,8 +616,8 @@
         <article class="chapter" id="lab" data-step="lab" style="--n:6">
           <div class="pin">
           <p class="eyebrow"><span class="n">02</span>Project and directions</p>
-          <h2>Every project builds on years of company knowledge.</h2>
-          <p>Fermata shows <span class="gonogo">relevant past results</span> before each experiment.</p>
+          <h2>Every project starts from what the company already tried.</h2>
+          <p>Before a test is planned, Fermata brings up what was tried before.</p>
           <div class="win" data-stage="win">
             <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Project 1 · Coating drying time</span><span class="who"><span class="av">A</span>Team A</span></div>
             <div class="win-body">
@@ -883,8 +646,8 @@
         <article class="chapter" id="pilot" data-step="pilot" style="--n:6">
           <div class="pin">
           <p class="eyebrow"><span class="n">03</span>Cross-team learning</p>
-          <h2>Each team learns from every<br class="wide-br"> other team.</h2>
-          <p>Team B gets a different result. Fermata shows <span class="gonogo">what changed and why</span>.</p>
+          <h2>What one team learns, the next team starts with.</h2>
+          <p>Team B gets a different result. Fermata reads both and finds why.</p>
           <div class="win" data-stage="win">
             <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Project 2 · Larger batches</span><span class="who"><span class="av t">B</span>Team B</span></div>
             <div class="win-body pilot-body">
@@ -898,16 +661,16 @@
               <div class="plot">
                 <div data-stage="answer">
                 <svg class="chart" viewBox="0 0 340 150" role="img" aria-label="Output kept against cycles. Team A's test covers cycles 0 to 50, where 8-hour drying is ahead, and it stays ahead until about cycle 200. Near cycle 245 the 8-hour line falls behind and ends at 79 percent, against 90 percent for 12-hour drying.">
-                  <rect x="30" y="10" width="46.7" height="120" style="fill:var(--violet-soft)"/>
+                  <rect x="30" y="10" width="46.7" height="120" fill="#ece8f9"/>
                   <text x="34" y="124">Team A’s test</text>
                   <line class="axis" x1="30" y1="130" x2="310" y2="130"/>
-                  <line x1="258.7" y1="10" x2="258.7" y2="130" style="stroke:var(--line-2)" stroke-dasharray="3 3"/>
+                  <line x1="258.7" y1="10" x2="258.7" y2="130" stroke="#c3c2b7" stroke-dasharray="3 3"/>
                   <text x="252" y="143" text-anchor="end">cycle 245</text>
                   <text x="30" y="143">0</text><text x="296" y="143">300</text>
-                  <path class="ln" pathLength="1" style="stroke:var(--green)" d="M30 14 L76.7 21.5 L123.3 28 L170 33.6 L216.7 38.8 L258.7 43.2 L310 50"/>
-                  <path class="ln late" pathLength="1" style="stroke:var(--red)" d="M30 14 L76.7 15.2 L123.3 20.4 L170 27.4 L216.7 35.6 L258.7 43.2 L286.7 68 L310 94"/>
-                  <text class="key" x="314" y="54" style="fill:var(--green)">12 h</text>
-                  <text class="key" x="314" y="98" style="fill:var(--red)">8 h</text>
+                  <path class="ln" pathLength="1" stroke="#0f6e56" d="M30 14 L76.7 21.5 L123.3 28 L170 33.6 L216.7 38.8 L258.7 43.2 L310 50"/>
+                  <path class="ln late" pathLength="1" stroke="#a52a2a" d="M30 14 L76.7 15.2 L123.3 20.4 L170 27.4 L216.7 35.6 L258.7 43.2 L286.7 68 L310 94"/>
+                  <text class="key" x="314" y="54" style="fill:#0f6e56">12 h</text>
+                  <text class="key" x="314" y="98" style="fill:#a52a2a">8 h</text>
                 </svg>
                 </div>
               </div>
@@ -924,7 +687,7 @@
           <div class="pin">
           <p class="eyebrow"><span class="n">04</span>Team decision</p>
           <h2>Push here. Stop there.</h2>
-          <p>Fermata weighs evidence against your KPIs for <span class="gonogo">go/no-go decisions</span>.</p>
+          <p>Every direction against the company’s targets, on one page.</p>
           <div class="win" data-stage="win">
             <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="app"><img src="assets/app-icon-180.png" alt="" width="20" height="20">Fermata</span><span class="title">Project status · Coating drying time</span><span class="who">Team review</span></div>
             <div class="win-body">
@@ -962,17 +725,149 @@
       </div>
     </section>
 
+    <!-- 2b. The stage: Fermata at work over a plant, in three steps (stage.css, stage.js) -->
+    <section class="stage-sec" id="stage" aria-label="Fermata at work, in three steps">
+      <div class="stage" data-fstage>
+        <div class="stage-photo">
+          <button type="button" class="st-pause" data-pause aria-label="Pause"><svg viewBox="0 0 24 24" aria-hidden="true" data-i="pause"><rect x="6.5" y="5" width="4" height="14" rx="1.2" fill="currentColor"/><rect x="13.5" y="5" width="4" height="14" rx="1.2" fill="currentColor"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" data-i="play"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" fill="currentColor"/></svg></button>
+          <div class="st-fit">
+            <div class="st-win" role="img" aria-label="The Fermata app, playing the step chosen below.">
+              <div class="st-bar">
+                <span class="lights"><i></i><i></i><i></i></span>
+                <span class="mark"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 15a9 9 0 0 1 18 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="8" cy="15.5" r="1.7" fill="currentColor"/><circle cx="12" cy="15.5" r="1.7" fill="currentColor"/><circle cx="16" cy="15.5" r="1.7" fill="currentColor"/></svg></span>
+                <b>Northfield Materials</b><span class="sep">/</span><span class="crumb" data-crumb>Faster drying step</span>
+              </div>
+              <div class="st-body">
+                <div class="st-side">
+                  <div class="proj"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Faster drying step</div>
+                  <div class="st-nav" data-nav="map"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="6" cy="18" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="9" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 8.2v7.6M8 6.8c6 0 8 0 8 0M6 15c0-4 6-4 10-5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Project map</div>
+                  <div class="st-nav" data-nav="status"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Project status</div>
+                  <h4>Sessions</h4>
+                  <div class="st-ses new" data-ses="tom"><i class="d live"></i><b>November pilot tests</b><span>Team B · today</span></div>
+                  <div class="st-ses"><i class="d live"></i><b>Oven mapping</b><span>Team B · Oct 2026</span></div>
+                  <div class="st-ses"><i class="d live"></i><b>Coating thickness</b><span>Team A · Sep 2026</span></div>
+                  <div class="st-ses"><i class="d"></i><b>Additive screening</b><span>Team A · Jul 2026</span></div>
+                                    <div class="st-ses"><i class="d"></i><b>Faster drying on the bench</b><span>Team A · Mar 2026</span></div>
+                  <div class="st-ses"><i class="d"></i><b>Supplier B</b><span>Team A · Jan 2026</span></div>
+                </div>
+                <div class="st-view">
+                  <!-- the project map -->
+                  <div class="st-screen st-map" data-screen="map">
+                    <h3>Project map</h3>
+                    <p class="st-sub">A year of the team’s work. Each session is a branch: what it confirms joins the project, and a dropped direction keeps its learning.</p>
+                    <svg data-map viewBox="0 0 780 318" aria-hidden="true"></svg>
+                    <div class="st-legend"><span><i class="k1"></i>Project</span><span><i class="k2"></i>Direction</span><span><i class="k3">✕</i>Dropped, learning kept</span><span><i class="k4"></i>Today’s session</span></div>
+                  </div>
+                  <!-- project status -->
+                  <div class="st-screen st-status" data-screen="status">
+                    <div class="st-status-head">
+                      <div><h3>Project status</h3><p class="st-sub" data-upd>Updated 14 Jul 2026</p></div>
+                      <span class="st-btn" data-hit="new"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>New session</span>
+                    </div>
+                    <div class="st-box st-project"><h5>Project</h5><p>Cut the electrode drying step from 12 hours to 8 without losing output, from lab to production.</p></div>
+                    <div class="st-box">
+                      <h5>Conclusions and next steps</h5>
+                      <div class="st-row st-in" data-c="1"><span class="st-tag ok">Confirmed</span>8-hour drying did better than 12-hour on the bench<span class="who">Team A</span></div>
+                      <div class="st-row st-in" data-c="2"><span class="st-tag ok">Confirmed</span>Supplier B’s binder holds up under 8-hour drying<span class="who">Team A</span></div>
+                      <div class="st-row st-in" data-c="3" data-pilot><span class="st-tag nt" data-pilot-tag>Not tested</span><span data-pilot-text>8-hour drying holds on the pilot line</span><span class="who" data-pilot-who></span></div>
+                      <div class="st-next st-in" data-c="4"><b>Next:</b> <span data-next>a long-run check on the pilot line (Team B)</span></div>
+                    </div>
+                    <div class="st-box">
+                      <h5>Sessions and directions</h5>
+                      <div class="st-collapse" data-fresh-ses><div class="st-sd" data-new><p class="st-sd-head"><i class="d live"></i><b>November pilot tests</b><span>Team B · today</span></p><div class="st-sd-dirs"><div class="st-sd-dir st-in" data-d><span class=st-letter>A</span><span class="t">Output at cycle 300 across the records</span><span class="st-src">Knowledge base</span><span class="st-tag ok">Confirmed</span></div><div class="st-sd-dir st-in" data-d><span class=st-letter>B</span><span class="t">Why the bench and the pilot line disagree</span><span class="st-src">This project</span><span class="st-tag ok">Confirmed</span></div></div></div></div>
+                      <div class="st-sd"><p class="st-sd-head"><i class="d"></i><b>Additive screening</b><span>Team A · Jul 2026</span></p><div class="st-sd-dirs"><div class="st-sd-dir st-in" data-d><span class="t">Screening additive</span><span></span><span class="st-tag no">Not confirmed</span></div></div></div>
+                      <div class="st-sd"><p class="st-sd-head"><i class="d"></i><b>Faster drying on the bench</b><span>Team A · Mar 2026</span></p><div class="st-sd-dirs"><div class="st-sd-dir st-in" data-d><span class="t">Dry 8 h at 110 °C</span><span></span><span class="st-tag ok">Confirmed</span></div><div class="st-sd-dir st-in" data-d><span class="t">Dry 8 h at 140 °C</span><span></span><span class="st-tag no">Not confirmed</span></div></div></div>
+                    </div>
+                    <div class="st-box" data-learnings>
+                      <h5>Learnings</h5>
+                      <div class="st-collapse" data-fresh><div class="st-learn fresh"><span class="st-av tb">B</span><div><p class="st-learn-t"><span class="st-new">New</span>Bench tests that stop at cycle 50 cannot show the pilot loss.</p><p class="st-learn-s"><b>Source:</b><span class="st-learn-ses">November pilot tests</span>Team B · today</p></div></div></div>
+                      <div class="st-learn"><span class="st-av ta">A</span><div><p class="st-learn-t">The screening additive slows drying at 110 °C; not worth a second round.</p><p class="st-learn-s"><b>Source:</b><span class="st-learn-ses">Additive screening</span>Team A · Jul 2026</p></div></div>
+                      <div class="st-learn"><span class="st-av ta">A</span><div><p class="st-learn-t">Supplier B’s binder needs no change to the drying program.</p><p class="st-learn-s"><b>Source:</b><span class="st-learn-ses">Supplier B</span>Team A · Jan 2026</p></div></div>
+                    </div>
+                  </div>
+                  <!-- a session -->
+                  <div class="st-screen st-session" data-screen="session">
+                    <div class="st-chat">
+                      <div class="st-chat-head">November pilot tests<span>Team B</span></div>
+                      <div class="st-feed" data-feed></div>
+                      <div class="st-compose" data-compose><span class="st-clip" data-hit="attach"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5l-7.8 7.8a5 5 0 0 1-7.1-7.1l8.3-8.3a3.3 3.3 0 0 1 4.7 4.7l-8.2 8.2a1.7 1.7 0 0 1-2.4-2.4l7.4-7.4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="st-chipfile" data-file><b>CSV</b>pilot_runs_nov.csv</span><span class="txt" data-txt></span><span class="st-send" data-hit="send"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+                    </div>
+                    <div class="st-panel">
+                      <div class="st-tabs"><span data-tab="directions">Directions</span><span data-tab="findings">Findings</span></div>
+                      <div class="st-pane">
+                        <div data-pane="findings">
+                          <div class="st-kb-h st-in" data-kb><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" fill="currentColor"/></svg>From the knowledge base</div>
+                          <div class="st-card st-in" data-card="1">
+                            <p class="t">Drying line upgrade report</p>
+                            <p class="m"><span class="st-src">Team C</span>Report · Oct 2025</p>
+                            <p class="say">At plant scale, 8-hour rolls kept 81% of output at cycle 300, against 91% for 12-hour rolls.</p>
+                            <div class="st-bars">
+                              <div><em>Plant · 12 h</em><i style="--w:91%"></i><b>91%</b></div>
+                              <div><em>Plant · 8 h</em><i style="--w:81%;--c:#d0574a;--dl:.15s"></i><b>81%</b></div>
+                            </div>
+                          </div>
+                          <div class="st-card st-in" data-card="2">
+                            <p class="t">Team A notebook, p. 40</p>
+                            <p class="m"><span class="st-src">Team A</span>Notebook · Mar 2026 · from a dropped direction</p>
+                            <p class="say">At 140 °C the rolls dried, but 4 of 6 samples cracked. Nothing between 110 and 140 °C was tried.</p>
+                            <div class="st-temps"><div><b>110 °C</b>340 ppm left</div><div class="open"><b>125 °C</b>Not tested</div><div class="bad"><b>140 °C</b>4 of 6 cracked</div></div>
+                          </div>
+                          <div class="st-search st-in" data-search><span class="st-spin"></span><span><b>Searching the knowledge base</b><small data-search-n>4,212 files · notebooks · test sheets · plant reports</small></span></div>
+                          <div class="st-in" data-finding>
+                            <div class="st-find" data-find><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 12.5l2.6 2.6L16 9.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>8-hour pilot rolls keep about 11 points less output at cycle 300</div>
+                            <div class="st-check" data-check>
+                              <div class="hd" data-check-hd><span class="st-spin"></span>Independent check: redoing the numbers…</div>
+                              <div class="st-collapse" data-check-body>
+                                <p>Reproduced from the pilot sheets: 78.8% against 89.6%.</p>
+                                <p><span class="st-tag mid">Inconclusive</span> Moisture as the cause: not proven yet.</p>
+                              </div>
+                              <div class="foot"><span class="st-share" data-hit="share" data-off>Update project status</span></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div data-pane="directions">
+                          <div class="st-pdir st-in" data-pd="A">
+                            <div class="h"><span class="st-letter">A</span><b>Output at cycle 300 across every pilot run</b><span class="st-mark" data-mark></span></div>
+                            <div class="meta"><span data-state>Proposed</span><span class="st-src">Knowledge base</span></div>
+                            <div class="st-strip"><i style="--t:1.4s"></i><i style="--t:1.4s"></i></div>
+                            <div class="st-collapse" data-res><div class="st-res"><span class="st-tag ok">Confirmed</span>8-hour rolls keep 78.8% against 89.6% at cycle 300</div></div>
+                          </div>
+                          <div class="st-pdir st-in" data-pd="B">
+                            <div class="h"><span class="st-letter">B</span><b>Why the bench and the pilot line disagree</b><span class="st-mark" data-mark></span></div>
+                            <div class="meta"><span data-state>Proposed</span><span class="st-src">This project</span></div>
+                            <div class="st-strip"><i style="--t:2.2s"></i></div>
+                            <div class="st-collapse" data-res><div class="st-res"><span class="st-tag ok">Confirmed</span>Bench tests stop at cycle 50; the loss starts after 150</div></div>
+                          </div>
+                          <div class="st-pdir st-in" data-pd="C"><div class="h"><span class="st-letter">C</span><b>Both oven programs side by side</b><span class="st-mark"></span></div><div class="meta"><span>Proposed</span><span class="st-src">Team B</span></div></div>
+                          <div class="st-pdir st-in" data-pd="D"><div class="h"><span class="st-letter">D</span><b>Dry at 125 °C, between the two tried</b><span class="st-mark"></span></div><div class="meta"><span>Proposed</span><span class="st-src">Team A</span></div></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="st-tip" data-tip></div>
+                </div>
+              </div>
+              <div class="st-cursor" data-cursor><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3l15 7.5-6.4 1.6L9.5 18.5z" fill="#1a1a1f" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+            </div>
+          </div>
+        </div>
+        <div class="st-steps" role="tablist" aria-label="Three steps">
+          <button class="st-step" role="tab" aria-selected="true" data-scene="0"><span class="line"><i></i></span><span class="ttl"><small>01</small>Project status and directions<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p>See every direction your research takes, which ones were dropped, and why.</p></button>
+          <button class="st-step" role="tab" aria-selected="false" data-scene="1"><span class="line"><i></i></span><span class="ttl"><small>02</small>Learning across teams<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p>Fermata surfaces findings from other teams across the organization when they are relevant to your experiments.</p></button>
+          <button class="st-step" role="tab" aria-selected="false" data-scene="2"><span class="line"><i></i></span><span class="ttl"><small>03</small>Results the team can trust<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p>Every result is checked independently before it joins the project. You decide what to share.</p></button>
+        </div>
+      </div>
+    </section>
+
     <!-- 3. The whole of it in one line, before the film -->
     <section class="sum wrap" aria-labelledby="sum-title">
-      <p class="eyebrow">Fermata · one integrated R&amp;D workspace</p>
-      <h2 id="sum-title">Years of company knowledge behind your next <em>go/no-go decision</em>.</h2>
-      <p class="sum-sub">Every result moves your teams closer to your KPIs.</p>
+      <h2 id="sum-title">One R&amp;D workspace, from the first result to the <em>team’s decision</em>.</h2>
     </section>
 
     <!-- 4. The film -->
     <section class="block wrap film-block" id="film" aria-labelledby="film-title">
       <div class="block-head">
-        <p class="eyebrow">See it in action</p>
+        <p class="eyebrow">See it work</p>
         <h2 id="film-title">Fermata in two minutes.</h2>
       </div>
       <div class="player" id="how-it-works">
@@ -985,41 +880,56 @@
     <!-- 5. Questions -->
     <section class="block wrap" aria-labelledby="faq-title">
       <div class="block-head">
-        <p class="eyebrow" id="faq-title">Frequently asked questions</p>
+        <p class="eyebrow">Questions</p>
+        <h2 id="faq-title">Before you start.</h2>
       </div>
       <div class="faq">
         <details>
-          <summary>What happens to our data and intellectual property?</summary>
-          <p>Your data and intellectual property stay yours. Files stay on your Mac or your company’s server. Only your question and the context needed to answer it go to your chosen AI provider, through your company’s account with <span class="gonogo">zero data retention</span>. Your data is never used to train AI models, and we never see your files, questions or answers.</p>
+          <summary>Does my team have to change how it works?</summary>
+          <p>No. Fermata sits beside the work you already do. You ask in plain words, attach the files you have, and it reads them where they are.</p>
         </details>
         <details>
-          <summary>How is Fermata different from ChatGPT or Claude?</summary>
-          <p>ChatGPT and Claude are general-purpose AI assistants for everyday work, not built around your company. Fermata is a shared workspace <span class="gonogo">built for industrial R&amp;D</span>, using the same underlying models. It connects your company’s knowledge, project histories and KPIs, so teams can compare new results with past work, check recommendations against evidence and share what they learn across projects.</p>
+          <summary>Where do our files go?</summary>
+          <p>They stay on your Mac. Fermata reads them there and keeps its record of the work beside them. The parts a question needs go to the AI you chose, under your own account.</p>
         </details>
         <details>
-          <summary>Do we need to change our existing tools or workflows?</summary>
-          <p>No. Fermata <span class="gonogo">works around your existing workflows</span>. It reads your reports, notebooks, spreadsheets and instrument data, and connects directly to your lab instruments and plant systems, bringing their data together in one shared knowledge base on your company’s server. Your original files stay where they are.</p>
+          <summary>Which AI does it use?</summary>
+          <p>Fermata works with Claude Code or OpenAI Codex, under your own account. You choose which one in Settings.</p>
         </details>
         <details>
-          <summary>How can we check Fermata’s answers and recommendations before making a decision?</summary>
-          <p>Each answer links to its sources, states its assumptions and flags anything it can’t support. An <span class="gonogo">independent reviewer</span> checks every finding before you see it. Your team makes the final call, and Fermata keeps the reasoning behind each decision.</p>
-        </details>
-        <details>
-          <summary>Can we control who sees what across teams and projects?</summary>
-          <p>Yes. You set <span class="gonogo">access by team and project</span>. Sensitive records, such as cost models and margins, stay with authorized people. You choose which findings to share across teams.</p>
-        </details>
-        <details>
-          <summary>Which AI models does Fermata use?</summary>
-          <p>Fermata works with <span class="gonogo">frontier models from Anthropic and OpenAI</span> through your company’s own account. Your team chooses which model to use, and can switch at any time.</p>
+          <summary>Does Fermata make the decisions?</summary>
+          <p>No. People decide. Fermata shows the evidence, says what it assumed, has its findings checked independently, and keeps the reasons for each decision.</p>
         </details>
       </div>
     </section>
 
-    <!-- 6. Close -->
+    <!-- 6. Industries -->
+    <section class="block wrap" id="industries" aria-labelledby="ind-title">
+      <div class="block-head">
+        <p class="eyebrow">Industries</p>
+        <h2 id="ind-title">Built for industrial R&amp;D.</h2>
+        <p>Each industry keeps its own records. The way from a result to a decision is the same.</p>
+      </div>
+      <div class="inds">
+        <article class="ind">
+          <img src="assets/industries/chemicals.jpg" alt="A refinery's storage tanks and columns under a golden evening sky" width="1400" height="1050" loading="lazy" decoding="async">
+          <div class="ind-text"><h3>Chemicals and process</h3><p>Catalysts, formulations and scale-up.</p></div>
+        </article>
+        <article class="ind">
+          <img src="assets/industries/carbon-capture.jpg" alt="Chimneys and cooling towers releasing white plumes above a green forest" width="1400" height="1050" loading="lazy" decoding="async">
+          <div class="ind-text"><h3>Carbon capture and CO₂ conversion</h3><p>Sorbents, membranes and electrolysers.</p></div>
+        </article>
+        <article class="ind">
+          <img src="assets/industries/batteries.jpg" alt="An automated production line with robots and cable trays in a bright factory" width="1400" height="1050" loading="lazy" decoding="async">
+          <div class="ind-text"><h3>Batteries and energy materials</h3><p>Electrodes, coatings and cells.</p></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 7. Close -->
     <section class="close wrap" id="contact">
-      <p class="eyebrow"><a href="mailto:hi@getfermata.app?subject=Fermata%20demo%20request">Request a demo</a></p>
-      <h2>Keep every team on the same page.</h2>
-      <p>Turn every result into progress against your KPIs.</p>
+      <h2>Fermata works around your workflow. You don’t work around it.</h2>
+      <p>For macOS. Questions? Write to us.</p>
       <div class="actions">
         <a class="cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest"><svg aria-hidden="true"><use href="#apple"/></svg>Download for Mac</a>
         <a class="cta-ghost mail" href="mailto:hi@getfermata.app">hi@getfermata.app</a>
@@ -1032,7 +942,7 @@
       <a class="brand" href="/" aria-label="Fermata"><svg width="22" height="22" aria-hidden="true"><use href="#mark"/></svg>Fermata</a>
       <nav aria-label="Footer">
         <a href="#story">How it works</a>
-        <a href="/industries/">Industries</a>
+        <a href="#industries">Industries</a>
         <a href="/guide/">User guide</a>
         <a href="https://web.getfermata.app">Try demo</a>
         <a href="mailto:hi@getfermata.app">Contact</a>
@@ -1046,31 +956,6 @@
   <div class="clearing" aria-hidden="true"></div>
   <div class="space-tags" aria-hidden="true"></div>
 
-  <script>
-    // ---- Paper grain: fine specks and a few fibres in one small tile, made once. The page papers use it as a
-    // background (--grain), the drawn ones as a pattern (PAPER_GRAIN). Without it the papers are simply smooth.
-    const PAPER_GRAIN = (() => {
-      try {
-        const S = 128, g = document.createElement("canvas"); g.width = g.height = S;
-        const x = g.getContext("2d"); if (!x) return null;
-        const im = x.createImageData(S, S); let q = 20261122;
-        const r = () => (q = (q * 16807) % 2147483647) / 2147483647;
-        for (let i = 0; i < S * S; i++) { const n = r(); im.data[i * 4] = 96; im.data[i * 4 + 1] = 86; im.data[i * 4 + 2] = 66; im.data[i * 4 + 3] = n > 0.55 ? (n - 0.55) * 46 : 0; }
-        x.putImageData(im, 0, 0);
-        x.lineCap = "round";
-        for (let i = 0; i < 34; i++) {
-          const fx = r() * S, fy = r() * S, a = r() * 6.283, L = 5 + r() * 14, bx = (r() - 0.5) * 4, by = (r() - 0.5) * 4, light = r() < 0.45;
-          x.strokeStyle = light ? "rgba(255, 255, 255, 0.55)" : "rgba(110, 98, 76, 0.14)"; x.lineWidth = 0.35 + r() * 0.4;
-          for (const ox of [-S, 0, S]) for (const oy of [-S, 0, S]) {
-            x.beginPath(); x.moveTo(fx + ox, fy + oy);
-            x.quadraticCurveTo(fx + ox + (Math.cos(a) * L) / 2 + bx, fy + oy + (Math.sin(a) * L) / 2 + by, fx + ox + Math.cos(a) * L, fy + oy + Math.sin(a) * L); x.stroke();
-          }
-        }
-        document.documentElement.style.setProperty("--grain", `url(${g.toDataURL()})`);
-        return g;
-      } catch (e) { return null; }
-    })();
-  </script>
   <script>
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -1108,9 +993,10 @@
         ),
       ),
     );
-    document.querySelector(".mail").addEventListener("click", () =>
-      window.posthog?.capture("contact_clicked", {}, { transport: "sendBeacon" }),
-    );
+    for (const [sel, from] of [[".mail", "contact"], [".contact", "hero"]])
+      document.querySelector(sel).addEventListener("click", () =>
+        window.posthog?.capture("contact_clicked", { from }, { transport: "sendBeacon" }),
+      );
 
     // ---- The film: plays with sound on the first click, then hands over to the native controls.
     (() => {
@@ -1353,7 +1239,7 @@
         layer.append(t); TAGS[id] = t;
       }
       // the three groups: hubs of the wide map, small captions once it rests on the left
-      const HUBS = [["rnd", "Team A", [-0.6, -0.8], [40, 30, 20]], ["pilot", "Team B", [0.6, -0.74], [338, 34, -26]], ["prod", "Key performance indicators", [0.02, 0.56], [204, 334, 0]]].map(([st, text, uv, corner]) => {
+      const HUBS = [["rnd", "Team A", [-0.6, -0.8], [40, 30, 20]], ["pilot", "Team B", [0.6, -0.74], [338, 34, -26]], ["prod", "KPI", [0.02, 0.56], [204, 334, 0]]].map(([st, text, uv, corner]) => {
         const h = document.createElement("span");
         h.className = "hub " + st;
         h.innerHTML = `<svg aria-hidden="true"><use href="#i-${st}"/></svg><b></b>`;
@@ -1430,618 +1316,18 @@
       let bb = null;
       const grow = (x, y, r) => { if (bb) { if (x - r < bb[0]) bb[0] = x - r; if (y - r < bb[1]) bb[1] = y - r; if (x + r > bb[2]) bb[2] = x + r; if (y + r > bb[3]) bb[3] = y + r; } };
       const rr = (x, y, ww, hh, r) => { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, ww, hh, r); else ctx.rect(x, y, ww, hh); };
-      // ---- Paper style D. Each drawn document is a real page of its kind: a report, a datasheet, notes, a lab notebook
-      // page, a spreadsheet, a slide, a log or an email. Each is drawn once into a small bitmap for each of three depths and
-      // stamped every frame: far ones soft and faint with a small shadow, near ones sharp with a deeper one. Sizes are in
-      // page units, about the area of the old card (76 by 56).
-      const PAGE = { report: [58, 75], datasheet: [58, 75], doc: [58, 75], notebook: [60, 74], sheet: [82, 56], slide: [86, 48], log: [72, 60], email: [80, 56] };
-      const KIND_OF = { PDF: "report", CSV: "sheet", SLIDES: "slide", DOC: "doc", NOTEBOOK: "notebook", LOG: "log", EMAIL: "email" };
-      const DUST_KIND = ["report", "sheet", "notebook", "slide", "log", "doc"];
-      // per depth: bitmap pixels per unit on a 2x screen, blur, strength of the ink, and two shadows (contact, then ambient): alpha, blur, drop
-      const DEPTH = [
-        { res: 1.3, blur: 0.8, ink: 0.5, sh: [0.05, 0.5, 0.3, 0.12, 4, 2.5] },
-        { res: 2.2, blur: 0.3, ink: 0.66, sh: [0.07, 0.6, 0.4, 0.18, 6, 3.5] },
-        { res: 3.2, blur: 0, ink: 0.85, sh: [0.09, 0.7, 0.5, 0.28, 9, 5.5] },
-      ];
-      const FONT = { serif: '"Source Serif 4", Georgia, serif', sans: '-apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", system-ui, sans-serif',
-        mono: 'ui-monospace, "SF Mono", Menlo, Consolas, monospace', hand: 'Caveat, "Bradley Hand", "Segoe Print", cursive' };
-      const CANVAS_FILTER = "filter" in CanvasRenderingContext2D.prototype;
-      const INK = "#26262c", INK2 = "#55555d", GREY = "#9a9aa0", HAIR = "#e4e3de", TXT = "#d3d2cc", VIO = "#4a3aa7", PEN = "#2b3a6b";
-      // Colour as it is printed on real R&D paper, and always for data: a line per series, a bar over a limit in red, a
-      // pass in green. Muted and print-like. The pale tones are cell fills, chips and data bars, with the text on them in
-      // the dark of the same colour; red pen and coloured highlighters are the marks made by hand.
-      const GRN = "#0f6e56", GRN2 = "#3b8b5e", ORG = "#c27a1a", RED = "#b03a2e", BLU = "#1f5fa8", STONE = "#c9c8c0", RPEN = "#b8342a";
-      const WHITE = "rgba(255, 255, 255, 0.94)", WHITE2 = "rgba(255, 255, 255, 0.72)";
-      const PALE = { g: "#d6e9dc", a: "#f5e3c3", r: "#f2d4cd", b: "#d6e3f2", v: "#e2def3", n: "#e9e8e3" };
-      const DARK = { g: "#1d6a3f", a: "#8a5a12", r: "#9c2f25", b: "#1f5fa8", v: "#4a3aa7", n: "#6f6f77" };
-      const BAR = { g: "#bcdcc6", a: "#efd29f", r: "#e8b9ae" };
-      // three prints of each kind: v is 0, 1 or 2
-      function pageArt(x, kind, v, w, h) {
-        let q = 1 + v * 7919 + kind.length * 104729;
-        const r = () => (q = (q * 16807) % 2147483647) / 2147483647;
-        const text = (s, px, py, size, font, color, o = {}) => {
-          x.font = `${o.italic ? "italic " : ""}${o.weight || 400} ${size}px ${FONT[font]}`; x.fillStyle = color; x.textAlign = o.align || "left"; x.fillText(s, px, py);
-          return x.measureText(s).width;
-        };
-        const caps = (s, px, py, o = {}) => text(s.toUpperCase().split("").join(" "), px, py, o.size || 1.9, "sans", o.color || GREY, { weight: 600, align: o.align });
-        const hair = (x1, y1, x2, y2, c = HAIR, lw = 0.3) => { x.strokeStyle = c; x.lineWidth = lw; x.beginPath(); x.moveTo(x1, y1); x.lineTo(x2, y2); x.stroke(); };
-        const greek = (px, py, width, n, o = {}) => {
-          const lh = o.lh || 2.6, th = o.th || 0.95; x.fillStyle = o.color || TXT;
-          for (let i = 0; i < n; i++) {
-            const end = px + width * (i === n - 1 && !o.full ? 0.42 + r() * 0.33 : 0.93 + r() * 0.07);
-            for (let cx = px; cx < end - 1.5; ) { const ww = Math.min(1.6 + r() * 5.5, end - cx); x.fillRect(cx, py + i * lh, ww, th); cx += ww + 1; }
-          }
-          return py + n * lh;
-        };
-        const rect = (px, py, rw, rh, c) => { x.fillStyle = c; x.fillRect(px, py, rw, rh); };
-        const round = (px, py, rw, rh, rad) => { x.beginPath(); if (x.roundRect) x.roundRect(px, py, rw, rh, rad); else x.rect(px, py, rw, rh); };
-        const poly = (pts, c, lw, dash) => {
-          x.strokeStyle = c; x.lineWidth = lw; x.lineJoin = "round"; x.lineCap = "round"; if (dash) x.setLineDash(dash);
-          x.beginPath(); pts.forEach(([px, py], i) => (i ? x.lineTo(px, py) : x.moveTo(px, py))); x.stroke(); if (dash) x.setLineDash([]);
-        };
-        // a line through a box: f(t) runs from 0 at the top to 1 at the bottom
-        const curve = (x0, y0, cw, ch, f, c, lw, n = 32) => poly(Array.from({ length: n + 1 }, (_, i) => [x0 + (i / n) * cw, y0 + f(i / n) * ch]), c, lw);
-        const dot = (px, py, rad, c) => { x.fillStyle = c; x.beginPath(); x.arc(px, py, rad, 0, 6.283); x.fill(); };
-        const ring = (px, py, rx, ry, c, lw = 0.3, rot = -0.06) => { x.strokeStyle = c; x.lineWidth = lw; x.beginPath(); x.ellipse(px, py, rx, ry, rot, 0, 6.283); x.stroke(); };
-        const swatch = (px, py, c, s = 1.5) => rect(px, py - s + 0.1, s, s, c);
-        // a status chip: a pale fill with the word in the dark of the same colour; o.right puts its right edge at px
-        const chip = (s, px, py, k, o = {}) => {
-          const size = o.size || 1.45; x.font = `700 ${size}px ${FONT.sans}`;
-          const tw = x.measureText(s).width + size * 1.1, cx = o.right ? px - tw : px;
-          x.fillStyle = PALE[k]; round(cx, py - size * 1.02, tw, size * 1.42, size * 0.35); x.fill();
-          x.fillStyle = DARK[k]; x.textAlign = "left"; x.fillText(s, cx + size * 0.55, py);
-          return tw;
-        };
-        const hl = (px, py, hw, hh, c) => { x.save(); x.globalCompositeOperation = "multiply"; x.fillStyle = c; x.beginPath(); x.moveTo(px, py + 0.3); x.lineTo(px + hw, py); x.lineTo(px + hw + 0.4, py + hh); x.lineTo(px - 0.3, py + hh + 0.2); x.closePath(); x.fill(); x.restore(); };
-        const P = 5;
-        if (kind === "report") {
-          const fx = P + 2, fw = w - 2 * P - 4;
-          if (v === 2) {
-            // a company's report: its colour across the top, failure modes per binder as stacked bars
-            rect(0, 0, w, 9.6, BLU);
-            caps("Technical report", P, 5.9, { color: WHITE }); caps("Q3 2026", w - P, 5.9, { color: WHITE2, align: "right" });
-            text("Binder screening:", P, 15.6, 4.2, "serif", INK, { weight: 500 }); text("failure modes", P, 20.3, 4.2, "serif", INK, { weight: 500 });
-            const fy = greek(P, 23.6, w - 2 * P, 2) + 2.4, fh = 14, cols = [GRN2, BLU, ORG, RED], gap = 2.4, bw = (fw - 4 * gap) / 5;
-            [[0.8, 0.1, 0.06, 0.04], [0.62, 0.12, 0.14, 0.12], [0.7, 0.18, 0.08, 0.04], [0.42, 0.1, 0.2, 0.28], [0.86, 0.06, 0.05, 0.03]].forEach((d, i) => {
-              let yy = fy + fh; const bx = fx + i * (bw + gap);
-              d.forEach((f, k) => { rect(bx, yy - f * fh, bw, f * fh - 0.2, cols[k]); yy -= f * fh; });
-              text(["B-3", "B-4", "B-5", "B-6", "B-7"][i], bx + bw / 2, fy + fh + 2.3, 1.5, "sans", GREY, { align: "center" });
-            });
-            hair(fx - 0.6, fy + fh, fx + fw, fy + fh, "#cfcdc6");
-            ["ok", "pinholes", "peeling", "cracks"].forEach((s, k) => { swatch(P + 0.5 + k * 12, fy + fh + 5.6, cols[k], 1.4); text(s, P + 2.5 + k * 12, fy + fh + 5.6, 1.5, "sans", GREY); });
-            text("Fig. 1. Outcome of 40 samples per binder", P, fy + fh + 9.2, 1.6, "serif", "#7a7a82", { italic: true });
-            greek(P, fy + fh + 11.8, w - 2 * P, 3);
-            caps("R&D lab", P, h - 3.3, { size: 1.7 }); text("2", w - P, h - 3.3, 1.9, "sans", GREY, { align: "right" });
-          } else {
-            caps(v ? "PDF · Study" : "PDF · QA report", P, 5.6); caps(v ? "Batch 14" : "Oct 2025", w - P, 5.6, { align: "right" });
-            hair(P, 7.2, w - P, 7.2);
-            const t = v ? ["Slurry viscosity", "study, batch 14"] : ["Coating quality,", "October 2025"];
-            text(t[0], P, 12.6, 4.2, "serif", INK, { weight: 500 }); text(t[1], P, 17.3, 4.2, "serif", INK, { weight: 500 });
-            const y = greek(P, 20.6, w - 2 * P, 3), fy = y + 2, fh = 13;
-            if (!v) {
-              // cracked samples by oven temperature: within the limit green, near it amber, over it red; the limit dashed
-              const bw = fw / 4 - 3;
-              [0, 1, 2, 4].forEach((n, i) => { const bh = 0.7 + (n / 4) * (fh - 1.5); rect(fx + 1.5 + i * (bw + 3), fy + fh - bh, bw, bh, [GRN2, GRN2, ORG, RED][i]); });
-              const ly = fy + fh - 0.7 - (fh - 1.5) / 4;
-              poly([[fx, ly], [fx + fw, ly]], RED, 0.25, [1, 0.7]); text("limit", fx + 0.4, ly - 0.7, 1.35, "sans", RED, { weight: 600 });
-              ["120", "125", "130", "140 °C"].forEach((s, i) => text(s, fx + 1.5 + i * (bw + 3) + bw / 2, fy + fh + 2.3, 1.5, "sans", GREY, { align: "center" }));
-            } else {
-              // viscosity against shear rate for three batches: measured points on their fitted curves
-              hair(fx, fy, fx, fy + fh, "#cfcdc6");
-              [[BLU, 1], [ORG, 0.78], [GRN2, 0.58]].forEach(([c, a]) => {
-                const pts = Array.from({ length: 9 }, (_, i) => [fx + 1 + (i / 8) * (fw - 2), fy + fh - 1.5 - (fh - 4) * a * Math.exp(-i / 3)]);
-                poly(pts, c, 0.3); pts.forEach(([px, py]) => dot(px, py + (r() - 0.5) * 1.1, 0.42, c));
-              });
-              ["B12", "B13", "B14"].forEach((s, k) => { swatch(fx + fw - 9, fy + 2.2 + k * 2.3, [BLU, ORG, GRN2][k], 1.3); text(s, fx + fw - 7.2, fy + 2.2 + k * 2.3, 1.45, "sans", GREY); });
-            }
-            hair(fx, fy + fh, fx + fw, fy + fh, "#cfcdc6");
-            text(v ? "Fig. 2. Viscosity against shear rate" : "Fig. 3. Cracked samples (of 6) by temperature", P, fy + fh + 5.4, 1.6, "serif", "#7a7a82", { italic: true });
-            greek(P, fy + fh + 8.2, w - 2 * P, 5);
-            caps(v ? "R&D lab" : "Pilot line QA", P, h - 3.3, { size: 1.7 }); text(v ? "7" : "3", w - P, h - 3.3, 1.9, "sans", GREY, { align: "right" });
-          }
-        } else if (kind === "datasheet") {
-          // each supplier's own colour across the top
-          rect(0, 0, w, 14, [GRN, BLU, RED][v]);
-          caps(v === 2 ? "Certificate of analysis" : "PDF · Technical data", P, 5.2, { color: WHITE2 });
-          text(["Binder B-7", "Solvent S-2", "Lot 2291 · B-7"][v], P, 11.2, 4.4, "sans", "#ffffff", { weight: 600 });
-          if (v === 2) {
-            // test, specification, result, and a chip for each
-            text("Test", P, 19.4, 1.9, "sans", INK, { weight: 600 }); text("Spec", 20, 19.4, 1.9, "sans", INK, { weight: 600 });
-            text("Result", 41, 19.4, 1.9, "sans", INK, { weight: 600, align: "right" }); hair(P, 20.6, w - P, 20.6, "#cfcdc6");
-            [["Viscosity", "1.8–2.4", "2.1", "g"], ["Solids", "46–50", "48.2", "g"], ["Density", "1.10–1.14", "1.12", "g"], ["Water", "< 0.20", "0.18", "a"],
-              ["Colour", "≤ 3", "2", "g"], ["pH", "6–8", "7.1", "g"]].forEach(([k, sp, res, st], i) => {
-              const y = 24.6 + i * 4.3; text(k, P, y, 1.95, "sans", INK2); text(sp, 20, y, 1.75, "mono", GREY); text(res, 41, y, 1.9, "mono", INK, { align: "right" });
-              chip(st === "g" ? "PASS" : "CHECK", w - P, y, st, { right: true, size: 1.3 }); hair(P, y + 1.3, w - P, y + 1.3, "#ebeae5", 0.25);
-            });
-            greek(P, 53, w - 2 * P, 2);
-            text("Released", P, 64, 1.9, "sans", GREY); hair(P + 9.5, 64.4, P + 27, 64.4, "#c3c2b7"); text("K. Ito", P + 11, 63.6, 3.4, "hand", PEN);
-            // the QC stamp, a little crooked and not quite fully inked
-            x.save(); x.translate(w - 10.5, 60.5); x.rotate(-0.2); x.globalAlpha *= 0.72;
-            ring(0, 0, 5.4, 5.4, GRN2, 0.42, 0); ring(0, 0, 4.4, 4.4, GRN2, 0.18, 0);
-            text("QC", 0, 0.3, 2.4, "sans", GRN2, { weight: 700, align: "center" }); text("RELEASED", 0, 2.5, 1, "sans", GRN2, { weight: 700, align: "center" });
-            x.restore();
-          } else {
-            text("Properties", P, 19.4, 2.4, "sans", INK, { weight: 600 });
-            const rows = v ? [["Boiling point", "202 °C"], ["Flash point", "91 °C"], ["Purity", "99.5 %"], ["Water", "< 0.05 %"], ["Density", "1.03 g/cm³"], ["Viscosity", "1.7 mPa·s"], ["Pack", "200 L"]]
-              : [["Viscosity", "2.1 Pa·s"], ["Solids", "48 %"], ["Density", "1.12 g/cm³"], ["Cure", "125–140 °C"], ["Tg", "62 °C"]];
-            rows.forEach(([k, val], i) => { const y = 24 + i * 4.3; text(k, P, y, 2.05, "sans", INK2); text(val, w - P, y, 2.05, "mono", INK, { align: "right" }); hair(P, y + 1.3, w - P, y + 1.3, "#ebeae5", 0.25); });
-            if (!v) {
-              // viscosity against temperature, the cure window shaded
-              text("Viscosity vs temperature", P, 47.6, 2.1, "sans", INK, { weight: 600 });
-              const cx0 = P + 1, cy0 = 49.8, cw = w - 2 * P - 2, ch = 12;
-              rect(cx0 + cw * 0.55, cy0, cw * 0.2, ch, PALE.a); text("cure", cx0 + cw * 0.65, cy0 + 2, 1.4, "sans", ORG, { align: "center", weight: 600 });
-              hair(cx0, cy0, cx0, cy0 + ch, "#cfcdc6"); hair(cx0, cy0 + ch, cx0 + cw, cy0 + ch, "#cfcdc6");
-              curve(cx0 + 0.5, cy0 + 0.6, cw - 1, ch - 1.4, (t) => 1 - 0.95 * Math.exp(-2.6 * t), ORG, 0.4);
-              text("20", cx0, cy0 + ch + 2, 1.35, "sans", GREY, { align: "center" }); text("160 °C", cx0 + cw, cy0 + ch + 2, 1.35, "sans", GREY, { align: "right" });
-            } else {
-              // the hazard pictograms: red diamonds, a flame and an exclamation mark
-              text("Hazards", P, 56.4, 2.4, "sans", INK, { weight: 600 });
-              [0, 1].forEach((k) => {
-                const cx = P + 3.2 + k * 7.4, cy = 62.4;
-                x.save(); x.translate(cx, cy); x.rotate(Math.PI / 4); x.fillStyle = "#ffffff"; x.fillRect(-2.2, -2.2, 4.4, 4.4); x.strokeStyle = RED; x.lineWidth = 0.5; x.strokeRect(-2.2, -2.2, 4.4, 4.4); x.restore();
-                if (k) text("!", cx, cy + 1.1, 2.8, "sans", INK, { weight: 700, align: "center" });
-                else { x.fillStyle = INK; x.beginPath(); x.moveTo(cx, cy - 1.7); x.quadraticCurveTo(cx + 1.4, cy - 0.2, cx + 0.9, cy + 0.9); x.quadraticCurveTo(cx, cy + 1.5, cx - 0.9, cy + 0.9); x.quadraticCurveTo(cx - 1.3, cy - 0.2, cx, cy - 1.7); x.fill(); }
-              });
-              greek(P + 17, 59.8, w - 2 * P - 17, 3);
-            }
-          }
-          caps(v === 2 ? "Lot 2291" : "Rev 4", P, h - 3.3, { size: 1.7 }); text("1 / 2", w - P, h - 3.3, 1.8, "sans", GREY, { align: "right" });
-        } else if (kind === "doc") {
-          if (v === 2) {
-            // a yellow legal pad: blue rules, a double red margin, notes in blue ink, a red pen and a green highlighter over them
-            hair(0, 8.2, w, 8.2, "#8fb0d6", 0.45);
-            for (let y = 12.6; y < h - 2; y += 4.4) hair(0, y, w, y, "#a9c0dc", 0.25);
-            hair(8.4, 0, 8.4, h, "#d98a80", 0.3); hair(9.2, 0, 9.2, h, "#d98a80", 0.3);
-            hl(10.2, 23.2, 31, 2.7, "rgba(126, 206, 140, 0.5)");
-            ["Binder ideas", "1. B-7 at 2 %", "2. add A-3 (0.5 %)?", "3. lower solids → 46", "4. dry 10 h at 130", "→ ask supplier: Tg", "", "Tom: line time Thu?"]
-              .forEach((s, i) => s && text(s, 10.6, 12.1 + i * 4.4, 3.6, "hand", PEN));
-            poly([[10.4, 13], [18, 12.8], [26, 13.1]], RPEN, 0.3);
-            ring(11.6, 19.8, 2, 1.8, RPEN, 0.28); text("*", 4.6, 31.2, 4.4, "hand", RPEN);
-            poly([[10.4, 34.9], [33, 34.6]], RPEN, 0.28);
-          } else {
-            caps(v ? "Doc · Run sheet" : "Doc · Notes", P, 5.6); caps(v ? "Nov" : "12 Mar", w - P, 5.6, { align: "right" }); hair(P, 7.2, w - P, 7.2);
-            if (!v) {
-              text("Weekly sync", P, 12.4, 3.9, "sans", INK, { weight: 600 }); chip("ON TRACK", w - P, 12, "g", { right: true, size: 1.3 });
-              text("Maya, Tom, Daniel", P, 15.9, 2, "sans", GREY);
-              // each point with its owner's initial in their colour
-              [["8 h drying looks better early", VIO, "M"], ["R-31 on the pilot line Thu", ORG, "T"], ["Cost model: update for 8 h", GRN2, "D"], ["Rerun at 125 °C", VIO, "M"]].forEach(([s, c, who], i) => {
-                const y = 21 + i * 3.6; dot(P + 0.7, y - 0.7, 0.45, INK2); const tw = text(s, P + 2.4, y, 2.15, "sans", INK2);
-                dot(P + 4.4 + tw, y - 0.75, 1.15, c); text(who, P + 4.4 + tw, y - 0.2, 1.4, "sans", "#ffffff", { weight: 700, align: "center" });
-              });
-              text("Notes", P, 37.4, 2.4, "sans", INK, { weight: 600 }); greek(P, 39.6, w - 2 * P, 4);
-              text("Actions", P, 54.4, 2.4, "sans", INK, { weight: 600 });
-              for (let i = 0; i < 3; i++) {
-                const y = 57 + i * 3.6; x.strokeStyle = i < 2 ? GRN2 : "#b0afa8"; x.lineWidth = 0.3; x.strokeRect(P, y - 0.3, 1.8, 1.8);
-                if (i < 2) poly([[P + 0.35, y + 0.6], [P + 0.85, y + 1.2], [P + 2.1, y - 0.7]], GRN2, 0.4);
-                greek(P + 3, y + 0.2, (w - 2 * P - 3) * (0.55 + r() * 0.4), 1, { full: true });
-              }
-            } else {
-              text("Run sheet · Line 2", P, 12.4, 3.6, "sans", INK, { weight: 600 });
-              [["Roll", "R-31"], ["Speed", "4.5 m/min"], ["Oven", "140 °C"], ["Drying", "8 h"], ["Thickness", "82 µm"], ["Shift", "B"]].forEach(([k, val], i) => {
-                const y = 19.5 + i * 4.6; text(k, P, y, 2.05, "sans", GREY); const tw = text(val, P + 18, y, 3.3, "hand", PEN); hair(P + 17, y + 1, w - P, y + 1, "#dcdbd4", 0.25);
-                if (i === 2) ring(P + 18 + tw / 2, y - 0.9, tw / 2 + 1.6, 2.3, RPEN, 0.3);
-              });
-              greek(P, 48, w - 2 * P, 5);
-              text("Signed", P, h - 5.6, 1.9, "sans", GREY); hair(P + 9, h - 5.2, P + 30, h - 5.2, "#c3c2b7"); text("Tom", P + 11, h - 6, 3.4, "hand", PEN);
-              // the QC stamp
-              x.save(); x.translate(w - 13.5, h - 16); x.rotate(-0.16); x.globalAlpha *= 0.7; x.strokeStyle = GRN2; x.lineWidth = 0.42;
-              round(-8.6, -2.6, 17.2, 4.4, 0.7); x.stroke(); text("QC PASSED", 0, 0.7, 2.1, "sans", GRN2, { weight: 700, align: "center" }); x.restore();
-            }
-          }
-        } else if (kind === "notebook") {
-          if (v === 1) {
-            // graph paper: a pale blue grid; a plot made by hand with two pens
-            for (let i = 0, gx = 0; gx <= w; i++, gx += 2.5) hair(gx, 7.4, gx, h, i % 5 ? "rgba(96, 146, 204, 0.2)" : "rgba(96, 146, 204, 0.4)", 0.18);
-            for (let i = 0, gy = 7.4; gy <= h; i++, gy += 2.5) hair(0, gy, w, gy, i % 5 ? "rgba(96, 146, 204, 0.2)" : "rgba(96, 146, 204, 0.4)", 0.18);
-            caps("Project", 3.5, 4.9, { size: 1.6 }); text("Binder", 15.2, 5.3, 3.4, "hand", PEN);
-            caps("Page", w - 9, 4.9, { size: 1.6, align: "right" }); text("52", w - 3.5, 5.3, 3.4, "hand", PEN, { align: "right" });
-            hair(0, 7.4, w, 7.4, "#9fb8d8", 0.35);
-            text("21 Mar · binder B-7", 4, 12.4, 3.8, "hand", PEN); text("visc. against solids", 4, 17.4, 3.8, "hand", PEN);
-            poly([[9, 22.5], [9, 50], [54, 50]], "#55555d", 0.32);
-            const A = [[12, 46], [19, 42.5], [26, 38.6], [33, 34], [40, 30.5], [47, 26]], B = [[12, 47.5], [19, 45.2], [26, 41.9], [33, 39.6], [40, 35.1], [47, 33.2]];
-            poly([[11, 46.9], [49, 25]], GRN2, 0.28);
-            A.forEach(([px, py]) => { const jy = py + (r() - 0.5) * 0.9; poly([[px - 0.8, jy - 0.8], [px + 0.8, jy + 0.8]], GRN2, 0.3); poly([[px - 0.8, jy + 0.8], [px + 0.8, jy - 0.8]], GRN2, 0.3); });
-            poly([[11, 48.3], [49, 32.3]], RPEN, 0.28);
-            B.forEach(([px, py]) => ring(px, py + (r() - 0.5) * 0.9, 0.75, 0.75, RPEN, 0.28, 0));
-            text("B-7", 50.3, 25.6, 3.2, "hand", GRN2); text("B-5", 50.3, 33.4, 3.2, "hand", RPEN); text("solids %", 40, 54.4, 2.8, "hand", "#55555d");
-            text("→ B-7 holds to 48 %", 4, 61.4, 3.6, "hand", PEN); poly([[4.2, 62.4], [37, 62]], GRN2, 0.3);
-          } else {
-            caps("Project", 3.5, 4.9, { size: 1.6 }); text(v ? "Coating" : "Coating drying", 15.2, 5.3, 3.4, "hand", PEN);
-            caps("Page", w - 9, 4.9, { size: 1.6, align: "right" }); text(v ? "41" : "38", w - 3.5, 5.3, 3.4, "hand", PEN, { align: "right" });
-            hair(0, 7.4, w, 7.4, "#bccde4", 0.35);
-            for (let y = 12.4; y < h - 5; y += 5) hair(0, y, w, y, "#cddbec", 0.28);
-            hair(9.5, 0, 9.5, h, "#e8a5a5", 0.35);
-            // red pen: a circled step number in the margin
-            const cn = (n, y) => { ring(4.8, y - 1.1, 1.55, 1.55, RPEN, 0.26, 0); text(n, 4.8, y - 0.2, 2.6, "hand", RPEN, { align: "center" }); };
-            if (!v) {
-              ["14 Mar 2025", "Oven 140 °C, 8 h", "4 of 6 cracked", "→ back to 125 °C?", "ask Maya: binder"].forEach((s, i) => text(s, 11.5, 11.8 + i * 5, 4.2, "hand", PEN));
-              // the result ringed and the next step underlined in red; numbered steps
-              ring(15.6, 20.4, 5.6, 2.3, RPEN, 0.32); poly([[11.4, 27.7], [22, 27.4], [33.5, 27.6]], RPEN, 0.3);
-              cn("1", 16.8); cn("2", 26.8);
-              // a quick sketch: 12 h in ink, 8 h in red pen with its points
-              x.lineWidth = 0.32; poly([[34, 41], [34, 58], [54, 58]], PEN, 0.32);
-              x.strokeStyle = PEN; x.beginPath(); x.moveTo(35, 43); x.bezierCurveTo(41, 44, 46, 47, 53, 55); x.stroke();
-              x.strokeStyle = RPEN; x.beginPath(); x.moveTo(35, 42.4); x.bezierCurveTo(40, 44.5, 44, 50, 48, 57.4); x.stroke();
-              [[37.5, 43.2], [41.5, 46.4], [44.5, 50.6], [46.8, 54.6]].forEach(([px, py]) => dot(px, py, 0.42, RPEN));
-              text("8 h", 41.4, 55.6, 2.8, "hand", RPEN); text("12 h", 50, 47.8, 2.8, "hand", PEN);
-            } else {
-              ["17 Mar 2025", "DSC of B-7, run 3"].forEach((s, i) => text(s, 11.5, 11.8 + i * 5, 4.2, "hand", PEN));
-              cn("3", 11.8);
-              // a printed chart taped in, a little crooked: two runs, one peak
-              x.save(); x.translate(12.5, 19.6); x.rotate(-0.035);
-              rect(0.3, 0.4, 40, 24.5, "rgba(26, 26, 31, 0.07)"); rect(0, 0, 40, 24.5, "#fefefe"); x.strokeStyle = "rgba(26, 26, 31, 0.12)"; x.lineWidth = 0.2; x.strokeRect(0, 0, 40, 24.5);
-              text("DSC   B-7", 2, 2.8, 1.4, "mono", GREY);
-              hair(4, 4.4, 4, 21, "#cfcdc6"); hair(4, 21, 38, 21, "#cfcdc6");
-              curve(4.5, 5, 33, 15, (t) => 0.62 + 0.12 * t - 0.5 * Math.exp(-(((t - 0.42) / 0.07) ** 2)), BLU, 0.32);
-              curve(4.5, 5, 33, 15, (t) => 0.7 + 0.1 * t - 0.36 * Math.exp(-(((t - 0.5) / 0.08) ** 2)), ORG, 0.32);
-              swatch(28, 3.4, BLU, 1.1); text("run 2", 29.6, 3.4, 1.2, "sans", GREY); swatch(28, 5.6, ORG, 1.1); text("run 3", 29.6, 5.6, 1.2, "sans", GREY);
-              x.fillStyle = "rgba(232, 228, 204, 0.75)";
-              [[1.2, -0.2, 0.55], [38.6, -0.4, -0.5]].forEach(([tx, ty, a]) => { x.save(); x.translate(tx, ty); x.rotate(a); x.fillRect(-3.2, -1.1, 6.4, 2.2); x.restore(); });
-              x.restore();
-              ["peak 62 °C = Tg", "→ ok for spec"].forEach((s, i) => text(s, 11.5, 51.8 + i * 5, 4.2, "hand", i ? PEN : RPEN));
-              poly([[33.5, 48.4], [31.4, 29.2]], RPEN, 0.3); poly([[30.5, 31], [31.4, 29.2], [32.4, 30.9]], RPEN, 0.3);
-            }
-          }
-          caps("Witnessed", 11.5, h - 1.9, { size: 1.5, color: "#b0b0b5" }); hair(22, h - 1.8, 40, h - 1.8, "#d3d2cc", 0.25);
-        } else if (kind === "sheet") {
-          rect(0, 0, w, 6.2, "#f5f4ef"); hair(0, 6.2, w, 6.2, "#e2e1db");
-          x.strokeStyle = "#b0afa8"; x.lineWidth = 0.3; x.strokeRect(3, 1.7, 2.6, 3); hair(3, 3.2, 5.6, 3.2, "#b0afa8", 0.25); hair(4.3, 1.7, 4.3, 4.7, "#b0afa8", 0.25);
-          text(["bench_tests.csv", "cycling_batch14.csv", "scrap_by_shift.csv"][v], 7, 4.3, 2.2, "mono", "#6f6f77");
-          caps("CSV", w - 3, 4.2, { align: "right" });
-          const data = [[["sample", "dry h", "°C", "yield"], ["R-29", "12", "120", "0.91"], ["R-30", "8", "120", "0.86"], ["R-31", "8", "140", "0.79"], ["R-32", "10", "130", "0.88"], ["R-33", "12", "125", "0.90"]],
-            [["cycle", "kept %", "temp", "dry h"], ["0", "100.0", "25", "12"], ["50", "97.8", "25", "12"], ["100", "95.1", "25", "12"], ["150", "93.0", "25", "12"], ["200", "90.2", "25", "12"], ["250", "86.9", "25", "12"], ["300", "84.1", "25", "12"]],
-            [["shift", "W41", "W42", "W43", "W44", "W45"], ["A", "2.1", "1.8", "2.4", "3.9", "2.2"], ["B", "2.6", "3.1", "2.9", "5.2", "3.4"], ["C", "1.7", "1.9", "2.2", "4.6", "2.0"], ["avg", "2.1", "2.3", "2.5", "4.6", "2.5"]]][v];
-          const cols = data[0].length, top = 6.2, rh = 4.4, rn = 4.6, cw = (w - rn) / cols, rows = Math.floor((h - top - rh) / rh);
-          const at = (i, j) => [rn + cw * j, top + rh * (i + 1)];
-          rect(0, top, w, rh, "#efeee9"); rect(0, top, rn, h - top, "#efeee9");
-          // the header row in colour, then the formatting rules: green to red by value, as fills, data bars or a heatmap
-          const hk = ["g", "b", "v"][v], ink = {};
-          rect(rn, top + rh, w - rn, rh, PALE[hk]);
-          if (v === 0) data.forEach((row, i) => { if (!i) return; const y = +row[3], k = y >= 0.9 ? "g" : y >= 0.85 ? "a" : "r", [cx, cy] = at(i, 3); rect(cx, cy, cw, rh, PALE[k]); ink[i + "," + 3] = DARK[k]; });
-          if (v === 1) data.forEach((row, i) => { if (!i) return; const kv = +row[1], k = kv >= 95 ? "g" : kv >= 90 ? "a" : "r", [cx, cy] = at(i, 1); rect(cx + 0.3, cy + 0.6, (cw - 0.6) * Math.min(1, Math.max(0.05, (kv - 80) / 20)), rh - 1.2, BAR[k]); if (k === "r") ink[i + "," + 1] = DARK.r; });
-          if (v === 2) {
-            const mix = (a, b, t) => { const p = (c) => [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16)), A = p(a), B = p(b); return `rgb(${A.map((u, i) => Math.round(u + (B[i] - u) * t)).join(",")})`; };
-            const heat = (s) => (s < 3.2 ? mix("#cfe6d6", "#f4e2b9", Math.max(0, (s - 1.6) / 1.6)) : mix("#f4e2b9", "#e9b2a6", Math.min(1, (s - 3.2) / 2)));
-            data.forEach((row, i) => row.forEach((s, j) => { if (i && j) { const [cx, cy] = at(i, j); rect(cx, cy, cw, rh, heat(+s)); if (+s >= 4.5) ink[i + "," + j] = DARK.r; } }));
-          }
-          for (let j = 0; j < cols; j++) text("ABCDEF"[j], rn + cw * j + cw / 2, top + 3.1, 1.8, "sans", GREY, { align: "center" });
-          for (let i = 0; i < rows; i++) text(String(i + 1), rn / 2, top + rh * (i + 1) + 3.1, 1.7, "sans", GREY, { align: "center" });
-          x.strokeStyle = HAIR; x.lineWidth = 0.25; x.beginPath();
-          for (let i = 1; i <= rows + 1; i++) { x.moveTo(0, top + rh * i); x.lineTo(w, top + rh * i); }
-          for (let j = 0; j <= cols; j++) { x.moveTo(rn + cw * j, top); x.lineTo(rn + cw * j, h); }
-          x.stroke();
-          data.forEach((row, i) => row.forEach((s, j) => {
-            if (i >= rows) return;
-            const y = top + rh * (i + 1) + 3.1, o = { weight: i ? 400 : 600, align: j ? "right" : "left" };
-            text(s, j ? rn + cw * (j + 1) - 1.2 : rn + 1.2, y, cols > 4 ? 1.9 : 2.05, "mono", i ? ink[i + "," + j] || INK2 : DARK[hk], o);
-          }));
-          if (v === 0) { x.strokeStyle = VIO; x.lineWidth = 0.55; x.strokeRect(rn + cw * 3 + 0.3, top + rh * 4 + 0.3, cw - 0.6, rh - 0.6); }
-          if (v === 2) {
-            // a chart placed on the sheet: scrap by week for each shift
-            const bx = rn + 3, by = top + rh * 6 + 1.2, bw = 54, bh = h - by - 2.2;
-            rect(bx + 0.25, by + 0.35, bw, bh, "rgba(26, 26, 31, 0.06)"); rect(bx, by, bw, bh, "#fefefe"); x.strokeStyle = "#cfcdc6"; x.lineWidth = 0.22; x.strokeRect(bx, by, bw, bh);
-            text("Scrap % by shift", bx + 2, by + 2.8, 1.7, "sans", INK, { weight: 600 });
-            const px0 = bx + 4, py0 = by + 4.4, pw = bw - 16, ph = bh - 7.4;
-            hair(px0, py0 + ph, px0 + pw, py0 + ph, "#cfcdc6"); hair(px0, py0 + ph / 2, px0 + pw, py0 + ph / 2, "#efeee9", 0.2); hair(px0, py0, px0 + pw, py0, "#efeee9", 0.2);
-            [[1, BLU], [2, ORG], [3, GRN2]].forEach(([i, c], k) => {
-              const pts = data[i].slice(1).map((s, j) => [px0 + (j / 4) * pw, py0 + ph - ((+s - 1) / 4.6) * ph]);
-              poly(pts, c, 0.35); pts.forEach(([a, b]) => dot(a, b, 0.4, c));
-              swatch(bx + bw - 9.5, by + 6 + k * 2.6, c, 1.2); text("shift " + data[i][0], bx + bw - 7.8, by + 6 + k * 2.6, 1.35, "sans", GREY);
-            });
-          }
-        } else if (kind === "slide") {
-          const cx0 = 7, cy0 = 16, cw = 44, ch = 23;
-          if (v === 1) {
-            // this deck's template: a coloured band with the title in white
-            rect(0, 0, w, 11.6, BLU);
-            text("Scale-up review", 5, 6.6, 3.6, "sans", "#ffffff", { weight: 600 }); text("Line 2 output against target, by week", 5, 9.8, 1.9, "sans", WHITE2);
-          } else {
-            rect(0, 0, w, 1.5, v ? GRN : VIO);
-            text(v ? "Cost review, October" : "Drying review: 8 h vs 12 h", 5, 8.6, 3.9, "sans", INK, { weight: 600 });
-            text(v ? "Cost per kg, by step" : "Output kept by cycle, pilot line", 5, 12.3, 2.1, "sans", GREY);
-          }
-          let bc = [INK2, INK2, INK2];
-          if (v === 0) {
-            // three drying times, one colour each; past the knee the 8 h line falls away, in a pale red band
-            hair(cx0, cy0, cx0, cy0 + ch, "#cfcdc6"); hair(cx0, cy0 + ch, cx0 + cw, cy0 + ch, "#cfcdc6");
-            const kx = cx0 + 0.817 * cw, yy = (f) => cy0 + 2 + f * (ch - 4);
-            rect(kx, cy0, cx0 + cw - kx, ch, "rgba(176, 58, 46, 0.08)");
-            x.setLineDash([0.8, 0.8]); hair(kx, cy0, kx, cy0 + ch, "#b9b8b0", 0.25); x.setLineDash([]);
-            curve(cx0, cy0 + 2, cw, ch - 4, (t) => 0.05 + 0.33 * t, GRN2, 0.5);
-            curve(cx0, cy0 + 2, cw, ch - 4, (t) => 0.03 + 0.28 * t + Math.max(0, t - 0.88) * 2, ORG, 0.5, 50);
-            curve(cx0, cy0 + 2, cw, ch - 4, (t) => 0.02 + 0.22 * t + Math.max(0, t - 0.817) * 3.5, RED, 0.6, 60);
-            text("12 h", cx0 + cw + 1, yy(0.38) + 0.7, 1.8, "sans", GRN2, { weight: 600 }); text("10 h", cx0 + cw + 1, yy(0.55) + 0.7, 1.8, "sans", ORG, { weight: 600 });
-            text("8 h", cx0 + cw + 1, yy(0.86) + 0.7, 1.8, "sans", RED, { weight: 600 });
-            text("0", cx0, cy0 + ch + 2.3, 1.5, "sans", GREY, { align: "center" }); text("300", cx0 + cw, cy0 + ch + 2.3, 1.5, "sans", GREY, { align: "center" });
-            bc = [GRN2, ORG, RED];
-          } else if (v === 1) {
-            // target and actual for five weeks; the week that fell short in red
-            hair(cx0, cy0 + ch, cx0 + cw, cy0 + ch, "#cfcdc6");
-            const T = [0.62, 0.7, 0.76, 0.82, 0.88], A = [0.6, 0.72, 0.79, 0.62, 0.9];
-            T.forEach((t, i) => {
-              const gx = cx0 + 2.5 + i * 8.2; rect(gx, cy0 + ch - t * (ch - 4), 3.2, t * (ch - 4), "#d9d8d1");
-              rect(gx + 3.4, cy0 + ch - A[i] * (ch - 4), 3.2, A[i] * (ch - 4), A[i] < t - 0.05 ? RED : BLU);
-              text("W" + (i + 1), gx + 3.3, cy0 + ch + 2.3, 1.4, "sans", GREY, { align: "center" });
-            });
-            swatch(cx0 + 1, cy0 + 1.4, "#d9d8d1", 1.3); text("target", cx0 + 2.8, cy0 + 1.4, 1.45, "sans", GREY);
-            swatch(cx0 + 11, cy0 + 1.4, BLU, 1.3); text("actual", cx0 + 12.8, cy0 + 1.4, 1.45, "sans", GREY);
-            bc = [BLU, RED, INK2];
-          } else {
-            // where the cost goes: a ring chart with its legend
-            const dcx = cx0 + 11, dcy = cy0 + 11.5, R0 = 6, R1 = 10.6, sh = [0.22, 0.15, 0.1, 0.18, 0.35], cs = [VIO, ORG, BLU, GRN2, STONE];
-            let a0 = -Math.PI / 2;
-            x.lineWidth = R1 - R0; x.lineCap = "butt";
-            sh.forEach((f, i) => { const a1 = a0 + f * 6.2832; x.strokeStyle = cs[i]; x.beginPath(); x.arc(dcx, dcy, (R0 + R1) / 2, a0 + 0.02, a1 - 0.02); x.stroke(); a0 = a1; });
-            text("$18.40", dcx, dcy + 0.4, 2.1, "sans", INK, { weight: 700, align: "center" }); text("per kg", dcx, dcy + 2.6, 1.3, "sans", GREY, { align: "center" });
-            ["binder", "drying", "solvent", "labour", "other"].forEach((s, i) => {
-              const ly = cy0 + 3.2 + i * 4.2; swatch(cx0 + 25, ly, cs[i], 1.6); text(s, cx0 + 27.4, ly, 2, "sans", INK2); text(Math.round(sh[i] * 100) + "%", cx0 + 45, ly, 1.9, "mono", INK, { align: "right" });
-            });
-          }
-          for (let i = 0; i < 3; i++) { const y = 19 + i * 6.2; rect(59, y - 0.15, 0.9, 0.9, bc[i]); greek(61.2, y - 0.2, w - 66, 2, { lh: 2.2 }); }
-          caps(["Slides · Mar 2026", "Slides · May 2026", "Slides · Oct 2026"][v], 5, h - 2.5, { size: 1.5 }); text(["4", "9", "6"][v], w - 4, h - 2.5, 1.6, "sans", GREY, { align: "right" });
-        } else if (kind === "log") {
-          if (v === 1) {
-            // continuous printer paper: pale green bands two lines deep, the sprocket holes and perforations down both edges
-            for (let k = 0; k < 4; k++) rect(4.6, 11.4 + (1 + 4 * k) * 4.8 - 3.4, w - 9.2, 9.6, "rgba(150, 196, 160, 0.24)");
-            for (let y = 2.4; y < h; y += 4.2) { dot(2.2, y, 0.72, "rgba(26, 26, 31, 0.13)"); dot(w - 2.2, y, 0.72, "rgba(26, 26, 31, 0.13)"); }
-            x.setLineDash([0.5, 0.5]); hair(4.4, 0, 4.4, h, "#d3d2cc", 0.2); hair(w - 4.4, 0, w - 4.4, h, "#d3d2cc", 0.2); x.setLineDash([]);
-            caps("Log · Shift handover", 6, 5.4); text("B shift", w - 6, 5.4, 2, "mono", GREY, { align: "right" });
-            [["22:00", "handover from A shift"], ["22:20", "oven 2 at 125 °C"], ["23:05", "roll R-33 started"], ["00:40", "web break, rethreaded"], ["01:15", "speed back to 4.0"], ["02:30", "QC sample pulled"],
-              ["03:50", "dryer filter changed"], ["05:10", "R-33 done, 2 rolls"], ["05:55", "handover to C shift"], ["06:00", "—"]].forEach(([t, s], i) => {
-              const y = 11.4 + i * 4.8; text(t, 6, y, 2.05, "mono", GREY); const tw = text(s, 15.5, y, 2.05, "mono", INK2);
-              if (i === 3) { ring(15.5 + tw / 2, y - 0.8, tw / 2 + 1.8, 2.4, RPEN, 0.3); text("!", w - 9.5, y + 0.4, 4, "hand", RPEN); }
-            });
-          } else if (v === 2) {
-            caps("Log · Oven 2", 4, 5.4); text("°C, hourly", w - 4, 5.4, 2, "mono", GREY, { align: "right" }); hair(4, 7.2, w - 4, 7.2);
-            // a strip chart: the band it must stay in, the set point, the trace, one excursion ringed
-            const sx = 9.5, sy = 9.6, sw = w - 13.5, sh = 14;
-            rect(sx, sy + 3.5, sw, 6.5, PALE.g); poly([[sx, sy + 6.75], [sx + sw, sy + 6.75]], "#9a9aa0", 0.22, [0.8, 0.6]);
-            hair(sx, sy, sx, sy + sh, "#cfcdc6"); hair(sx, sy + sh, sx + sw, sy + sh, "#cfcdc6");
-            text("130", sx - 0.8, sy + 2, 1.4, "sans", GREY, { align: "right" }); text("120", sx - 0.8, sy + sh, 1.4, "sans", GREY, { align: "right" });
-            const pts = [];
-            for (let i = 0; i <= 60; i++) { const t = i / 60; pts.push([sx + t * sw, sy + 6.75 + (r() - 0.5) * 1.5 - Math.exp(-(((t - 0.5) / 0.05) ** 2)) * 5.4]); }
-            poly(pts, RED, 0.3); ring(sx + 0.5 * sw, sy + 1.6, 2.4, 1.7, ORG, 0.3, 0);
-            [["06:00", "125.2", "OK", "g"], ["07:00", "124.8", "OK", "g"], ["08:00", "126.1", "OK", "g"], ["09:00", "128.9", "HIGH", "a"], ["10:00", "125.6", "OK", "g"], ["11:00", "125.0", "OK", "g"], ["12:00", "124.9", "OK", "g"]]
-              .forEach(([t, val, st, k], i) => {
-                const y = 28 + i * 4.6; if (i % 2) rect(2.5, y - 3.1, w - 5, 4.6, "#f4f3ef");
-                text(t, 4, y, 2.05, "mono", GREY); text(val, 25, y, 2.05, "mono", k === "g" ? INK2 : DARK.a, { align: "right", weight: k === "g" ? 400 : 600 }); text("zone 1", 28, y, 2.05, "mono", GREY);
-                chip(st, w - 4, y - 0.1, k, { right: true, size: 1.4 });
-              });
-          } else {
-            caps("Log · Line 2 trial", 4, 5.4); text("R-31", w - 4, 5.4, 2, "mono", GREY, { align: "right" }); hair(4, 7.2, w - 4, 7.2);
-            // each event with its status: running and QC in blue, a change in amber, an alarm in red, a pass in green
-            const CH = { 0: ["RUN", "b"], 3: ["SET", "a"], 4: ["ALARM", "r"], 5: ["QC", "b"], 6: ["PASS", "g"], 8: ["STOP", "n"] };
-            [["06:40", "line start, oven 140 °C"], ["07:15", "roll R-31 coated"], ["07:52", "web speed 4.5 m/min"], ["09:02", "dryer set to 8 h"], ["10:18", "tension alarm, cleared"], ["11:30", "QC sample pulled"],
-              ["12:05", "thickness 82 µm"], ["13:40", "R-31 to storage"], ["14:10", "line stop"], ["14:30", "—"]].forEach(([t, s], i) => {
-              const y = 11.4 + i * 4.8; if (i % 2) rect(2.5, y - 3.2, w - 5, 4.8, "#f4f3ef");
-              text(t, 4, y, 2.05, "mono", GREY); text(s, 13.5, y, 2.05, "mono", INK2);
-              if (CH[i]) chip(CH[i][0], w - 4, y - 0.1, CH[i][1], { right: true, size: 1.4 });
-            });
-          }
-        } else if (kind === "email") {
-          caps("Email", P, 5.2); text(["Thu 11:42", "Tue 09:14", "Mon 08:00"][v], w - P, 5.2, 1.9, "sans", GREY, { align: "right" });
-          text(["RE: roll R-31 results", "RE: oven profile MC-112", "Weekly KPIs · week 46"][v], P, 10.8, 3.3, "sans", INK, { weight: 600 });
-          dot(P + 2.3, 16.3, 2.3, [ORG, GRN2, BLU][v]);
-          text(["T", "D", "K"][v], P + 2.3, 17.1, 2.4, "sans", "#ffffff", { weight: 600, align: "center" });
-          text(["Tom · Pilot line", "Daniel", "KPI report"][v], P + 6, 15.5, 2.3, "sans", INK, { weight: 600 });
-          text(["to Maya, Daniel", "to Team B", "to R&D leads"][v], P + 6, 18.5, 1.9, "sans", GREY);
-          hair(P, 21.2, w - P, 21.2);
-          // a file attached: its type in colour
-          const att = (ax, ay, ext, c, name) => {
-            x.strokeStyle = "#dddcd5"; x.lineWidth = 0.25; round(ax, ay, w - P - ax, 5.4, 0.8); x.stroke();
-            rect(ax + 0.9, ay + 0.8, 3.4, 3.8, c); text(ext, ax + 2.6, ay + 3.2, 1, "sans", "#ffffff", { weight: 700, align: "center" }); text(name, ax + 5.4, ay + 3.4, 1.7, "sans", INK2);
-          };
-          if (v === 2) {
-            // the week's numbers: up or down, green when it is good news and red when it is not, and a trend line each
-            [["Yield", "91.2 %", 1, "+1.4", 1], ["Scrap", "3.1 %", 0, "−0.6", 1], ["Cycle life", "84 %", 0, "−2.0", 0], ["Energy / kg", "1.9 kWh", 1, "+0.1", 0]].forEach(([k, val, up, d, good], i) => {
-              const y = 26 + i * 5.2, c = good ? GRN2 : RED;
-              text(k, P, y, 2, "sans", INK2); text(val, 38, y, 2, "mono", INK, { align: "right" });
-              x.fillStyle = c; x.beginPath(); if (up) { x.moveTo(40.2, y - 0.1); x.lineTo(42.2, y - 0.1); x.lineTo(41.2, y - 1.6); } else { x.moveTo(40.2, y - 1.6); x.lineTo(42.2, y - 1.6); x.lineTo(41.2, y - 0.1); } x.fill();
-              text(d, 43.2, y, 1.8, "mono", c);
-              let sy = y - 1; const pts = Array.from({ length: 9 }, (_, j) => { sy += (r() - 0.5) * 1.3 + (j > 5 ? (up ? -0.35 : 0.35) : 0); return [53 + j * 2.6, Math.max(y - 2.8, Math.min(y + 0.4, sy))]; });
-              poly(pts, BLU, 0.3); dot(pts[8][0], pts[8][1], 0.5, c);
-              hair(P, y + 1.6, w - P, y + 1.6, "#efeee9", 0.22);
-            });
-            greek(P, 47.6, w - 2 * P, 2);
-          } else {
-            greek(P, 24.4, w - 2 * P, 2);
-            const bx = P, by = 30, bw = v ? 40 : 36, bh = 14;
-            rect(bx, by, bw, bh, "#fefefe"); x.strokeStyle = "#e4e3de"; x.lineWidth = 0.25; x.strokeRect(bx, by, bw, bh);
-            if (!v) {
-              // a chart pasted into the reply: output kept by roll, R-31 in red
-              text("kept at cycle 300", bx + 1.4, by + 2.4, 1.35, "sans", GREY);
-              [["R-28", 90, GRN2], ["R-31", 79, RED], ["R-33", 88, GRN2], ["R-34", 84, ORG]].forEach(([n, val, c], i) => {
-                const hh = (val - 70) / 22 * 8.4; rect(bx + 4 + i * 8, by + 11.2 - hh, 4.6, hh, c); text(n, bx + 6.3 + i * 8, by + 13.2, 1.25, "sans", GREY, { align: "center" });
-              });
-              hair(bx + 2.5, by + 11.2, bx + bw - 2, by + 11.2, "#cfcdc6", 0.22);
-              att(45, 30.2, "CSV", GRN2, "line_tests.csv"); att(45, 37, "PDF", RED, "R-31_QC.pdf");
-            } else {
-              // the oven's profile: set point dashed, the measured trace in amber, the hold shaded
-              text("oven MC-112, °C", bx + 1.4, by + 2.4, 1.35, "sans", GREY);
-              rect(bx + bw * 0.34, by + 3.4, bw * 0.46, bh - 5, PALE.a);
-              poly([[bx + 2, by + 12], [bx + bw * 0.32, by + 4.6], [bx + bw * 0.8, by + 4.6], [bx + bw - 2, by + 10.5]], "#9a9aa0", 0.25, [0.8, 0.6]);
-              const pts = []; for (let i = 0; i <= 40; i++) { const t = i / 40, base = t < 0.34 ? 12 - (t / 0.34) * 7.2 : t < 0.8 ? 4.8 : 4.8 + ((t - 0.8) / 0.2) * 5.4; pts.push([bx + 2 + t * (bw - 4), by + base + (r() - 0.5) * 0.5]); }
-              poly(pts, ORG, 0.35);
-              att(49, 30.2, "PDF", RED, "MC-112.pdf");
-              x.fillStyle = RED; x.fillRect(w - P - 0.3, 7.4, 0.3, 4); x.beginPath(); x.moveTo(w - P, 7.4); x.lineTo(w - P + 2.2, 8.4); x.lineTo(w - P, 9.4); x.fill();
-            }
-            text(["Tom", "Daniel"][v], P, 49.4, 2.2, "sans", INK2);
-          }
-        }
-      }
-      // The sheet as an object: its tone, a slightly different size, an uneven outline, and what happened to it.
-      // v 0: lying flat with one corner lifted; v 1: folded (in three if tall, in half if wide); v 2, rare: a dog-ear and
-      // a mark (a staple, a paper clip, a highlighter stroke). Each kind has three prints: v 1 always shows print 1; v 2,
-      // whose marks sit on print 0, shows print 0; v 0 shows print 0 far away and print 2 nearer, so every depth has a mix
-      // and no more bitmaps are made than before. A few prints are on tinted paper: a yellow legal pad, blue graph paper.
-      const PRINT = (v, lvl) => (v === 1 ? 1 : v === 2 || lvl === 0 ? 0 : 2);
-      const TINT = { doc: [0, 0, "#f6eec2"], notebook: [0, "#edf2f8", 0] };
-      const TONE = { copy: "#fdfdfb", bright: "#fefefe", cream: "#faf6e8", recycled: "#f1f0eb", ivory: "#fbf8ef" };
-      const TONES = { report: ["copy", "ivory", "bright"], datasheet: ["bright", "copy", "ivory"], doc: ["ivory", "recycled", "copy"], notebook: ["cream", "cream", "cream"],
-        sheet: ["copy", "recycled", "copy"], slide: ["bright", "copy", "bright"], log: ["recycled", "recycled", "ivory"], email: ["copy", "bright", "ivory"] };
-      const GRAIN = typeof PAPER_GRAIN !== "undefined" ? PAPER_GRAIN : null;
-      function makeSprite(kind, v, lvl, k) {
-        const d = DEPTH[lvl], res = d.res * k, mx = 9, mt = 7, mb = 15;
-        let q = 7 + v * 131 + kind.length * 977 + kind.charCodeAt(1) * 31;
-        const r = () => (q = (q * 16807) % 2147483647) / 2147483647, j = () => (r() - 0.5) * 0.7;
-        const [w0, h0] = PAGE[kind], w = w0 * (0.965 + r() * 0.07), h = h0 * (0.965 + r() * 0.07);
-        const W = w + 2 * mx, H = h + mt + mb, cw = Math.ceil(W * res), ch = Math.ceil(H * res);
-        const mk = (a, b) => { const c = document.createElement("canvas"); c.width = a; c.height = b; return c; };
-        const a = mk(cw, ch), x = a.getContext("2d");
-        x.scale(res, res); x.translate(mx, mt);
-        const pv = PRINT(v, lvl), tall = h > w, dog = v === 2 ? 6.5 : 0, lift = v === 0 ? (tall ? "br" : "tr") : kind === "notebook" ? "tr" : null;
-        const C = [[j(), j()], [w + j(), j()], [w + j(), h + j()], [j(), h + j()]], bow = [j() * 0.5, j() * 0.5, j() * 0.5, j() * 0.5];
-        const jag = Array.from({ length: 11 }, (_, i) => (i % 2 ? 0.55 : 0.05) + r() * 0.3); // a notebook page's torn binding edge
-        const at = (i, L) => (L && ((lift === "br" && i === 2) || (lift === "tr" && i === 1)) ? [C[i][0] + L, C[i][1] + (lift === "br" ? 1.3 : 0.3) * L] : C[i]);
-        const outline = (L = 0) => {
-          const [p0, p1, p2, p3] = [0, 1, 2, 3].map((i) => at(i, L));
-          x.beginPath(); x.moveTo(p0[0], p0[1]);
-          if (dog) { x.lineTo(p1[0] - dog, p1[1]); x.lineTo(p1[0], p1[1] + dog); }
-          else x.quadraticCurveTo((p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2 + bow[0], p1[0], p1[1]);
-          x.quadraticCurveTo((p1[0] + p2[0]) / 2 + bow[1], (p1[1] + p2[1]) / 2, p2[0], p2[1]);
-          x.quadraticCurveTo((p2[0] + p3[0]) / 2, (p2[1] + p3[1]) / 2 + bow[2], p3[0], p3[1]);
-          if (kind === "notebook") { jag.forEach((o, i) => x.lineTo(o, h - (h * (i + 1)) / 12)); x.lineTo(p0[0], p0[1]); }
-          else x.quadraticCurveTo((p3[0] + p0[0]) / 2 + bow[3], (p3[1] + p0[1]) / 2, p0[0], p0[1]);
-          x.closePath();
-        };
-        // a shadow alone: the shape is drawn far to the left and only its shadow is thrown back under the sheet
-        const shadow = (shape, al, blur, dx, dy) => {
-          x.save(); x.translate(-3000, 0); x.shadowColor = `rgba(26, 26, 31, ${al})`; x.shadowBlur = blur * res;
-          x.shadowOffsetX = (3000 + dx) * res; x.shadowOffsetY = dy * res; x.fillStyle = "#000"; shape(); x.fill(); x.restore();
-        };
-        const [ca, cb, co, aa, ab, ao] = d.sh;
-        shadow(() => outline(lift ? 3.4 : 0), aa, ab, 0, ao); shadow(() => outline(lift ? 0.9 : 0), ca, cb, 0, co);
-        x.fillStyle = (TINT[kind] && TINT[kind][pv]) || TONE[TONES[kind][v]]; outline(); x.fill();
-        x.save(); outline(); x.clip();
-        // the paper: a soft unevenness, then grain and fibres (not on far sheets, where the blur would take them anyway)
-        for (let i = 0; i < 3; i++) {
-          const gx = r() * w, gy = r() * h, R = 12 + r() * 22, g = x.createRadialGradient(gx, gy, 0, gx, gy, R);
-          g.addColorStop(0, `rgba(140, 124, 96, ${(0.02 + r() * 0.025).toFixed(3)})`); g.addColorStop(1, "rgba(140, 124, 96, 0)");
-          x.fillStyle = g; x.fillRect(0, 0, w, h);
-        }
-        if (GRAIN && lvl) { x.save(); x.setTransform(1, 0, 0, 1, 0, 0); x.globalAlpha = 0.8; x.fillStyle = x.createPattern(GRAIN, "repeat"); x.fillRect(0, 0, cw, ch); x.restore(); }
-        // the print
-        x.globalAlpha = d.ink; pageArt(x, kind, pv, w, h); x.globalAlpha = 1;
-        if (v === 2) mark(x, kind, w, h, true);
-        // folds: a valley in shade, the crease, its lit ridge
-        const crease = (vert, p) => {
-          const g = vert ? x.createLinearGradient(p - 7, 0, p + 7, 0) : x.createLinearGradient(0, p - 7, 0, p + 7);
-          g.addColorStop(0, "rgba(26, 26, 31, 0)"); g.addColorStop(0.4, "rgba(26, 26, 31, 0.045)"); g.addColorStop(0.48, "rgba(26, 26, 31, 0.13)");
-          g.addColorStop(0.52, "rgba(255, 255, 255, 0.55)"); g.addColorStop(0.62, "rgba(255, 255, 255, 0.12)"); g.addColorStop(1, "rgba(255, 255, 255, 0)");
-          x.fillStyle = g; if (vert) x.fillRect(p - 7, 0, 14, h); else x.fillRect(0, p - 7, w, 14);
-        };
-        if (v === 1 && kind !== "notebook") {
-          x.fillStyle = "rgba(26, 26, 31, 0.022)";
-          if (tall) { x.fillRect(0, h / 3, w, h / 3); crease(false, h / 3 + j()); crease(false, (2 * h) / 3 + j()); }
-          else { x.fillRect(w / 2, 0, w / 2, h); crease(true, w / 2 + j()); }
-        }
-        // light from the upper left; a lifted corner catches it, with the curl's soft shade along its edge
-        const lg = x.createLinearGradient(0, 0, w, h);
-        lg.addColorStop(0, "rgba(255, 255, 255, 0.4)"); lg.addColorStop(0.45, "rgba(255, 255, 255, 0)"); lg.addColorStop(1, "rgba(26, 26, 31, 0.05)");
-        x.fillStyle = lg; x.fillRect(0, 0, w, h);
-        if (lift) {
-          const [lx, ly] = lift === "br" ? [w, h] : [w, 0], rg = x.createRadialGradient(lx, ly, 0, lx, ly, 18);
-          rg.addColorStop(0, "rgba(255, 255, 255, 0.55)"); rg.addColorStop(1, "rgba(255, 255, 255, 0)"); x.fillStyle = rg; x.fillRect(0, 0, w, h);
-          const cg = lift === "br" ? x.createLinearGradient(0, h, 0, h - 4) : x.createLinearGradient(w, 0, w - 4, 0);
-          cg.addColorStop(0, "rgba(26, 26, 31, 0.08)"); cg.addColorStop(0.35, "rgba(255, 255, 255, 0.3)"); cg.addColorStop(1, "rgba(255, 255, 255, 0)");
-          x.fillStyle = cg; x.fillRect(0, 0, w, h);
-        }
-        if (kind === "notebook") { const bg = x.createLinearGradient(0, 0, 7, 0); bg.addColorStop(0, "rgba(26, 26, 31, 0.08)"); bg.addColorStop(1, "rgba(26, 26, 31, 0)"); x.fillStyle = bg; x.fillRect(0, 0, 7, h); }
-        x.restore();
-        outline(); x.strokeStyle = "rgba(26, 26, 31, 0.12)"; x.lineWidth = 1 / res; x.stroke();
-        if (dog) {
-          const [tx, ty] = C[1], tri = () => { x.beginPath(); x.moveTo(tx - dog, ty); x.lineTo(tx, ty + dog); x.lineTo(tx - dog, ty + dog); x.closePath(); };
-          shadow(tri, 0.28, 1.2, -0.5, 0.7);
-          const fg = x.createLinearGradient(tx - dog, ty + dog, tx - dog / 2, ty + dog / 2); fg.addColorStop(0, "#e4e0d3"); fg.addColorStop(1, "#f7f5ee");
-          x.fillStyle = fg; tri(); x.fill(); x.strokeStyle = "rgba(26, 26, 31, 0.1)"; tri(); x.stroke();
-        }
-        if (v === 2) mark(x, kind, w, h, false);
-        // stuck on and over the edge: a coloured index flag on some notebooks and studies, a sticky note on the meeting notes
-        const flag = (fy, rgb) => {
-          shadow(() => { x.beginPath(); x.rect(w - 2.6, fy, 5.6, 2.6); }, 0.16, 0.9, 0.3, 0.45);
-          x.fillStyle = `rgba(${rgb}, 0.32)`; x.fillRect(w - 5.6, fy, 3, 2.6); x.fillStyle = `rgba(${rgb}, 0.9)`; x.fillRect(w - 2.6, fy, 5.6, 2.6);
-        };
-        if (kind === "notebook" && pv !== 1) flag(h * (pv ? 0.6 : 0.34), pv ? "98, 160, 115" : "226, 146, 64");
-        if (kind === "report" && pv === 1) flag(h * 0.2, "104, 150, 210");
-        if (kind === "doc" && pv === 0) {
-          const nx = w - 15, ny = h - 20.5;
-          shadow(() => { x.beginPath(); x.rect(nx, ny + 0.6, 17, 15); }, 0.2, 1.8, 0.3, 1);
-          x.save(); x.translate(nx, ny); x.rotate(0.07);
-          const ng = x.createLinearGradient(0, 0, 0, 15); ng.addColorStop(0, "#f1df8c"); ng.addColorStop(0.82, "#f4e49b"); ng.addColorStop(1, "#e8d580");
-          x.fillStyle = ng; x.fillRect(0, 0, 17, 15);
-          x.globalAlpha = d.ink + 0.1; x.font = `500 3.5px ${FONT.hand}`; x.fillStyle = PEN; x.textAlign = "left"; x.fillText("R-31 Thu!", 2, 5.4); x.fillText("book line 2", 2, 10);
-          x.restore();
-        }
-        if (!d.blur) return { cv: a, w: W, h: H, ox: mx + w / 2, oy: mt + h / 2 };
-        // far: out of focus
-        const b = mk(cw, ch), y = b.getContext("2d");
-        if (CANVAS_FILTER) { y.filter = `blur(${(d.blur * res).toFixed(2)}px)`; y.drawImage(a, 0, 0); }
-        else {
-          const f = 1 / (1 + d.blur * res * 0.7), s = mk(Math.max(1, Math.round(cw * f)), Math.max(1, Math.round(ch * f))), sx = s.getContext("2d");
-          sx.imageSmoothingQuality = "high"; sx.drawImage(a, 0, 0, s.width, s.height); y.imageSmoothingQuality = "high"; y.drawImage(s, 0, 0, cw, ch);
-        }
-        return { cv: b, w: W, h: H, ox: mx + w / 2, oy: mt + h / 2 };
-      }
-      // the rare marks: a highlighter stroke over one line (on the sheet), a staple or a paper clip (over its edge)
-      function mark(x, kind, w, h, onPage) {
-        if (onPage) {
-          const hl = { doc: [7, 19.2, 30, 2.7], sheet: [4.6, 24.2, w - 4.6, 3.6], log: [12.8, 22.9, 22, 3.4], email: [4.6, 8.1, 36, 3.4] }[kind];
-          if (!hl) return;
-          // highlighters in yellow, green and pink, as people really use them
-          const ink = { doc: "rgba(255, 221, 84, 0.55)", sheet: "rgba(255, 221, 84, 0.55)", log: "rgba(240, 138, 172, 0.42)", email: "rgba(126, 206, 140, 0.5)" }[kind];
-          x.save(); x.globalCompositeOperation = "multiply"; x.fillStyle = ink;
-          x.beginPath(); x.moveTo(hl[0], hl[1] + 0.3); x.lineTo(hl[0] + hl[2], hl[1]); x.lineTo(hl[0] + hl[2] + 0.4, hl[1] + hl[3]); x.lineTo(hl[0] - 0.3, hl[1] + hl[3] + 0.2); x.closePath(); x.fill(); x.restore();
-          if (kind === "doc") { x.save(); x.translate(w - 13, 31); x.rotate(-0.12); x.font = `500 3.8px ${FONT.hand}`; x.fillStyle = "#4d5d88"; x.fillText("yes!", 0, 0); x.restore(); }
-          return;
-        }
-        if (kind === "report" || kind === "slide" || kind === "doc") {
-          x.save(); x.translate(4.6, 4.4); x.rotate(-0.68);
-          x.fillStyle = "rgba(26, 26, 31, 0.25)"; x.fillRect(-3, 0.05, 6.2, 0.75);
-          const sg = x.createLinearGradient(0, -0.35, 0, 0.35); sg.addColorStop(0, "#eef0f3"); sg.addColorStop(1, "#80838b");
-          x.fillStyle = sg; x.fillRect(-3, -0.35, 6, 0.6); x.restore();
-        } else if (kind === "datasheet" || kind === "email" || kind === "sheet") {
-          x.save(); x.translate(10, -3); x.lineCap = "round"; x.lineWidth = 0.5;
-          const clip = () => { x.beginPath(); x.moveTo(1, 9.5); x.lineTo(1, 2.2); x.arc(2.1, 2.2, 1.1, Math.PI, 0); x.lineTo(3.2, 10.2); x.arc(1.7, 10.2, 1.5, 0, Math.PI); x.lineTo(0.2, 3.6); };
-          x.strokeStyle = "rgba(26, 26, 31, 0.25)"; x.translate(0.35, 0.5); clip(); x.stroke(); x.translate(-0.35, -0.5);
-          x.strokeStyle = "#8b8e96"; clip(); x.stroke(); x.restore();
-        }
-      }
-      // pages are drawn the first time a card needs one, so the work spreads over the first frames as the cards come in
-      const SPRK = Math.min(2, Math.max(1, devicePixelRatio || 1)) / 2;
-      let SPR = {}, gen = 0, rbAt = -1, rbLeft = 0;
-      // the handwriting and the serif arrive after the first frames: the pages are drawn again once they are here, a few
-      // a frame, each keeping its first drawing until then
-      if (document.fonts && document.fonts.load) {
-        Promise.all([document.fonts.load('500 12px Caveat'), document.fonts.load('500 12px "Source Serif 4"')])
-          .then(() => { gen++; box = null; requestRender(); }).catch(() => {});
-      }
-      // a card that becomes a record is drawn as that record's kind; the rest by their type, without asking the seeded generator again
-      const kindOf = (c) => {
-        const doc = c.node && DOCS[c.node];
-        if (doc) return doc[0] === "PDF" && /datasheet|spec|SOP|quotes/i.test(doc[1]) ? "datasheet" : KIND_OF[doc[0]] || "doc";
-        const kd = DUST_KIND[c.type];
-        return kd === "log" && c.p1 > 3.3 ? "email" : kd === "report" && c.p1 > 4.2 ? "datasheet" : kd;
-      };
-      const spriteOf = (c) => {
-        if (c.sk === undefined) {
-          c.sk = kindOf(c); c.sl = c.zc < 0.22 ? 0 : c.zc < 0.5 ? 1 : 2;
-          const hsh = (c.p1 * 7.31 + c.p2 * 3.17) % 1;
-          c.sv = hsh < 0.1 && c.sl ? 2 : hsh < 0.55 ? 1 : 0;
-        }
-        const key = c.sk + c.sv + c.sl, old = SPR[key];
-        if (old && old.gen === gen) return old;
-        if (old && !still) { if (rbAt !== lastFrame) { rbAt = lastFrame; rbLeft = 4; } if (rbLeft <= 0) return old; rbLeft--; }
-        const sp = makeSprite(c.sk, c.sv, c.sl, SPRK); sp.gen = gen;
-        return (SPR[key] = sp);
-      };
       function drawCard(c, x, y, t, fade) {
         const alpha = (0.26 + 0.62 * c.zc) * (1 - clamp((t - 0.5) / 0.35)) * fade;
         if (alpha < 0.012) return;
         const s = (0.5 + 1.05 * c.zc) * (small ? 0.78 : 1) * (1 - 0.84 * ease(t)), a = c.rot * (1 - t) + Math.sin(timeS * c.o1 * 0.7 + c.p2) * 0.03, cs = Math.cos(a) * s * dpr, sn = Math.sin(a) * s * dpr;
         ctx.setTransform(cs, sn, -sn, cs, x * dpr, y * dpr);
         ctx.globalAlpha = alpha;
-        const sp = spriteOf(c);
-        ctx.drawImage(sp.cv, -sp.ox, -sp.oy, sp.w, sp.h);
+        if (c.zc > 0.55) { ctx.fillStyle = "rgba(26, 26, 31, 0.07)"; rr(-36, -24, 76, 58, 6); ctx.fill(); }
+        ctx.fillStyle = "#ffffff"; rr(-38, -28, 76, 56, 5); ctx.fill();
+        ctx.strokeStyle = "#dedcd3"; ctx.lineWidth = 1 / s; ctx.stroke();
+        ctx.fillStyle = BADGE[c.type]; rr(-31, -21, 20 + (c.type % 3) * 5, 8, 2.5); ctx.fill();
+        // the three grey lines in one fill: they never overlap, so this is the same picture in one call instead of three
+        ctx.fillStyle = "#e9e8e2"; ctx.beginPath(); ctx.rect(-31, -6, 62, 4); ctx.rect(-31, 3, 46 + (c.type % 2) * 10, 4); ctx.rect(-31, 12, 54 - (c.type % 3) * 8, 4); ctx.fill();
         ctx.globalAlpha = 1;
       }
       const dustGroups = new Map();
@@ -2304,7 +1590,7 @@
           st.opacity = (ent * (t < 0.1 ? mix(P.o, 1, t / 0.1) : t > 0.92 ? 1 - (t - 0.92) / 0.08 : 1)).toFixed(3);
           st.filter = t > 0 ? "none" : "";
           st.backgroundColor = a < 1 ? `rgba(255, 255, 255, ${a.toFixed(3)})` : "";
-          st.borderColor = a < 1 ? `rgba(26, 26, 31, ${(0.137 * a).toFixed(3)})` : ""; // --line, fading out
+          st.borderColor = a < 1 ? `rgba(225, 224, 217, ${a.toFixed(3)})` : "";
           st.boxShadow = a < 1 ? "none" : "";
           st.setProperty("--paper-ink", (1 - clamp((t - 0.68) / 0.1)).toFixed(3));
           st.setProperty("--dot", clamp((t - 0.72) / 0.12).toFixed(3));
@@ -2727,5 +2013,6 @@
         .observe(document.querySelector(".chapters"));
     })();
   </script>
+  <script src="newsite/stage.js"></script>
 </body>
 </html>
