@@ -22,7 +22,7 @@ The landing page for Fermata, for industrial R&D: one static page whose call to 
   Codex; its menu also shows that Markdown in a tab and opens ChatGPT or Claude on the guide. The Markdown is
   read off the page when clicked (`guideMarkdown()`), so it never drifts from the page; a sketch or control
   that should stay out of it goes in the script's `SKIP` list.
-- After the story, the film (`assets/fermata-film-4.mp4`, 114 s, with `assets/fermata-film-4-poster.jpg`)
+- After the story, the film (`assets/fermata-film-5.mp4`, 136 s, with `assets/fermata-film-5-poster.jpg`)
   plays with sound on its first click, or from the header's **Film** link, which scrolls to it and
   starts it. The link to share is `getfermata.app/#how-it-works` (the older `#film` too): it opens the page with
   the film centred and ready to play, and `film_played` then says `from: link`. It loads nothing until then (`preload="none"`).
@@ -44,7 +44,8 @@ The landing page for Fermata, for industrial R&D: one static page whose call to 
   `requestAnimationFrame` clock, no timers). `?stage=2.6.5` holds scene 2 at 6.5 s, for checking a moment. The
   photo is `assets/stage/reactor-column.jpg` (`assets/stage/SOURCES.md`).
 - `archive/films/` keeps films the page no longer plays (`fermata-film-2.mp4`, the 56 s film it showed until
-  2026-10-26, and `fermata-film-3.mp4`, the 86 s film it showed until 2026-11-13). The deploy does not publish `archive/`.
+  2026-10-26, `fermata-film-3.mp4`, the 86 s film it showed until 2026-11-13, and `fermata-film-4.mp4`, the 114 s film
+  that film 5 replaced). The deploy does not publish `archive/`.
 - PostHog records page views, time on page and clicks, plus a `download_clicked` event that says which
   button was used (`header`, `hero` or `close`), whether it pointed at the `.dmg` or the release page, and the
   version, and `film_played` (with `from`: `header`, `link` or `player`) / `film_finished` for the film below the fold. Every event carries `surface: site`, to tell it apart from the desktop app in the same project.
