@@ -23,8 +23,8 @@ The landing page for Fermata, for industrial R&D: one static page whose call to 
   read off the page when clicked (`guideMarkdown()`), so it never drifts from the page; a sketch or control
   that should stay out of it goes in the script's `SKIP` list.
 - After the story, the film (`assets/fermata-film-5.mp4`, 136 s, with `assets/fermata-film-5-poster.jpg`)
-  plays with sound on its first click, or from the header's **Film** link, which scrolls to it and
-  starts it. The link to share is `getfermata.app/#how-it-works` (the older `#film` too): it opens the page with
+  plays with sound on its first click, or from the header's **Demo video** link, which scrolls to it and
+  starts it. The link to share is `getfermata.app/#demo-video`: it opens the page with
   the film centred and ready to play, and `film_played` then says `from: link`. It loads nothing until then (`preload="none"`).
 - `newsite/index.html` is the test copy of this landing page (from the `feature/site-revamp-lab-to-plant` branch), served at
   `getfermata.app/newsite/` so it can be shared by link while it is being built. It is a copy of that branch's
