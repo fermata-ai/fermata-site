@@ -908,7 +908,7 @@
     <div class="wrap">
       <a class="brand" href="/" aria-label="Fermata"><svg width="28" height="28" aria-hidden="true"><use href="#mark"/></svg>Fermata</a>
       <nav class="nav" aria-label="Main">
-        <a class="hide-xs" href="#story">How it works</a>
+        <a class="hide-xs" href="#how-it-works">How it works</a>
         <div class="has-menu hide-s">
           <a href="/industries/">Industries</a>
           <ul class="menu" aria-label="Industries">
@@ -919,7 +919,7 @@
             <li><a href="/industries/#coatings">Coatings, adhesives and polymers</a></li>
           </ul>
         </div>
-        <a class="hide-s watch" href="#how-it-works">Demo video</a>
+        <a class="hide-s watch" href="#demo-video">Demo video</a>
         <!-- hidden for now: <a class="hide-s" href="/guide/">User guide</a> -->
         <a class="header-cta download" href="https://github.com/fermata-ai/fermata-releases/releases/latest">Download for Mac</a>
       </nav>
@@ -952,11 +952,11 @@
           <a class="cta-ghost" href="https://web.getfermata.app"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>Try demo</a>
         </div>
       </div>
-      <a class="more" href="#story" aria-label="Scroll down to see how it works"><span><svg viewBox="0 0 24 34" aria-hidden="true"><path d="M5 4l7 6 7-6"/><path d="M5 14l7 6 7-6"/><path d="M5 24l7 6 7-6"/></svg></span></a>
+      <a class="more" href="#how-it-works" aria-label="Scroll down to see how it works"><span><svg viewBox="0 0 24 34" aria-hidden="true"><path d="M5 4l7 6 7-6"/><path d="M5 14l7 6 7-6"/><path d="M5 24l7 6 7-6"/></svg></span></a>
     </section>
 
     <!-- 2. The story: the knowledge base on the left stays put; a project, a second team and the team's decision pass on the right -->
-    <section class="story" id="story" aria-label="How Fermata works">
+    <section class="story" id="how-it-works" aria-label="How Fermata works">
       <aside class="rail" data-step="memory" aria-label="Company knowledge base">
         <div class="memory">
           <p class="kb">Company knowledge base</p>
@@ -1253,14 +1253,14 @@
     </section>
 
     <!-- 4. The film -->
-    <section class="block wrap film-block" id="film" aria-labelledby="film-title">
+    <section class="block wrap film-block" aria-labelledby="film-title">
       <div class="block-head">
         <p class="eyebrow">See it in action</p>
         <h2 id="film-title">Fermata in two minutes.</h2>
       </div>
-      <div class="player" id="how-it-works">
-        <video src="assets/fermata-film-4.mp4" poster="assets/fermata-film-4-poster.jpg" preload="none" playsinline
-               aria-label="Fermata in two minutes: a lab's context is scattered from the bench to the plant; Fermata gathers the evidence from every project, challenges each finding and ties every decision to its evidence."></video>
+      <div class="player" id="demo-video">
+        <video src="assets/fermata-film-5.mp4" poster="assets/fermata-film-5-poster.jpg" preload="none" playsinline
+               aria-label="Fermata in two minutes: one knowledge base built from a lab's records and instruments; Fermata spots a drop before anyone asks, finds its cause across every team, checks the finding and keeps each decision with its evidence."></video>
         <button class="play" type="button" aria-label="Play the film"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15a1 1 0 0 0 1.52.85l12-7.5a1 1 0 0 0 0-1.7l-12-7.5A1 1 0 0 0 7 4.5z"/></svg></span></button>
       </div>
     </section>
@@ -1314,7 +1314,7 @@
     <div class="wrap">
       <a class="brand" href="/" aria-label="Fermata"><svg width="22" height="22" aria-hidden="true"><use href="#mark"/></svg>Fermata</a>
       <nav aria-label="Footer">
-        <a href="#story">How it works</a>
+        <a href="#how-it-works">How it works</a>
         <a href="/industries/">Industries</a>
         <a href="/guide/">User guide</a>
         <a href="https://web.getfermata.app">Try demo</a>
@@ -1357,11 +1357,11 @@
   <script>
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // ---- The arrows under the first screen scroll to the story without changing the address: with #story in it, a
+    // ---- The arrows under the first screen scroll to the story without changing the address: with #how-it-works in it, a
     // refresh opened the page in the middle of the story instead of at the top.
     document.querySelector(".more").addEventListener("click", (ev) => {
       ev.preventDefault();
-      document.getElementById("story").scrollIntoView({ behavior: still ? "auto" : "smooth", block: "start" });
+      document.getElementById("how-it-works").scrollIntoView({ behavior: still ? "auto" : "smooth", block: "start" });
     });
 
     // ---- Download: release assets carry the version in their name, so ask GitHub for the newest DMG.
@@ -1406,6 +1406,7 @@
       document.querySelector(".watch").addEventListener("click", (e) => {
         e.preventDefault();
         from = "header";
+        history.pushState(null, "", "#demo-video");
         player.scrollIntoView({ behavior: still ? "auto" : "smooth", block: "center" });
         start();
       });
@@ -1415,8 +1416,8 @@
         window.posthog?.capture("film_played", { from });
       });
       video.addEventListener("ended", () => window.posthog?.capture("film_finished"));
-      // A shared link to the film (#how-it-works, or the older #film) opens the page on it, centred.
-      if (location.hash === "#how-it-works" || location.hash === "#film") {
+      // A shared link to the film (#demo-video) opens the page on it, centred.
+      if (location.hash === "#demo-video") {
         from = "link";
         const centre = () => player.scrollIntoView({ behavior: "auto", block: "center" });
         requestAnimationFrame(centre);
